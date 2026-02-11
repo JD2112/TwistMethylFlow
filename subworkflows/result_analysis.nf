@@ -18,9 +18,6 @@ workflow RESULT_ANALYSIS {
     top_n_genes
 
     main:
-    //log.info "Starting RESULT_ANALYSIS for method: $method"
-    //log.info "Received diff_meth_results: $diff_meth_results"
-    
     ch_edger_results = Channel.empty()
     ch_methylkit_results = Channel.empty()
     ch_post_processing_edger = Channel.empty()
@@ -34,16 +31,31 @@ workflow RESULT_ANALYSIS {
     ch_versions = Channel.empty()
 
     if (method == 'edger' || method == 'both') {
-        //log.info "RESULT_ANALYSIS: Processing EdgeR results"
         ch_edger_results = diff_meth_results.filter { it[0] == 'edger' }
-        ch_edger_results.view { "Filtered EdgeR results: $it" }
-        
-        ANNOTATE_RESULTS(ch_edger_results, gtf_file)
-        
-        ANNOTATE_RESULTS.out.annotated_results.view { "Annotated EdgeR results: $it" }
-        
+
+        // Flatten list of result files if multiple are emitted together
+        ch_edger_results = ch_edger_results.flatMap { method, results ->
+            if (results instanceof Path && results.isDirectory()) {
+                // If the process emitted a directory, list CSV files in it and
+                // return a plain List of [method, file] pairs so flatMap can
+                // expand them correctly. Do NOT return a Channel here.
+                def dir = results.toFile()
+                def csvs = dir.listFiles()?.findAll { it.name.toLowerCase().endsWith('.csv') } ?: []
+                return csvs.collect { f -> [method, file(f)] }
+            } else if (results instanceof List) {
+                return results.collect { [method, it] }
+            } else {
+                return [[method, results]]
+            }
+        }
+
+        // Run annotation for each EdgeR result individually
+        ch_annotated_edger = ANNOTATE_RESULTS(ch_edger_results, gtf_file)
+
+        // Then pass all annotated files to post-processing and GO steps
         POST_PROCESSING_EDGER(
-            ANNOTATE_RESULTS.out.annotated_results,
+            //ANNOTATE_RESULTS.out.annotated_results,
+            ch_annotated_edger.annotated_results,
             compare_str,
             logfc_cutoff,
             pvalue_cutoff,
@@ -53,7 +65,8 @@ workflow RESULT_ANALYSIS {
         )
 
         GO_ANALYSIS_EDGER(
-            ANNOTATE_RESULTS.out.annotated_results,
+            //ANNOTATE_RESULTS.out.annotated_results,
+            ch_annotated_edger.annotated_results,
             logfc_cutoff,
             pvalue_cutoff,
             top_n_genes
@@ -63,7 +76,13 @@ workflow RESULT_ANALYSIS {
         ch_go_analysis_edger_plot = GO_ANALYSIS_EDGER.out.plot
         ch_go_analysis_edger_goplot = GO_ANALYSIS_EDGER.out.goplot
         ch_go_analysis_edger_results = GO_ANALYSIS_EDGER.out.results
-        ch_versions = ch_versions.mix(ANNOTATE_RESULTS.out.versions).mix(POST_PROCESSING_EDGER.out.versions).mix(GO_ANALYSIS_EDGER.out.versions)
+        ch_versions = ch_versions.mix(
+            ANNOTATE_RESULTS.out.versions
+        ).mix(
+            POST_PROCESSING_EDGER.out.versions
+        ).mix(
+            GO_ANALYSIS_EDGER.out.versions
+        )
     }
 
     if (method == 'methylkit' || method == 'both') {
@@ -73,9 +92,6 @@ workflow RESULT_ANALYSIS {
                 def results_file = results instanceof Path ? results : results[1]
                 [method, results_file]
             }
-        
-        //log.info "Processing MethylKit results"
-        ch_methylkit_results.view { "Debug - MethylKit results before POST_PROCESSING: $it" }
         
         POST_PROCESSING_METHYLKIT(
             ch_methylkit_results,
@@ -100,8 +116,6 @@ workflow RESULT_ANALYSIS {
         ch_go_analysis_methylkit_results = GO_ANALYSIS_METHYLKIT.out.results
         ch_versions = ch_versions.mix(POST_PROCESSING_METHYLKIT.out.versions).mix(GO_ANALYSIS_METHYLKIT.out.versions)
     }
-
-    //log.info "Completed RESULT_ANALYSIS for method: $method"
 
     emit:
     edger_results = ch_edger_results

@@ -8,20 +8,35 @@ process GO_ANALYSIS {
     val top_n
 
     output:
-    tuple val(method), path("${method}_gochord_plot.png"), emit: plot
-    tuple val(method), path("${method}_gochord_plot.svg"), emit: goplot
-    tuple val(method), path("${method}_go_enrichment_results.csv"), emit: results
+    tuple val(method), path("*_gochord_plot.png"), emit: plot
+    tuple val(method), path("*_gochord_plot.svg"), emit: goplot
+    tuple val(method), path("*_go_enrichment_results.csv"), emit: results
     path "versions.yml", emit: versions
 
     script:
+    def script = results.collect { result ->
+        """
+        echo "Running GO analysis for ${method} with result file: ${result.name}"
+
+        if Rscript ${workflow.projectDir}/bin/go_analysis.R \
+            --results ${result.name} \
+            --output . \
+            --method ${method} \
+            --logfc_cutoff ${logfc_cutoff} \
+            --pvalue_cutoff ${pvalue_cutoff} \
+            --top_n ${top_n}; then
+            echo "✅ GO analysis done for ${result.name}"
+        else
+            echo "⚠️ Skipping ${result.name}: no significant results or analysis failed."
+            touch ${result.name}_gochord_plot.png
+            touch ${result.name}_gochord_plot.svg
+            touch ${result.name}_go_enrichment_results.csv
+        fi
+        """
+    }.join('\n')
+
     """
-    Rscript ${workflow.projectDir}/bin/go_analysis.R \
-        --results ${results} \
-        --output . \
-        --method ${method} \
-        --logfc_cutoff ${logfc_cutoff} \
-        --pvalue_cutoff ${pvalue_cutoff} \
-        --top_n ${top_n}
+    ${script}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

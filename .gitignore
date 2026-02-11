@@ -19,3 +19,5 @@ update_repo_mike2.sh
 update_repo_mike3.sh
 # MkDocs build directory
 /site/
+Manual_Run.md
+data
