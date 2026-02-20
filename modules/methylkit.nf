@@ -14,7 +14,7 @@ process METHYLKIT_ANALYSIS {
     val qvalue
 
     output:
-    tuple val('methylkit'), path("MethylKit_*.csv"), emit: results
+    path "MethylKit_*.csv", emit: results
     path "versions.yml", emit: versions
     path "methylkit_log.txt", emit: log
 
@@ -34,7 +34,8 @@ process METHYLKIT_ANALYSIS {
     echo "Difference threshold: ${diff}" >> methylkit_log.txt
     echo "Q-value threshold: ${qvalue}" >> methylkit_log.txt
 
-    Rscript ${projectDir}/bin/methylkit_analysis.R \\
+    # Force re-run for script updates
+    Rscript methylkit_analysis.R \\
         --coverage_files ${coverage_files_str} \\
         --design ${design_file} \\
         --compare ${compare_str} \\

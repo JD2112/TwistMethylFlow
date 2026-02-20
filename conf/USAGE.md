@@ -64,26 +64,29 @@ The pipeline comes with several pre-configured profiles:
 - singularity: Executes pipeline using Singularity containers
 - docker: Executes pipeline using Docker containers
 - conda: Executes pipeline using Conda environments
+- gpu: Executes pipeline using NVIDIA Parabricks for GPU acceleration
 
 Example commands:
 -----------------
 1. Run with singularity profile:
    nextflow run main.nf -profile singularity --sample_sheet samples.csv --bismark_index /path/to/bismark_index --outdir /path/to/results
 
-2. Run with conda profile and methylkit for differential analysis:
+2. Run with GPU acceleration (Parabricks):
+   nextflow run main.nf -profile gpu,singularity --sample_sheet samples.csv --genome /path/to/genome.fa --outdir /path/to/results
+
+3. Run with conda profile and methylkit for differential analysis:
    nextflow run main.nf -profile conda --sample_sheet samples.csv --bismark_index /path/to/bismark_index --diff_meth_method methylkit
 
-3. Run with genome FASTA instead of pre-built Bismark index:
+4. Run with genome FASTA instead of pre-built Bismark index:
    nextflow run main.nf -profile singularity --sample_sheet samples.csv --genome /path/to/genome.fa --outdir /path/to/results
 
-4. Start from aligned BAM files:
+5. Start from aligned BAM files:
    nextflow run main.nf -profile singularity --aligned_bams '/path/to/aligned/*.bam' --outdir /path/to/results
 
-
-5. Run both edgeR and methylkit for differential methylation analysis:
+6. Run both edgeR and methylkit for differential methylation analysis:
    nextflow run main.nf -profile singularity --sample_sheet samples.csv --bismark_index /path/to/bismark_index --run_both_methods --refseq_file data/hg38_RefSeq.bed.gz  --gtf_file data/Homo_sapiens.GRCh38.104.gtf --outdir /path/to/results
 
-6. Skip differential methylation analysis:
+7. Skip differential methylation analysis:
    nextflow run main.nf -profile singularity --sample_sheet samples.csv --bismark_index /path/to/bismark_index --skip_diff_meth --outdir /path/to/results
 
 For more information and detailed documentation, please refer to the README.md file.

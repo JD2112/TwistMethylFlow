@@ -57,6 +57,9 @@ if (opt$method == "edger") {
     stop("Unknown method. Use 'edger' or 'methylkit'.")
 }
 
+# Derive prefix from results filename
+results_prefix <- tools::file_path_sans_ext(basename(opt$results))
+
 print(table(results$significance))
 
 # Generate summary statistics
@@ -68,7 +71,7 @@ summary_stats <- results %>%
         significant_dmrs = sum(significance != "Not Significant")
     )
 
-write.csv(summary_stats, file.path(opt$output, paste0(opt$method, "_summary_stats.csv")), row.names = FALSE)
+write.csv(summary_stats, file.path(opt$output, paste0(results_prefix, "_summary_stats.csv")), row.names = FALSE)
 
 # Color palette
 color_palette <- c("Hypermethylated" = opt$hyper_color, 
@@ -87,7 +90,7 @@ ggplot(results, aes_string(x = x_axis, y = y_axis, color = "significance")) +
          color = "Methylation Status") +
     theme_minimal() +
     theme(legend.position = "right")
-ggsave(file.path(opt$output, paste0(opt$method, "_volcano_plot.png")), width = 10, height = 8)
+ggsave(file.path(opt$output, paste0(results_prefix, "_volcano_plot.png")), width = 10, height = 8)
 
 # Create MA plot (for EdgeR) or scatter plot (for MethylKit)
 if (opt$method == "edger") {
@@ -112,7 +115,7 @@ if (opt$method == "edger") {
         theme_minimal() +
         theme(legend.position = "right")
 }
-ggsave(file.path(opt$output, paste0(opt$method, "_ma_or_scatter_plot.png")), width = 10, height = 8)
+ggsave(file.path(opt$output, paste0(results_prefix, "_ma_or_scatter_plot.png")), width = 10, height = 8)
 # Print the cutoffs and colors used
 cat(sprintf("Analysis performed with:\nMethod: %s\nlogFC cutoff: %f\np-value cutoff: %f\n", 
             opt$method, opt$logfc_cutoff, opt$pvalue_cutoff))

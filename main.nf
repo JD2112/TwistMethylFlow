@@ -10,6 +10,7 @@ include { QC_REPORTING } from './subworkflows/qc_reporting'
 include { DIFFERENTIAL_METHYLATION } from './subworkflows/differential_methylation'
 include { RESULT_ANALYSIS } from './subworkflows/result_analysis'
 include { ALIGNED_BAM_WORKFLOW } from './subworkflows/aligned_bam_workflow'
+include { PARABRICKS_ANALYSIS } from './subworkflows/parabricks_analysis'
 
 // Show help message
 if (params.help) {
@@ -25,8 +26,14 @@ if (params.help) {
 
 // Print pipeline info
 log.info """
-Twist DNA Methylation Data Analysis Pipeline
-===============================================
+===============================================================================
+▗▄▄▄▖▗▖ ▗▖▗▄▄▄▖ ▗▄▄▖▗▄▄▄▖▗▖  ▗▖▗▄▄▄▖▗▄▄▄▖▗▖ ▗▖▗▖  ▗▖▗▖   ▗▄▄▄▖▗▖    ▗▄▖ ▗▖ ▗▖
+  █  ▐▌ ▐▌  █  ▐▌     █  ▐▛▚▞▜▌▐▌     █  ▐▌ ▐▌ ▝▚▞▘ ▐▌   ▐▌   ▐▌   ▐▌ ▐▌▐▌ ▐▌
+  █  ▐▌ ▐▌  █   ▝▀▚▖  █  ▐▌  ▐▌▐▛▀▀▘  █  ▐▛▀▜▌  ▐▌  ▐▌   ▐▛▀▀▘▐▌   ▐▌ ▐▌▐▌ ▐▌
+  █  ▐▙█▟▌▗▄█▄▖▗▄▄▞▘  █  ▐▌  ▐▌▐▙▄▄▖  █  ▐▌ ▐▌  ▐▌  ▐▙▄▄▖▐▌   ▐▙▄▄▖▝▚▄▞▘▐▙█▟▌
+
+Twist NGS DNA Methylation Data Analysis Pipeline
+================================================================================
 sample sheet : ${params.sample_sheet}
 genome       : ${params.genome_fasta}
 bismark index: ${params.bismark_index}
@@ -46,11 +53,14 @@ def create_sample_channel(sample_sheet) {
         .fromPath(sample_sheet)
         .splitCsv(header:true)
         .map { row -> 
+            def id = row.sample_id ?: row.sample
+            def read1 = row.read1 ?: row.fastq_1
+            def read2 = row.read2 ?: row.fastq_2
             def meta = [
-                id: row.sample_id, 
-                single_end: row.containsKey('read2') ? false : true
+                id: id, 
+                single_end: read2 ? false : true
             ]
-            def reads = meta.single_end ? [file(row.read1)] : [file(row.read1), file(row.read2)]
+            def reads = meta.single_end ? [file(read1)] : [file(read1), file(read2)]
             return [meta, reads]
         }
 }
@@ -69,39 +79,60 @@ workflow {
         ch_samples = create_sample_channel(params.sample_sheet)
 
         // Genome preparation
-        if (!params.bismark_index) {
-            ch_genome = Channel.fromPath(params.genome_fasta, checkIfExists: true)
-            PREPARE_GENOME(ch_genome)
-            ch_index = PREPARE_GENOME.out.index
-        } else {
-            ch_index = Channel.fromPath(params.bismark_index, checkIfExists: true)
+        ch_index = Channel.empty()
+        if (!params.use_parabricks) {
+            if (!params.bismark_index) {
+                ch_genome = Channel.fromPath(params.genome_fasta, checkIfExists: true)
+                PREPARE_GENOME(ch_genome)
+                ch_index = PREPARE_GENOME.out.index
+            } else {
+                ch_index = Channel.fromPath(params.bismark_index, checkIfExists: true)
+            }
         }
 
         // Read processing
         READ_PROCESSING(ch_samples)
 
-        // Bismark analysis
-        BISMARK_ANALYSIS(READ_PROCESSING.out.trimmed_reads, ch_index.collect())
-
-        ch_coverage_files = BISMARK_ANALYSIS.out.coverage_files
-        ch_qc_reports = QC_REPORTING(
-            READ_PROCESSING.out.fastqc_reports,
-            READ_PROCESSING.out.trimming_reports,
-            BISMARK_ANALYSIS.out.align_reports,
-            BISMARK_ANALYSIS.out.dedup_reports,
-            BISMARK_ANALYSIS.out.methylation_reports,
-            BISMARK_ANALYSIS.out.summary_report,
-            BISMARK_ANALYSIS.out.qualimap_results
-        )
+        if (params.use_parabricks) {
+            // Parabricks analysis (GPU)
+            ch_fasta = Channel.fromPath(params.genome_fasta, checkIfExists: true).collect()
+            PARABRICKS_ANALYSIS(READ_PROCESSING.out.trimmed_reads, ch_fasta)
+            ch_coverage_files = PARABRICKS_ANALYSIS.out.coverage_files
+            
+            // QC Reporting for Parabricks
+            ch_qc_reports = QC_REPORTING(
+                READ_PROCESSING.out.fastqc_reports,
+                READ_PROCESSING.out.trimming_reports,
+                Channel.empty(), // align_reports
+                Channel.empty(), // dedup_reports
+                Channel.empty(), // methylation_reports
+                Channel.empty(), // summary_report
+                Channel.empty()  // qualimap_results
+            )
+        } else {
+            // Bismark analysis (CPU)
+            BISMARK_ANALYSIS(READ_PROCESSING.out.trimmed_reads, ch_index.collect())
+            ch_coverage_files = BISMARK_ANALYSIS.out.coverage_files
+            
+            ch_qc_reports = QC_REPORTING(
+                READ_PROCESSING.out.fastqc_reports,
+                READ_PROCESSING.out.trimming_reports,
+                BISMARK_ANALYSIS.out.align_reports,
+                BISMARK_ANALYSIS.out.dedup_reports,
+                BISMARK_ANALYSIS.out.methylation_reports,
+                BISMARK_ANALYSIS.out.summary_report,
+                BISMARK_ANALYSIS.out.qualimap_results
+            )
+        }
     } else {
         error "Either sample_sheet or aligned_bams must be provided"
     }
 
     // Create a channel for the RefSeq file
-    ch_refseq = params.refseq_file ? Channel.fromPath(params.refseq_file) : Channel.value(null)
+    ch_refseq = params.refseq_file ? Channel.fromPath(params.refseq_file).collect() : Channel.value(null)
 
     // Create a channel for the GTF file
-    ch_gtf = params.gtf_file ? Channel.fromPath(params.gtf_file) : Channel.value('NO_FILE')
+    ch_gtf = params.gtf_file ? Channel.fromPath(params.gtf_file).collect() : Channel.value('NO_FILE')
 
     if (!params.skip_diff_meth) {
         // Differential Methylation Analysis
@@ -120,18 +151,16 @@ workflow {
 
         ch_diff_meth_results = Channel.empty()
         DIFFERENTIAL_METHYLATION.out.edger_results
+            .flatten()
             .map { file -> ['edger', file] }
             .set { ch_edger_results }
         DIFFERENTIAL_METHYLATION.out.methylkit_results
+            .flatten()
             .map { file -> ['methylkit', file] }
             .set { ch_methylkit_results }
         ch_diff_meth_results = ch_edger_results.mix(ch_methylkit_results)
 
-        ch_diff_meth_results.view { "Differential methylation results: $it" }
-
-        // Log the outputs to verify they're not empty
-        DIFFERENTIAL_METHYLATION.out.edger_results.view { "EdgeR results: $it" }
-        DIFFERENTIAL_METHYLATION.out.methylkit_results.view { "MethylKit results: $it" }
+        ch_diff_meth_results.view { method, file -> "SUBMITTING TO ANALYSIS: [${method}] ${file}" }
 
         // Result Analysis
         //log.info "Differential methylation results channel: ${ch_diff_meth_results.dump()}"

@@ -11,16 +11,14 @@ process POST_PROCESSING {
     val nonsig_color
 
     output:
-    tuple val(method), path("${method}_summary_stats.csv"), emit: summary
-    tuple val(method), path("${method}_*.png"), emit: plots
+    tuple val(method), path("*_summary_stats.csv"), emit: summary
+    tuple val(method), path("*.png"), emit: plots
     path "versions.yml", emit: versions
 
     script:
-    def results_file = results instanceof Path ? results : results[1]
-
     """
     Rscript ${workflow.projectDir}/bin/post_processing.R \
-        --results ${results_file} \
+        --results ${results} \
         --compare "${compare_str}" \
         --output . \
         --method ${method} \

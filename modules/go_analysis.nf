@@ -14,7 +14,8 @@ process GO_ANALYSIS {
     path "versions.yml", emit: versions
 
     script:
-    def script = results.collect { result ->
+    def results_list = results instanceof List ? results : [results]
+    def script = results_list.collect { result ->
         """
         echo "Running GO analysis for ${method} with result file: ${result.name}"
 
@@ -28,9 +29,10 @@ process GO_ANALYSIS {
             echo "✅ GO analysis done for ${result.name}"
         else
             echo "⚠️ Skipping ${result.name}: no significant results or analysis failed."
-            touch ${result.name}_gochord_plot.png
-            touch ${result.name}_gochord_plot.svg
-            touch ${result.name}_go_enrichment_results.csv
+            prefix=\$(basename ${result.name} .csv)
+            touch \${prefix}_gochord_plot.png
+            touch \${prefix}_gochord_plot.svg
+            touch \${prefix}_go_enrichment_results.csv
         fi
         """
     }.join('\n')

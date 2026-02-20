@@ -72,7 +72,60 @@ if(compare_str == "all") {
 }
 
 # Read bismark data to DGEList
-tt <- readBismark2DGE(coverage_files, sample.names = targets$sample_id, readr = TRUE, verbose = TRUE)
+# Check if files have a track line (common in MethylDackel output) and create temp files without it if necessary
+cleaned_coverage_files <- character(length(coverage_files))
+for (i in seq_along(coverage_files)) {
+    f <- coverage_files[i]
+    if (file.exists(f)) {
+        first_line <- readLines(f, n=1)
+        if (grepl("^track", first_line)) {
+            cat(paste("Detected track line in", f, "- creating temporary cleaned file.\n"))
+            tmp_f <- tempfile(pattern = basename(f))
+            # Use tail to skip the first line (efficiently)
+            system(paste("tail -n +2", shQuote(f), ">", shQuote(tmp_f)))
+            cleaned_coverage_files[i] <- tmp_f
+        } else {
+            cleaned_coverage_files[i] <- f
+        }
+    } else {
+        warning(paste("File not found:", f))
+        cleaned_coverage_files[i] <- f # Let readBismark2DGE fail or handle it
+    }
+}
+
+# Extract IDs from filenames to ensure alignment with design file
+cat("Extracting sample IDs from coverage files...\n")
+available_ids <- as.character(targets$sample_id)
+sample_ids_from_files <- unname(sapply(basename(coverage_files), function(f) {
+    # Match the ID from design file that is a prefix of the filename
+    match_idx <- which(sapply(available_ids, function(id) startsWith(f, id)))
+    if (length(match_idx) > 0) {
+        # Return the longest match if multiple exist
+        matches <- available_ids[match_idx]
+        return(matches[which.max(nchar(matches))])
+    }
+    return(NA)
+}))
+cat("Sample IDs extracted from files:\n")
+print(sample_ids_from_files)
+
+# Reorder targets to match file order
+cat("Reordering design to match coverage files...\n")
+targets <- targets[match(sample_ids_from_files, targets$sample_id), ]
+
+if (any(is.na(sample_ids_from_files)) || any(is.na(targets$sample_id))) {
+    cat("Error: Mapping between coverage files and design file failed.\n")
+    cat("Filenames:\n")
+    print(basename(coverage_files))
+    cat("Extracted sample names:\n")
+    print(sample_ids_from_files)
+    cat("Available IDs in design file:\n")
+    print(available_ids)
+    stop("Sample mismatch between files and design")
+}
+
+# Use the cleaned files list
+tt <- readBismark2DGE(cleaned_coverage_files, sample.names = targets$sample_id, readr = FALSE, verbose = TRUE)
 
 # Print sample names for debugging
 cat("Sample names in DGEList:\n")

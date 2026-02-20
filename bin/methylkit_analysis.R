@@ -66,12 +66,42 @@ cat("Design file contents:\n")
 print(design)
 
 # Process coverage files
-sample_names <- basename(unname(sapply(coverage_files, function(x) str_extract(x, ".+?(?=\\.)"))))
+cat("Extracting sample IDs from coverage files...\n")
+id_col <- if("sample_id" %in% colnames(design)) "sample_id" else "sample"
+available_ids <- as.character(design[[id_col]])
+
+sample_names <- unname(sapply(basename(coverage_files), function(f) {
+    # Match the ID from design file that is a prefix of the filename
+    match_idx <- which(sapply(available_ids, function(id) startsWith(f, id)))
+    if (length(match_idx) > 0) {
+        # Return the longest match if multiple exist (e.g. "WT" and "WT-1")
+        matches <- available_ids[match_idx]
+        return(matches[which.max(nchar(matches))])
+    }
+    return(NA)
+}))
+
+# Reorder design to match coverage_files order
+cat("Reordering design to match coverage files...\n")
+design <- design[match(sample_names, design[[id_col]]), ]
+
+if (any(is.na(sample_names)) || any(is.na(design[[id_col]]))) {
+    cat("Error: Mapping between coverage files and design file failed.\n")
+    cat("Filenames:\n")
+    print(basename(coverage_files))
+    cat("Extracted sample names:\n")
+    print(sample_names)
+    cat("Available IDs in design file:\n")
+    print(available_ids)
+    stop("Sample mismatch between files and design")
+}
 
 cat("Coverage files:\n")
 print(coverage_files)
 cat("Sample names:\n")
 print(sample_names)
+cat("Reordered design:\n")
+print(design)
 
 # Create methylKit object
 cat("Creating methylKit object...\n")
@@ -153,15 +183,26 @@ for (comp in comparisons) {
     group1 <- comp[1]
     group2 <- comp[2]
     
+    cat(paste("\n--- Processing Comparison:", group1, "vs", group2, "---\n"))
+    
+    # Subset samples for pairwise comparison
+    subset_indices <- which(design$group %in% c(group1, group2))
+    subset_samples <- sample_names[subset_indices]
+    subset_treatment <- as.numeric(design$group[subset_indices] == group2)
+    
+    cat("Selected samples:", paste(subset_samples, collapse=", "), "\n")
+    cat("Calculated treatment vector (0 for ref, 1 for treated):", paste(subset_treatment, collapse=", "), "\n")
+    
+    # Reorganize object to include only selected samples
+    meth_subset <- reorganize(meth1, sample.ids = subset_samples, treatment = subset_treatment)
+    
     cat(paste("Calculating differential methylation for", group1, "vs", group2, "\n"))
-    cat("Treatment vector:", paste(design$group %in% group1, collapse=", "), "\n")
     
     myDiff <- tryCatch({
-        calculateDiffMeth(meth1,
+        calculateDiffMeth(meth_subset,
                           overdispersion = "MN",
                           adjust = "BH",
-                          mc.cores = opt$mc_cores,
-                          treatment = design$group %in% group1)
+                          mc.cores = opt$mc_cores)
     }, error = function(e) {
         cat("Error in calculateDiffMeth:", e$message, "\n")
         print(str(meth1))

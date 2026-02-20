@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TwistNext Pipeline Metromap</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --text-color: #f8fafc;
+            --line-pre: #3b82f6; /* Blue */
+            --line-cpu: #f97316; /* Orange */
+            --line-gpu: #22c55e; /* Green */
+            --line-bam: #a855f7; /* Purple */
+            --line-analysis: #ef4444; /* Red */
+            --line-report: #eab308; /* Yellow */
+            --station-bg: #1e293b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Outfit', sans-serif;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #60a5fa, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        p.subtitle {
+            font-size: 1.2rem;
+            opacity: 0.7;
+            font-weight: 300;
+        }
+
+        #metromap-container {
+            position: relative;
+            width: 1000px;
+            height: 800px;
+            margin: 0 auto;
+            /* border: 1px solid rgba(255,255,255,0.1); */
+        }
+
+        svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .station {
+            position: absolute;
+            z-index: 10;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .station:hover .dot {
+            transform: scale(1.4);
+            box-shadow: 0 0 20px currentColor;
+        }
+
+        .station:hover .label {
+            opacity: 1;
+            transform: translateY(-5px);
+        }
+
+        .dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--station-bg);
+            border: 3px solid currentColor;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .dot::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: currentColor;
+            opacity: 0.2;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.4; }
+            70% { transform: scale(3); opacity: 0; }
+            100% { transform: scale(1); opacity: 0; }
+        }
+
+        .label {
+            position: absolute;
+            top: 25px;
+            white-space: nowrap;
+            font-size: 0.9rem;
+            font-weight: 600;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            pointer-events: none;
+        }
+
+        .transfer-label {
+            position: absolute;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #000;
+            background: #fff;
+            padding: 2px 4px;
+            border-radius: 2px;
+            top: -15px;
+        }
+
+        /* Station Positions */
+        /* Pre-processing Line */
+        #st-samples { top: 100px; left: 100px; color: var(--line-pre); }
+        #st-fastqc { top: 100px; left: 250px; color: var(--line-pre); }
+        #st-trim { top: 100px; left: 400px; color: var(--line-pre); }
+
+        /* CPU Path */
+        #st-bismark-index { top: 250px; left: 400px; color: var(--line-cpu); }
+        #st-bismark-align { top: 350px; left: 400px; color: var(--line-cpu); }
+        #st-bismark-dedup { top: 450px; left: 400px; color: var(--line-cpu); }
+        #st-bismark-extract { top: 550px; left: 400px; color: var(--line-cpu); }
+
+        /* GPU Path */
+        #st-bwameth-index { top: 250px; left: 550px; color: var(--line-gpu); }
+        #st-parabricks { top: 350px; left: 550px; color: var(--line-gpu); }
+        #st-methyldackel { top: 550px; left: 550px; color: var(--line-gpu); }
+
+        /* BAM Input */
+        #st-aligned-bams { top: 450px; left: 100px; color: var(--line-bam); }
+
+        /* Analysis Path */
+        #st-diff-meth { top: 650px; left: 475px; color: var(--line-analysis); }
+        #st-annotate { top: 650px; left: 650px; color: var(--line-analysis); }
+        #st-post-proc { top: 650px; left: 825px; color: var(--line-analysis); }
+        #st-go-analysis { top: 550px; left: 825px; color: var(--line-analysis); }
+
+        /* Reporting */
+        #st-multiqc { top: 350px; left: 825px; color: var(--line-report); }
+        #st-results { top: 100px; left: 825px; color: var(--line-report); }
+
+        /* Legend */
+        .legend {
+            margin-top: 60px;
+            display: flex;
+            gap: 30px;
+            background: rgba(255,255,255,0.05);
+            padding: 20px 40px;
+            border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .legend-line {
+            width: 30px;
+            height: 4px;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>TwistNext Pipeline</h1>
+        <p class="subtitle">Biological Transit Network • Methylation Analysis Workflow</p>
+    </header>
+
+    <div id="metromap-container">
+        <!-- SVG Lines -->
+        <svg>
+            <!-- Pre-processing Line -->
+            <path d="M 100 100 L 400 100" fill="none" stroke="var(--line-pre)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+            
+            <!-- CPU Path -->
+            <path d="M 400 100 L 400 550" fill="none" stroke="var(--line-cpu)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+            
+            <!-- GPU Path -->
+            <path d="M 400 100 L 550 100 L 550 550" fill="none" stroke="var(--line-gpu)" stroke-width="8" stroke-dasharray="1, 15" stroke-linecap="round" />
+            <path d="M 550 100 L 550 550" fill="none" stroke="var(--line-gpu)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+            
+            <!-- BAM Input Path -->
+            <path d="M 100 450 L 400 450" fill="none" stroke="var(--line-bam)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+
+            <!-- Convergence to Analysis -->
+            <path d="M 400 550 L 400 650 L 475 650" fill="none" stroke="var(--line-analysis)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M 550 550 L 550 650 L 475 650" fill="none" stroke="var(--line-analysis)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+            
+            <!-- Analysis Main Line -->
+            <path d="M 475 650 L 825 650 L 825 100" fill="none" stroke="var(--line-analysis)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+            
+            <!-- Report Connectors -->
+            <path d="M 825 650 L 825 100" fill="none" stroke="var(--line-report)" stroke-width="8" stroke-dasharray="20, 10" stroke-linecap="round" />
+        </svg>
+
+        <!-- Stations -->
+        <div class="station" id="st-samples">
+            <div class="dot"></div>
+            <div class="label">Sample Sheet</div>
+        </div>
+        <div class="station" id="st-fastqc">
+            <div class="dot"></div>
+            <div class="label">FastQC</div>
+        </div>
+        <div class="station" id="st-trim">
+            <div class="dot"></div>
+            <div class="label">Trim Galore</div>
+            <div class="transfer-label">XFER</div>
+        </div>
+
+        <!-- CPU Branch -->
+        <div class="station" id="st-bismark-index">
+            <div class="dot"></div>
+            <div class="label">Bismark Index</div>
+        </div>
+        <div class="station" id="st-bismark-align">
+            <div class="dot"></div>
+            <div class="label">Bismark Align</div>
+        </div>
+        <div class="station" id="st-bismark-dedup">
+            <div class="dot"></div>
+            <div class="label">Bismark Dedup</div>
+            <div class="transfer-label">XFER</div>
+        </div>
+        <div class="station" id="st-bismark-extract">
+            <div class="dot"></div>
+            <div class="label">Bismark Extract</div>
+        </div>
+
+        <!-- GPU Branch -->
+        <div class="station" id="st-bwameth-index">
+            <div class="dot"></div>
+            <div class="label">BWAMeth Index</div>
+        </div>
+        <div class="station" id="st-parabricks">
+            <div class="dot"></div>
+            <div class="label">Parabricks Align</div>
+        </div>
+        <div class="station" id="st-methyldackel">
+            <div class="dot"></div>
+            <div class="label">MethylDackel</div>
+        </div>
+
+        <!-- BAM Input -->
+        <div class="station" id="st-aligned-bams">
+            <div class="dot"></div>
+            <div class="label">Aligned BAMs</div>
+        </div>
+
+        <!-- Analysis -->
+        <div class="station" id="st-diff-meth">
+            <div class="dot"></div>
+            <div class="label">Diff Meth (EdgeR/Kit)</div>
+        </div>
+        <div class="station" id="st-annotate">
+            <div class="dot"></div>
+            <div class="label">Annotate</div>
+        </div>
+        <div class="station" id="st-post-proc">
+            <div class="dot"></div>
+            <div class="label">Post-Processing</div>
+        </div>
+        <div class="station" id="st-go-analysis">
+            <div class="dot"></div>
+            <div class="label">GO Analysis</div>
+        </div>
+
+        <!-- Reporting -->
+        <div class="station" id="st-multiqc">
+            <div class="dot"></div>
+            <div class="label">MultiQC</div>
+        </div>
+        <div class="station" id="st-results">
+            <div class="dot"></div>
+            <div class="label">Final Results</div>
+        </div>
+    </div>
+
+    <div class="legend">
+        <div class="legend-item">
+            <div class="legend-line" style="background: var(--line-pre);"></div>
+            <span>Pre-processing</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-line" style="background: var(--line-cpu);"></div>
+            <span>CPU Path</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-line" style="background: var(--line-gpu);"></div>
+            <span>GPU Path</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-line" style="background: var(--line-bam);"></div>
+            <span>BAM Input</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-line" style="background: var(--line-analysis);"></div>
+            <span>Analysis</span>
+        </div>
+    </div>
+
+</body>
+</html>
