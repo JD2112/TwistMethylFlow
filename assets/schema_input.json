@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://raw.githubusercontent.com/JD2112/MethylFlow/main/assets/schema_input.json",
+  "title": "MethylFlow samplesheet schema",
+  "description": "Schema to validate the sample sheet used by the pipeline.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "sample_id": {
+        "type": "string",
+        "description": "Unique alphanumeric identifier for the sample. No spaces or special characters allowed to prevent PII leakage.",
+        "pattern": "^[A-Za-z0-9_-]+$"
+      },
+      "group": {
+        "type": "string",
+        "description": "Experimental group or condition (e.g., 'control', 'treatment')."
+      },
+      "read1": {
+        "type": "string",
+        "description": "Path to the first FASTQ file (Read 1)."
+      },
+      "read2": {
+        "type": "string",
+        "description": "Path to the second FASTQ file (Read 2), if paired-end."
+      }
+    },
+    "required": ["sample_id", "group", "read1"]
+  }
+}

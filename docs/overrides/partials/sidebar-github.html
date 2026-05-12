@@ -1,8 +1,38 @@
-{% if page and page.meta.repo_url %}
-<div class="sidebar-github" style="margin-top:1rem; text-align:center;">
-  <a href="{{ page.meta.repo_url }}" target="_blank" title="GitHub Repo">
-    <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
-         alt="GitHub" width="32" height="32">
-  </a>
+<div class="sidebar-github"
+  style="margin-top: 1.5rem; padding: 1rem; border-top: 1px solid var(--md-typeset-table-color); font-size: 0.8rem;">
+  <p style="font-weight: bold; margin-bottom: 0.5rem; color: var(--md-default-fg-color--light);">PROJECT INFO</p>
+
+  <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+    <a href="https://github.com/JD2112/MethylFlow" target="_blank"
+      style="display: flex; align-items: center; gap: 0.5rem; text-decoration: none; color: inherit;">
+      <span class="twemoji">{% include ".icons/fontawesome/brands/github.svg" %}</span>
+      <span>GitHub Repository</span>
+    </a>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.5rem;">
+      <span
+        style="background: #2196f3; color: white; padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.7rem;">DSL2</span>
+      <span
+        style="background: #4caf50; color: white; padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.7rem;">Nextflow</span>
+      <span
+        style="background: #ff9800; color: white; padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.7rem;">GPU</span>
+    </div>
+  </div>
+
+  <p style="font-weight: bold; margin-top: 1rem; margin-bottom: 0.5rem; color: var(--md-default-fg-color--light);">
+    EXECUTION</p>
+  <div style="display: flex; flex-wrap: wrap; gap: 0.3rem;">
+    <span style="border: 1px solid #ccc; padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.7rem;">Docker</span>
+    <span
+      style="border: 1px solid #ccc; padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.7rem;">Singularity</span>
+    <span style="border: 1px solid #ccc; padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.7rem;">HPC</span>
+  </div>
+
+  <p style="font-weight: bold; margin-top: 1rem; margin-bottom: 0.5rem; color: var(--md-default-fg-color--light);">
+    CONTRIBUTORS</p>
+  <div style="display: flex; gap: 0.3rem;">
+    <img src="https://github.com/JD2112.png" width="24" height="24" style="border-radius: 50%;" title="Jyotirmoy Das">
+    <img src="https://github.com/BioDebojyoti.png" width="24" height="24" style="border-radius: 50%;"
+      title="Debojyoti Das">
+  </div>
 </div>
-{% endif %}

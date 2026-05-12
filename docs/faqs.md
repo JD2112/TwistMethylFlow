@@ -1,6 +1,6 @@
 # FAQs
 
-# TwistMethylFlow FAQs
+# MethylFlow FAQs
 
 ## Pipeline Steps
 
@@ -47,7 +47,7 @@
 
 ### Differential Methylation
 ??? question "How is differential methylation analysis performed?"
-    **EdgeR** and **MethylKit** identify differentially methylated positions or regions, considering replicates and experimental design.
+    **DSS**, **EdgeR**, and **MethylKit** identify differentially methylated positions or regions, considering replicates and experimental design.
 
 ### Post Processing
 ??? question "How are results visualized?"

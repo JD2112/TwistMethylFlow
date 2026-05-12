@@ -1,7 +1,8 @@
-site_name: TwistMethylFlow
+site_name: MethylFlow
 site_description: A Nextflow-based DNA Methylation Data Analysis Pipeline for Twist NGS data
 site_author: Jyotirmoy Das
-repo_url: https://github.com/JD2112/TwistMethylFlow
+repo_url: https://github.com/JD2112/MethylFlow
+site_url: https://JD2112.github.io/MethylFlow/
 edit_uri: ""
 
 theme:
@@ -15,6 +16,8 @@ theme:
     code: Fira Code
   features:
     - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.instant.progress
     - navigation.tracking
     - navigation.expand
     - navigation.sections
@@ -24,7 +27,7 @@ theme:
     - navigation.tabs
     - search.suggest
     - search.highlight
-    - toc.integrate
+    # - toc.integrate
     - content.action.edit
     - content.code.copy
     - versioning
@@ -35,16 +38,18 @@ plugins:
   - mike
 
 nav:
-  - Home: index.md
-  - Description: overview.md
-  - Usage: usage.md
-  - FAQs: faqs.md
+  - Introduction: index.md
+  - Usage Guide: usage.md  
+  - Output: output.md
+  - Parameters: parameters.md
   - References: references.md
+  - Developer Guide: DEVELOPER_GUIDE.md
 
 markdown_extensions:
   - admonition
   - abbr
-  - attr_list  
+  - attr_list
+  - md_in_html
   - pymdownx.details  
   - pymdownx.tabbed
   - pymdownx.highlight
@@ -52,6 +57,7 @@ markdown_extensions:
   - pymdownx.snippets
   - pymdownx.emoji
   - pymdownx.extra
+  - pymdownx.blocks.html
   - pymdownx.arithmatex:
       generic: true
   - codehilite
@@ -66,7 +72,7 @@ markdown_extensions:
 extra:
   version:
     provider: mike
-  current_year: !!python/object/apply:str ["2025"]
+  current_year: !!python/object/apply:str ["2026"]
 
 extra_css:
   - styles/extra.css
@@ -74,3 +80,6 @@ extra_css:
 extra_javascript:
   - https://fonts.googleapis.com/css2?family=Fira+Code&family=Inter:wght@400;600&display=swap
   - https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-MML-AM_CHTML
+  - js/github-stats.js
+
+

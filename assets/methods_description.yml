@@ -1,0 +1,17 @@
+id: "twistmethylflow-methods-description"
+section_name: "MethylFlow Methods Description"
+plot_type: "html"
+description: "Detailed description of the analytical methods used in this pipeline."
+data: |
+    <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 5px solid #007bff;">
+        <h4>Analysis Workflow</h4>
+        <p>This pipeline was executed using <strong>Nextflow</strong>. The analytical workflow involves the following steps:</p>
+        <ul>
+            <li><strong>Read QC & Trimming:</strong> Raw reads were processed with <em>FastQC</em> and trimmed using <em>Cutadapt</em> (via TrimGalore).</li>
+            <li><strong>Alignment:</strong> Bisulfite-converted reads were aligned to the reference genome using <em>Bismark</em> (or NVIDIA Parabricks for accelerated GPU analysis).</li>
+            <li><strong>Methylation Extraction:</strong> DNA methylation levels were extracted and quantified using <em>Bismark Methylation Extractor</em>.</li>
+            <li><strong>Differential Methylation:</strong> Statistical analysis of differential methylation was performed using <em>methylKit</em>, <em>DSS</em>, and <em>edgeR</em> based on user-defined parameters.</li>
+            <li><strong>Reporting:</strong> Final quality metrics and summary stats were collated by <em>MultiQC</em>.</li>
+        </ul>
+        <p>For more information, visit the <a href="https://github.com/JDCo/TwistNext">TwistNext Documentation</a>.</p>
+    </div>

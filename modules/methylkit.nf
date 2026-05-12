@@ -1,6 +1,7 @@
 process METHYLKIT_ANALYSIS {
     tag "MethylKit on ${design_file}"
-    label 'process_high'    
+    label 'process_high'
+    cache false
 
     input:
     path coverage_files
@@ -12,6 +13,8 @@ process METHYLKIT_ANALYSIS {
     val mc_cores
     val diff
     val qvalue
+    path bed_file
+    val min_per_group
 
     output:
     path "MethylKit_*.csv", emit: results
@@ -22,6 +25,7 @@ process METHYLKIT_ANALYSIS {
     def args = task.ext.args ?: ''
     def coverage_files_str = coverage_files.join(',')
     def refseq_param = refseq_file ? "--refseq ${refseq_file}" : ""
+    def bed_param = bed_file ? "--bed ${bed_file}" : ""
     """
     echo "Starting MethylKit analysis" > methylkit_log.txt
     echo "Coverage files: ${coverage_files_str}" >> methylkit_log.txt
@@ -33,9 +37,10 @@ process METHYLKIT_ANALYSIS {
     echo "MC cores: ${mc_cores}" >> methylkit_log.txt
     echo "Difference threshold: ${diff}" >> methylkit_log.txt
     echo "Q-value threshold: ${qvalue}" >> methylkit_log.txt
+    echo "Min per group: ${min_per_group}" >> methylkit_log.txt
 
     # Force re-run for script updates
-    Rscript methylkit_analysis.R \\
+    Rscript ${projectDir}/bin/methylkit_analysis.R \\
         --coverage_files ${coverage_files_str} \\
         --design ${design_file} \\
         --compare ${compare_str} \\
@@ -46,13 +51,15 @@ process METHYLKIT_ANALYSIS {
         --mc_cores ${mc_cores} \\
         --diff ${diff} \\
         --qvalue ${qvalue} \\
+        ${bed_param} \\
+        --min_per_group ${min_per_group} \\
         $args >> methylkit_log.txt 2>&1
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        r-methylkit: \$(Rscript -e "library(methylKit); cat(as.character(packageVersion('methylKit')))")
-        r-genomation: \$(Rscript -e "library(genomation); cat(as.character(packageVersion('genomation')))")
-        r-org.hs.eg.db: \$(Rscript -e "library(org.Hs.eg.db); cat(as.character(packageVersion('org.Hs.eg.db')))")
+        r-methylkit: \$(Rscript -e "library(methylKit); cat(as.character(packageVersion('methylKit')))" | xargs)
+        r-genomation: \$(Rscript -e "library(genomation); cat(as.character(packageVersion('genomation')))" | xargs)
+        r-org.hs.eg.db: \$(Rscript -e "library(org.Hs.eg.db); cat(as.character(packageVersion('org.Hs.eg.db')))" | xargs)
     END_VERSIONS
     """
 }

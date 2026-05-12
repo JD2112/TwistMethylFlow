@@ -11,6 +11,9 @@ suppressPackageStartupMessages({
   library(optparse)
 })
 
+# Enforce deterministic random sampling and clustering
+set.seed(42)
+
 option_list <- list(
     make_option(c("-f", "--coverage_files"), type="character", default=NULL, 
                 help="Comma-separated list of Bismark coverage files", metavar="FILES"),
@@ -20,18 +23,22 @@ option_list <- list(
                 help="Comparison string (e.g., 'GroupA_vs_GroupB') or 'all' for all pairwise comparisons [default= %default]", metavar="STRING"),
     make_option(c("-o", "--output"), type="character", default=".", 
                 help="Output directory [default= %default]", metavar="DIR"),
-    make_option(c("-t", "--threshold"), type="integer", default=3, 
-                help="Coverage threshold for filtering [default= %default]", metavar="INTEGER"),
+    make_option(c("-t", "--threshold"), type="integer", default=10, 
+                help="Coverage threshold for filtering (Article default=10) [default= %default]", metavar="INTEGER"),
+    make_option(c("-b", "--bed"), type="character", default=NULL, 
+                help="Optional BED file for targeted methylation analysis (Twist Bioscience target regions)", metavar="FILE"),
     make_option(c("--refseq"), type="character", default=NULL, 
                 help="Path to RefSeq file", metavar="FILE"),
     make_option(c("--assembly"), type="character", default="hg19", 
                 help="Genome assembly (hg19 or hg38) [default= %default]", metavar="STRING"),
     make_option(c("--mc_cores"), type="integer", default=1, 
                 help="Number of cores to use for parallel processing [default= %default]", metavar="INTEGER"),
-    make_option(c("--diff"), type="numeric", default=0.05, 
-                help="Difference in methylation for getMethylDiff [default= %default]", metavar="NUMERIC"),
-    make_option(c("--qvalue"), type="numeric", default=0.1, 
-                help="Q-value threshold for getMethylDiff [default= %default]", metavar="NUMERIC")
+    make_option(c("--diff"), type="numeric", default=0.25, 
+                help="Difference in methylation (Article default=0.25) [default= %default]", metavar="NUMERIC"),
+    make_option(c("--qvalue"), type="numeric", default=0.01, 
+                help="Q-value threshold (Article default=0.01) [default= %default]", metavar="NUMERIC"),
+    make_option(c("--min_per_group"), type="integer", default=1, 
+                help="Minimum number of samples per group to cover a site during unite [default= %default]", metavar="INTEGER")
 )
 
 opt <- parse_args(OptionParser(option_list=option_list))
@@ -65,42 +72,44 @@ design <- tryCatch({
 cat("Design file contents:\n")
 print(design)
 
-# Process coverage files
-cat("Extracting sample IDs from coverage files...\n")
+# Process coverage files - align them with the design file order
+cat("Aligning coverage files with the design file order...\n")
 id_col <- if("sample_id" %in% colnames(design)) "sample_id" else "sample"
 available_ids <- as.character(design[[id_col]])
 
-sample_names <- unname(sapply(basename(coverage_files), function(f) {
+# Create a mapping of sample_id to file path
+file_map <- list()
+for (f in coverage_files) {
     # Match the ID from design file that is a prefix of the filename
-    match_idx <- which(sapply(available_ids, function(id) startsWith(f, id)))
+    match_idx <- which(sapply(available_ids, function(id) startsWith(basename(f), id)))
     if (length(match_idx) > 0) {
         # Return the longest match if multiple exist (e.g. "WT" and "WT-1")
         matches <- available_ids[match_idx]
-        return(matches[which.max(nchar(matches))])
+        id <- matches[which.max(nchar(matches))]
+        file_map[[id]] <- f
     }
-    return(NA)
-}))
-
-# Reorder design to match coverage_files order
-cat("Reordering design to match coverage files...\n")
-design <- design[match(sample_names, design[[id_col]]), ]
-
-if (any(is.na(sample_names)) || any(is.na(design[[id_col]]))) {
-    cat("Error: Mapping between coverage files and design file failed.\n")
-    cat("Filenames:\n")
-    print(basename(coverage_files))
-    cat("Extracted sample names:\n")
-    print(sample_names)
-    cat("Available IDs in design file:\n")
-    print(available_ids)
-    stop("Sample mismatch between files and design")
 }
 
-cat("Coverage files:\n")
+# Re-order the coverage files and sample names to match the design file exactly
+cat("Reordering files and names to match design file order...\n")
+aligned_coverage_files <- c()
+aligned_sample_names <- c()
+for (id in available_ids) {
+    if (is.null(file_map[[id]])) {
+        stop(paste("Error: No coverage file found for sample ID:", id))
+    }
+    aligned_coverage_files <- c(aligned_coverage_files, file_map[[id]])
+    aligned_sample_names <- c(aligned_sample_names, id)
+}
+
+coverage_files <- aligned_coverage_files
+sample_names <- aligned_sample_names
+
+cat("Coverage files (aligned):\n")
 print(coverage_files)
-cat("Sample names:\n")
+cat("Sample names (aligned):\n")
 print(sample_names)
-cat("Reordered design:\n")
+cat("Design file (order kept):\n")
 print(design)
 
 # Create methylKit object
@@ -152,18 +161,92 @@ print(summary(myobj.filt.norm))
 cat("Number of sites after normalization:", nrow(myobj.filt.norm[[1]]), "\n")
 
 # Merge data
-cat("Starting data merging process...\n")
-meth1 <- unite(myobj.filt.norm, destrand=FALSE)
+cat("Starting data merging process (uniting)...\n")
+# Use min.per.group to allow some missing data across replicates
+# This is crucial for maintaining enough sites for statistical significance
+meth1 <- unite(myobj.filt.norm, destrand=FALSE, min.per.group=opt$min_per_group)
 
 cat("United object summary:\n")
 print(summary(meth1))
-print(head(meth1))
-cat("Number of sites in meth1:", nrow(meth1), "\n")
+cat("Number of sites in meth1 (before BED filtering):", nrow(meth1), "\n")
+
+# Targeted filtering using BED file
+if (!is.null(opt$bed)) {
+    cat(paste("Applying target region filtering with BED file:", opt$bed, "\n"))
+    
+    # Check if bed is zipped
+    bed_file <- opt$bed
+    if (grepl("\\.zip$", bed_file)) {
+        cat("Unzipping BED file...\n")
+        temp_dir <- tempdir()
+        unzip(bed_file, exdir = temp_dir)
+        # Find the .bed file in the unzipped content, excluding hidden macOS files
+        bed_extracted <- list.files(temp_dir, pattern = "\\.bed$", full.names = TRUE)
+        # Exclude hidden files starting with ._ or .
+        bed_extracted <- bed_extracted[!grepl("/\\._", bed_extracted) & !grepl("/\\.", basename(bed_extracted))]
+        if (length(bed_extracted) > 0) {
+            bed_file <- bed_extracted[1]
+        }
+    }
+    
+    cat(paste("Reading target regions from:", bed_file, "\n"))
+    # Use read.table for better robustness over genomation::readBed
+    bed_data <- tryCatch({
+        read.table(bed_file, header=FALSE, sep="\t", stringsAsFactors=FALSE)
+    }, error = function(e) {
+        cat("Error reading BED file with read.table (tab-separated). Trying with default separator.\n")
+        read.table(bed_file, header=FALSE, stringsAsFactors=FALSE)
+    })
+    
+    cat(paste("BED file read successfully. Found", nrow(bed_data), "rows and", ncol(bed_data), "columns.\n"))
+    
+    # Check for chromosome naming mismatch ('chr1' vs '1')
+    data_chrs <- unique(meth1$chr)
+    bed_chrs <- unique(bed_data[,1])
+    
+    cat("Sample chromosomes (first few):", paste(head(data_chrs, 3), collapse=", "), "\n")
+    cat("BED chromosomes (first few):", paste(head(bed_chrs, 3), collapse=", "), "\n")
+    
+    has_chr_prefix_data <- any(grepl("^chr", data_chrs))
+    has_chr_prefix_bed <- any(grepl("^chr", bed_chrs))
+    
+    if (has_chr_prefix_data != has_chr_prefix_bed) {
+        cat("Detected chromosome naming mismatch. Adjusting BED file to match data...\n")
+        if (has_chr_prefix_data) {
+            # Add 'chr' prefix to BED
+            cat("Adding 'chr' prefix to BED file chromosomes.\n")
+            bed_data[,1] <- paste0("chr", bed_data[,1])
+            # Handle 'chrMT' -> 'chrM' mapping common in UCSC
+            bed_data[,1] <- gsub("chrMT", "chrM", bed_data[,1])
+        } else {
+            # Remove 'chr' prefix from BED
+            cat("Removing 'chr' prefix from BED file chromosomes.\n")
+            bed_data[,1] <- gsub("^chr", "", bed_data[,1])
+        }
+    }
+
+    # Convert to GRanges
+    targets <- GRanges(
+        seqnames = bed_data[,1],
+        ranges = IRanges(start = bed_data[,2], end = bed_data[,3]),
+        strand = if(ncol(bed_data) >= 6) bed_data[,6] else "*"
+    )
+    cat("Target regions converted to GRanges successfully. Number of regions:", length(targets), "\n")
+    
+    # Convert to GRanges for overlap
+    cat("Filtering CpG sites to keep only those within target regions...\n")
+    # Manual overlap to ensure it works correctly across all methylKit versions
+    meth1_gr <- as(meth1, "GRanges")
+    overlaps <- findOverlaps(meth1_gr, targets)
+    meth1 <- meth1[unique(queryHits(overlaps)), ]
+    
+    cat("Number of sites in meth1 (after BED filtering):", nrow(meth1), "\n")
+}
 
 if (nrow(meth1) < 100) {
     cat("Warning: Very few sites (", nrow(meth1), ") remain after filtering and merging.\n")
     cat("This may cause issues in downstream analysis.\n")
-    cat("Consider adjusting your filtering criteria.\n")
+    cat("Consider adjusting your filtering criteria or check your BED file.\n")
 }
 
 if (length(unique(design$group)) < 2) {
@@ -221,6 +304,8 @@ for (comp in comparisons) {
     if(nrow(myDiff5p) == 0) {
         cat("Warning: No differentially methylated sites found with current criteria.\n")
         cat("Consider adjusting the 'diff' and 'qvalue' parameters.\n")
+        output_name <- file.path(opt$output, paste0("MethylKit_", group1, "_vs_", group2, ".csv"))
+        write.csv(data.frame(Status="No differentially methylated sites found with current criteria"), file = output_name, quote = FALSE, row.names=FALSE)
         next  # Skip to the next comparison or end the script
     }
     print(head(myDiff5p))
@@ -228,21 +313,59 @@ for (comp in comparisons) {
     # Annotation
     cat("Starting annotation process...\n")
     tryCatch({
-        if (!is.null(opt$refseq)) {
+        if (!is.null(opt$refseq) && file.exists(opt$refseq) && file.size(opt$refseq) > 0) {
             cat(paste("Using provided RefSeq file:", opt$refseq, "\n"))
             gene.obj <- readTranscriptFeatures(opt$refseq)
         } else {
-            cat("Downloading default RefSeq file...\n")
-            url <- "https://sourceforge.net/projects/rseqc/files/BED/Human_Homo_sapiens/hg38_RefSeq.bed.gz/download"
-            destfile <- "hg38_RefSeq.bed.gz"
-            download.file(url, destfile)
-            gene.obj <- readTranscriptFeatures(destfile)
+            cat("RefSeq file not provided or not found. Attempting to download default for:", opt$assembly, "\n")
+            
+            # Use specific URL based on assembly
+            if (opt$assembly == "hg19") {
+                url <- "https://sourceforge.net/projects/rseqc/files/BED/Human_Homo_sapiens/hg19_RefSeq.bed.gz/download"
+                destfile <- "hg19_RefSeq.bed.gz"
+            } else {
+                url <- "https://sourceforge.net/projects/rseqc/files/BED/Human_Homo_sapiens/hg38_RefSeq.bed.gz/download"
+                destfile <- "hg38_RefSeq.bed.gz"
+            }
+            
+            download_success <- tryCatch({
+                # Set a timeout for the download
+                options(timeout = 300)
+                download.file(url, destfile, mode = "wb")
+                TRUE
+            }, error = function(e) {
+                cat("⚠️ Download failed:", e$message, "\n")
+                FALSE
+            })
+            
+            if (download_success && file.exists(destfile) && file.size(destfile) > 100) {
+                cat("Download successful. Reading transcript features...\n")
+                gene.obj <- readTranscriptFeatures(destfile)
+            } else {
+                cat("⚠️ RefSeq acquisition failed. Annotation will be skipped.\n")
+                gene.obj <- NULL
+            }
+        }
+
+        if (is.null(gene.obj)) {
+            # Skip the rest of the annotation but write the unannotated results
+            cat("Writing results without annotation (SYMBOL column will be missing)...\n")
+            output_name <- file.path(opt$output, paste0("MethylKit_", group1, "_vs_", group2, ".csv"))
+            write.csv(getData(myDiff5p), file = output_name, quote = FALSE, row.names = FALSE)
+            next 
         }
 
         cat("Gene object summary:\n")
         print(summary(gene.obj))
 
-        myDiff5p.annot <- suppressWarnings(annotateWithGeneParts(as(myDiff5p, "GRanges"), gene.obj))
+        # Convert Ensembl chromosome names ('1') to UCSC ('chr1') to match RefSeq BED
+        myDiff5p_gr <- as(myDiff5p, "GRanges")
+        seqlevs <- seqlevels(myDiff5p_gr)
+        new_seqlevs <- ifelse(grepl("^chr", seqlevs), seqlevs, paste0("chr", seqlevs))
+        new_seqlevs <- gsub("chrMT", "chrM", new_seqlevs)
+        seqlevels(myDiff5p_gr) <- new_seqlevs
+
+        myDiff5p.annot <- suppressWarnings(annotateWithGeneParts(myDiff5p_gr, gene.obj))
         dist_to_tss <- myDiff5p.annot@dist.to.TSS
 
         dist_to_tss_df <- data.frame(
@@ -252,10 +375,8 @@ for (comp in comparisons) {
             target_row = dist_to_tss$target.row
         )
 
-        myDiff5p_df <- as.data.frame(myDiff5p)
-        myDiff5p_annotated <- myDiff5p_df
-        myDiff5p_annotated$target_row <- 1:nrow(myDiff5p_annotated)
-        myDiff5p_data <- getData(myDiff5p_annotated)
+        myDiff5p_data <- getData(myDiff5p)
+        myDiff5p_data$target_row <- 1:nrow(myDiff5p_data)
         myDiff5p_data_annotated <- merge(myDiff5p_data, dist_to_tss_df, by = "target_row", all.x = TRUE)
 
         # Get the annotation

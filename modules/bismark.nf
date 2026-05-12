@@ -1,6 +1,7 @@
 process BISMARK_GENOME_PREPARATION {
     tag "$genome"
     label 'process_high'
+    storeDir params.save_reference ? "${params.outdir}/reference" : null
 
     // conda "bioconda::bismark=0.23.0"
     // container "quay.io/biocontainers/bismark:0.23.0--hdfd78af_1"
@@ -22,7 +23,7 @@ process BISMARK_GENOME_PREPARATION {
     
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        bismark: \$( bismark --version | sed -e "s/Bismark Version: v//g" )
+        bismark: \$( bismark --version | head -n 1 | sed -e "s/Bismark Version: v//g" )
     END_VERSIONS
     """
 }
@@ -64,7 +65,7 @@ process BISMARK_ALIGN {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        bismark: \$(bismark --version | sed -e "s/Bismark Version: v//g")
+        bismark: \$(bismark --version | head -n 1 | sed -e "s/Bismark Version: v//g")
     END_VERSIONS
     """
 }
@@ -99,7 +100,7 @@ process BISMARK_DEDUPLICATE {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        bismark: \$( bismark --version | sed -e "s/Bismark Version: v//g" )
+        bismark: \$( bismark --version | head -n 1 | sed -e "s/Bismark Version: v//g" )
     END_VERSIONS
     """
 }
@@ -128,7 +129,7 @@ process BISMARK_METHYLATION_EXTRACTOR {
     bismark_methylation_extractor --bedGraph --gzip $deduplicated_bam
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        bismark: \$( bismark --version | sed -e "s/Bismark Version: v//g" )
+        bismark: \$( bismark --version | head -n 1 | sed -e "s/Bismark Version: v//g" )
     END_VERSIONS
     """
 }
@@ -159,7 +160,7 @@ process BISMARK_REPORT {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        bismark: \$( bismark --version | sed -e "s/Bismark Version: v//g" )
+        bismark: \$( bismark --version | head -n 1 | sed -e "s/Bismark Version: v//g" )
     END_VERSIONS
     """
 }

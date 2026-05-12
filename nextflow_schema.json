@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://raw.githubusercontent.com/JD2112/MethylFlow/main/nextflow_schema.json",
+  "title": "MethylFlow pipeline parameters",
+  "description": "MethylFlow DNA Methylation Data Analysis Pipeline",
+  "type": "object",
+  "definitions": {
+    "input_output_options": {
+      "title": "Input/output options",
+      "type": "object",
+      "required": ["outdir"],
+      "properties": {
+        "sample_sheet": {
+          "type": "string",
+          "format": "file-path",
+          "mimetype": "text/csv",
+          "schema": "assets/schema_input.json",
+          "description": "Path to comma-separated file containing information about the samples in the experiment."
+        },
+        "aligned_bams": {
+          "type": "string",
+          "description": "Path to aligned BAM files (e.g. 'path/to/bams/*.bam')."
+        },
+        "outdir": {
+          "type": "string",
+          "format": "directory-path",
+          "description": "The output directory where the results will be saved.",
+          "default": "results"
+        },
+        "mode": {
+          "type": "string",
+          "description": "Pipeline execution mode",
+          "enum": ["research", "clinical"],
+          "default": "research"
+        },
+        "diff_meth_method": {
+          "type": "string",
+          "description": "Differential methylation method to use (e.g. dss, edger, methylkit, all)"
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "$ref": "#/definitions/input_output_options"
+    }
+  ]
+}

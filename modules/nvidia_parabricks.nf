@@ -28,7 +28,7 @@ process PARABRICKS_FQ2BAMMETH {
 
     cat <<EOF > versions.yml
     "${task.process}":
-        pbrun: \$(pbrun version | grep -oP '(?<=v)[0-9.]+')
+        pbrun: \$(pbrun version | head -n 1 | grep -oP '(?<=v)[0-9.]+' || pbrun version | head -n 1)
     EOF
     """
 }
@@ -59,7 +59,7 @@ process METHYLDACKEL_EXTRACT {
 
     cat <<EOF > versions.yml
     "${task.process}":
-        MethylDackel: \$(MethylDackel --version 2>&1 | grep -oP '[0-9]+\\.[0-9]+\\.[0-9]+')
+        MethylDackel: \$(MethylDackel --version 2>&1 | head -n 1 | grep -oP '[0-9.]+')
     EOF
     """
 }

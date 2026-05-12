@@ -1,5 +1,5 @@
 #!/usr/bin/env Rscript
-
+# Version: 1.0.1 (Corrected Chromosome Naming)
 # Load required libraries
 suppressPackageStartupMessages({
     library(edgeR)
@@ -7,8 +7,10 @@ suppressPackageStartupMessages({
     library(optparse)
     library(dplyr)
     library(stringr)
-    library(org.Hs.eg.db)
 })
+
+# Enforce deterministic random sampling and clustering
+set.seed(42)
 
 # Define command line arguments
 option_list <- list(
@@ -19,7 +21,11 @@ option_list <- list(
     make_option(c("--output"), type="character", default=".", 
                 help="Output directory [default= %default]", metavar="DIR"),
     make_option(c("--coverage_threshold"), type="integer", default=3, 
-                help="Coverage threshold for filtering [default= %default]", metavar="INTEGER")
+                help="Coverage threshold for filtering [default= %default]", metavar="INTEGER"),
+    make_option(c("--p_threshold"), type="double", default=1.0, 
+                help="FDR threshold for filtering [default= %default]", metavar="NUMBER"),
+    make_option(c("--diff_threshold"), type="double", default=0.0, 
+                help="LogFC threshold for filtering [default= %default]", metavar="NUMBER")
 )
 
 # Parse command line arguments
@@ -140,6 +146,8 @@ keep[Chr == "chrM"] <- FALSE
 tt1 <- tt[keep, , keep.lib.sizes = FALSE]
 
 # Assign chromosome names
+tt1$genes$Chr <- as.character(tt1$genes$Chr)
+tt1$genes$Chr <- ifelse(grepl("^chr", tt1$genes$Chr), tt1$genes$Chr, paste0("chr", tt1$genes$Chr))
 ChrNames <- paste0("chr", c(1:22, "X", "Y"))
 tt1$genes$Chr <- factor(tt1$genes$Chr, levels = ChrNames)
 o <- order(tt1$genes$Chr, tt1$genes$Locus)
@@ -191,14 +199,29 @@ for(comp in comparisons) {
     qlf <- glmQLFTest(fit, contrast = contrast)
     
     # Get results
-    results <- topTags(qlf, n = Inf)
+    results_all <- topTags(qlf, n = Inf)$table
     
+    # Filter for significance
+    p_threshold <- if(!is.null(opt$options$p_threshold)) opt$options$p_threshold else 1.0
+    diff_threshold <- if(!is.null(opt$options$diff_threshold)) opt$options$diff_threshold else 0.0
+    
+    cat("Applying filters: FDR <", p_threshold, "and |logFC| >", diff_threshold, "\n")
+    results <- results_all[results_all$FDR < p_threshold & abs(results_all$logFC) > diff_threshold, ]
+    
+    cat("Number of sites before filtering:", nrow(results_all), "\n")
+    cat("Number of sites after filtering:", nrow(results), "\n")
+    
+    if (nrow(results) == 0) {
+        cat("Warning: No significant sites found. Saving empty file with header.\n")
+        results <- results_all[0, ]
+    }
+
     # Prepare output
-    output_name <- paste0("EdgeR_group_", trimws(group1), "_vs_", trimws(group2), "_coverage", opt$options$coverage_threshold)
+    output_name <- paste0("EdgeR_group_", trimws(group1), "_vs_", trimws(group2), "_sig")
     output_file <- file.path(opt$options$output, paste0(output_name, ".csv"))
     
     # Write results
-    write.csv(results$table, file = output_file, quote = FALSE, row.names = TRUE)
+    write.csv(results, file = output_file, quote = FALSE, row.names = TRUE)
     
     cat("Results written to:", output_file, "\n")
 }

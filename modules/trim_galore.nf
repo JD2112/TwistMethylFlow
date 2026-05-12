@@ -20,7 +20,7 @@ process TRIM_GALORE {
     trim_galore --paired --cores $task.cpus $args $reads
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        trim_galore: \$( trim_galore --version | sed -e "s/^trim_galore //g" )
+        trim_galore: \$( trim_galore --version | head -n 1 | grep -oP '(?<=version )[0-9.]+' || trim_galore --version | head -n 1 | sed -e "s/^trim_galore //g" )
     END_VERSIONS
     """
 }

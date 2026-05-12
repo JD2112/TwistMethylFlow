@@ -1,7 +1,13 @@
+---
+hide:
+  - navigation
+---
+
+
 # Citations
 
-### TwistMethylFlow
->**Das, J.** (2024). *TwistMethylFlow (v1.0.0)*. Zenodo.  [https://doi.org/10.5281/zenodo.14204261](https://doi.org/10.5281/zenodo.14204261)
+### MethylFlow
+>**Das, J.** (2024). *MethylFlow (v1.0.0)*. Zenodo.  [https://doi.org/10.5281/zenodo.14204261](https://doi.org/10.5281/zenodo.14204261)
 
 ## Pipeline tools
 
@@ -69,17 +75,17 @@
 
 | Role         | Name & Link                                                                 | Description                                                                                      |
 |--------------|------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------|
-| **Main Author** | [Jyotirmoy Das](https://github.com/JD2112)                                  | Lead designer, developer, and overall coordinator for the **TwistMethylFlow** pipeline.           |
+| **Main Author** | [Jyotirmoy Das](https://github.com/JD2112)                                  | Lead designer, developer, and overall coordinator for the **MethylFlow** pipeline.           |
 | **Maintainer**  | [Jyotirmoy Das](https://github.com/JD2112)                                  | Actively maintaining the pipeline, fixing bugs, and implementing new features.                  |
-| **Contributors**| [All Contributors](https://github.com/JD2112/TwistMethylFlow/pulls)           | Thanks to everyone who helped in development, testing, and enhancement. Contributions welcome!  |
+| **Contributors**| [All Contributors](https://github.com/JD2112/MethylFlow/pulls)           | Thanks to everyone who helped in development, testing, and enhancement. Contributions welcome!  |
 
 --- -->
 
 ## 📄 Citation
 
-If you use **TwistMethylFlow** in your work, please cite:
+If you use **MethylFlow** in your work, please cite:
 
-> Das, J. (2024). *TwistMethylFlow (v1.0.0)*. Zenodo. [https://doi.org/10.5281/zenodo.14204261](https://doi.org/10.5281/zenodo.14204261)
+> Das, J. (2024). *MethylFlow (v1.0.0)*. Zenodo. [https://doi.org/10.5281/zenodo.14204261](https://doi.org/10.5281/zenodo.14204261)
 
 ---
 
@@ -103,7 +109,7 @@ This project is licensed under the terms of the **GNU General Public License v3.
 - **National Academic Infrastructure for Supercomputing in Sweden (NAISS)**
   > The computations/data storage were enabled by resources provided by the National Academic Infrastructure for Supercomputing in Sweden (NAISS), partially funded by the Swedish Research Council through grant agreement no. 2022-06725.
 
-These institutions provided invaluable resources and support for the development and testing of the TwistMethylFlow pipeline.
+These institutions provided invaluable resources and support for the development and testing of the MethylFlow pipeline.
 
 ### Additional Thanks
 

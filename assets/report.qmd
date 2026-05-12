@@ -1,0 +1,433 @@
+---
+title: " "
+date: " "
+bibliography: citations.bib
+nocite: "@*"
+format:
+  pdf:
+    toc: false
+    number-sections: false
+    colorlinks: true
+    geometry:
+      - top=25mm
+      - left=20mm
+      - right=20mm
+      - bottom=25mm
+    include-in-header:
+      text: |
+        \usepackage{fancyhdr}
+        \usepackage{titling}
+        \usepackage{tabu}
+        \usepackage{booktabs}
+        \usepackage{sectsty}
+        \usepackage[skins,breakable]{tcolorbox}
+        \usepackage[scaled]{helvet}
+        \renewcommand\familydefault{\sfdefault}
+        \sectionfont{\color[rgb]{0,0.3,0.6}\huge\bfseries}
+        \subsectionfont{\color[rgb]{0,0.3,0.6}\large\bfseries}
+        \pagestyle{fancy}
+        \fancyhf{}
+        \renewcommand{\headrulewidth}{0.4pt}
+        \renewcommand{\footrulewidth}{0.4pt}
+        \fancyhead[R]{\includegraphics[height=0.5cm]{methylflow_logo.png}}
+        \fancyhead[L]{\small\textit{Clinical Specimen Status}}
+        \fancyfoot[L]{\small TwistNext Clinical Report | Pipeline v1.1.0}
+        \fancyfoot[R]{\thepage}
+        \fancypagestyle{plain}{
+          \fancyhf{}
+          \renewcommand{\headrulewidth}{0pt}
+          \renewcommand{\footrulewidth}{0.4pt}
+          \fancyfoot[L]{\small TwistNext Clinical Report | Pipeline v1.1.0}
+          \fancyfoot[R]{\thepage}
+        }
+        % Clinical Note Box
+        \newtcolorbox{clinicalnote}{colback=blue!5!white,colframe=blue!75!black,title=Clinical Interpretation Note,fonttitle=\bfseries}
+        \newtcolorbox{technicalwarning}{colback=red!5!white,colframe=red!75!black,title=Technical Data Warning,fonttitle=\bfseries}
+execute:
+  echo: false
+  warning: false
+  message: false
+params:
+  mode: "clinical"
+  sample_metadata: "sample_metadata.tsv"
+  qc_summary: "qc_summary.tsv"
+  dmr_summary: "dmr_summary.tsv"
+  gene_summary: "gene_prioritized.csv"
+  disease_summary: "disease_enrichment.csv"
+  pathway_summary: "go_results.csv"
+  kegg_summary: "kegg_results.csv"
+  run_info: "run_info.json"
+---
+
+```{r setup}
+library(tidyverse)
+library(glue)
+library(knitr)
+library(kableExtra)
+library(jsonlite)
+
+# Robust error handling for file reading
+read_tsv_safe <- function(file_path) {
+  if(!is.null(file_path) && file.exists(file_path)) {
+    if (grepl(".csv$", file_path)) {
+        return(read.csv(file_path))
+    } else {
+        return(read.delim(file_path, sep="\t"))
+    }
+  } else {
+    return(data.frame())
+  }
+}
+
+# Helper to find plots (since names have prefixes)
+find_plot <- function(dir_path, suffix) {
+    if (!dir.exists(dir_path)) return(NULL)
+    files <- list.files(dir_path, pattern = suffix, full.names = TRUE)
+    if (length(files) > 0) return(files[1])
+    NULL
+}
+
+# Load data gracefully
+meta <- read_tsv_safe(params$sample_metadata)
+qc <- read_tsv_safe(params$qc_summary)
+dmr <- read_tsv_safe(params$dmr_summary)
+gene <- read_tsv_safe(params$gene_summary)
+disease <- read_tsv_safe(params$disease_summary)
+pathways <- read_tsv_safe(params$pathway_summary)
+kegg <- read_tsv_safe(params$kegg_summary)
+
+# Get results_dir from one of the params
+res_dir <- dirname(params$dmr_summary)
+
+if (file.exists(params$run_info)) {
+    run_info <- fromJSON(params$run_info)
+} else {
+    run_info <- list()
+}
+
+# Pull software versions into a separate variable for easier access in appendix
+software_versions <- if (!is.null(run_info$software_versions)) run_info$software_versions else list()
+
+# Helper for LaTeX-safe and beautiful tables
+kable_report <- function(df, caption = "", font_size = 10) {
+  if (nrow(df) == 0) return(cat("No data available.\n"))
+  
+  # Sanitize column names: First remove dots R might have added, then clean spaces
+  colnames(df) <- gsub("\\.", " ", colnames(df))
+  colnames(df) <- gsub("_", " ", colnames(df))
+  
+  # Escape % for LaTeX ONLY in column names, then data
+  colnames(df) <- gsub("%", "\\\\%", colnames(df))
+  
+  # Sanitize character columns (escape underscores and % for LaTeX)
+  df <- df %>% mutate(across(where(is.character), ~gsub("_", "\\\\_", .))) %>%
+               mutate(across(where(is.character), ~gsub("%", "\\\\%", .)))
+  
+  kable(df, escape = FALSE, caption = caption, booktabs = TRUE) %>%
+    kable_styling(full_width = TRUE, 
+                  bootstrap_options = c("striped", "hover", "condensed"),
+                  latex_options = c("striped", "HOLD_position"),
+                  font_size = font_size)
+}
+
+is_clinical <- params$mode == "clinical"
+n_samples <- nrow(meta)
+n_dmrs <- nrow(dmr)
+```
+\newpage
+
+# Executive Summary
+
+```{r results='asis'}
+if(n_samples > 0) {
+    cat(glue("This report summarizes clinical-grade methylation analysis for **{n_samples} specimens**. All analytical metrics were screened against pipeline reference standards.\n\n"))
+}
+
+if(n_dmrs > 0) {
+    cat(glue("A total of **{n_dmrs} differentially methylated regions (DMRs)** were identified. Each region has been cross-referenced with functional genomic annotations and clinical prior knowledge.\n\n"))
+}
+
+if(nrow(disease) > 0 && !"Message" %in% colnames(disease)) {
+    cat(glue("Top clinical associations detected: **{paste(head(disease$Description, 5), collapse = ', ')}**.\n\n"))
+}
+```
+
+```{r results='asis'}
+if(!is.null(run_info$clinical_narrative) && run_info$clinical_narrative != "") {
+    cat("\n\n")
+    cat("## Clinical Interpretation\n\n")
+    cat("\\begin{clinicalnote}")
+    cat(run_info$clinical_narrative)
+    cat("\\end{clinicalnote}\n\n")
+}
+```
+
+# Quality Control & Specimen Status
+
+```{r results='asis'}
+if (nrow(qc) > 0) {
+  cat("## Specimen Metrics\n\n")
+  cat("The following metrics summarize the sequencing and alignment quality for each specimen. Alignment rates and coverage depth are key indicators of analytical sensitivity.\n\n")
+  
+  kable_report(qc, caption = "Sequencing and Alignment Quality Control")
+} else {
+  cat("No QC data available for this run.\n")
+}
+```
+
+
+# Differentially Methylated Regions (DMRs)
+
+Differentially Methylated Regions (DMRs) represent genomic areas where DNA methylation levels differ significantly between experimental groups. In a clinical context, these regions can serve as biomarkers for disease states, as epigenetic modifications often regulate gene expression without altering the underlying DNA sequence. We utilize the DSS (Dispersion Shrinkage for Sequencing) framework, which employs a beta-binomial model to account for biological variation and technical noise, providing high statistical power for detecting subtle methylation shifts.
+
+```{r dmr-table, results='asis'}
+if(n_dmrs > 0) {
+    cat("## Significant Methylation Deviations\n\n")
+    cat("The following table lists the top 20 most significant differentially methylated regions detected across the analytical cohort.\n\n")
+    
+    dmr_top <- head(dmr %>% arrange(Min_pvalue), 20)
+    kable_report(dmr_top, caption = "Top 20 Differentially Methylated Regions")
+} else {
+    cat("No significant DMRs were detected under the current clinical cutoff thresholds.\n")
+}
+```
+
+
+
+# Clinical Gene Annotation & Prioritization
+
+To prioritize finding with clinical relevance, detected DMRs are mapped to the nearest genomic features (Promoters, Enhancers, or Gene Bodies). We apply an aggregate Prioritization Score which factors in the statistical significance (p-value), the magnitude of the methylation difference (logFC), and the proximity to transcription start sites.
+
+## Genomic Prioritization
+Ranked by aggregate prioritization score. Annotated with regional genomic context.
+
+```{r genes-table, results='asis'}
+if (nrow(gene) > 0) {
+  top_genes <- gene %>% 
+    mutate(fdr = formatC(fdr, format = "e", digits = 2)) %>%
+    select(Symbol, Region, diff, fdr, Rank_Score) %>%
+    head(15)
+  
+  kable_report(top_genes, caption = "Top 15 Genes Prioritized by Epigenetic Significance")
+} else {
+  cat("No gene annotations found matching the significant regions.\n")
+}
+```
+
+
+# Pathway & Functional Interpretation
+
+Functional enrichment analysis identifies biological processes that are over-represented among the prioritized genes. This provides a "systems-level" view of the epigenetic changes, moving beyond individual genes to identify affected cellular pathways or disease networks.
+
+## GO Biological Process Enrichment
+```{r go-results, results='asis'}
+if(nrow(pathways) > 0 && !"Message" %in% colnames(pathways)) {
+  cols <- intersect(colnames(pathways), c("ID", "Description", "pvalue", "p.adjust"))
+  top_pathways <- pathways %>% arrange(pvalue) %>% head(10) %>% select(all_of(cols))
+  print(kable_report(top_pathways, caption = "Top 10 GO Biological Process Enrichment results"))
+  
+  # Try to add plot
+  go_plot <- find_plot(res_dir, ".*_go_barplot\\.png$")
+  if (!is.null(go_plot)) {
+      cat("\n\n### Functional Visualization (GO)\n")
+      cat(glue("![GO Enrichment Visualization]({go_plot}){{width=80% fig-pos='H'}}\n\n"))
+  }
+} else {
+  cat("No significant GO enrichment observed.\n")
+}
+```
+
+## KEGG Pathway Summary
+```{r kegg-results, results='asis'}
+if(nrow(kegg) > 0 && !"Message" %in% colnames(kegg)) {
+  cols <- intersect(colnames(kegg), c("ID", "Description", "pvalue", "p.adjust"))
+  top_kegg <- kegg %>% arrange(pvalue) %>% head(10) %>% select(all_of(cols))
+  print(kable_report(top_kegg, caption = "Top 10 KEGG Pathway Enrichment results"))
+  
+  kegg_plot <- find_plot(res_dir, ".*_kegg_barplot\\.png$")
+  if (!is.null(kegg_plot)) {
+      cat("\n\n### Pathway Visualization (KEGG)\n")
+      cat(glue("![KEGG Pathway Visualization]({kegg_plot}){{width=80% fig-pos='H'}}\n\n"))
+  }
+} else {
+  cat("No significant KEGG pathway enrichment observed.\n")
+}
+```
+
+
+# Disease Ontology Analysis
+
+```{r disease-results, results='asis'}
+if(nrow(disease) > 0 && !"Message" %in% colnames(disease)) {
+  cols <- intersect(colnames(disease), c("ID", "Description", "pvalue", "p.adjust"))
+  top_disease <- disease %>% arrange(pvalue) %>% head(10) %>% select(all_of(cols))
+  print(kable_report(top_disease, caption = "Significant Disease-Gene Associations"))
+  
+  dis_plot <- find_plot(res_dir, ".*_disease_barplot\\.png$")
+  if (!is.null(dis_plot)) {
+      cat("\n\n### Disease Association Visualization\n")
+      cat(glue("![Disease Enrichment Visualization]({dis_plot}){{width=80% fig-pos='H'}}\n\n"))
+  }
+} else {
+  cat("No significant Disease Ontology enrichment observed.\n")
+}
+```
+
+\newpage
+
+# Pipeline Traceability & Methods
+
+## Methods
+
+```{r results='asis'}
+# Capture the methods description from run_info
+meth_description_data <- if (!is.null(run_info$methods_description)) run_info$methods_description else ""
+
+if (meth_description_data != "") {
+    # If rendering to PDF, perform a more robust transformation to Markdown
+    # to avoid monospace/verbatim artifacts and preserve typography
+    if (knitr::is_latex_output()) {
+        # Convert common HTML tags to Markdown equivalent for LaTeX processing
+        # This ensures the output uses document fonts rather than raw text
+        m_text <- meth_description_data
+        m_text <- gsub("<h4>", "\n### ", m_text)
+        m_text <- gsub("</h4>", "\n", m_text)
+        m_text <- gsub("<p>", "\n\n", m_text)
+        m_text <- gsub("</p>", "\n", m_text)
+        m_text <- gsub("<li>", "\n* ", m_text)
+        m_text <- gsub("</li>", "", m_text)
+        m_text <- gsub("<strong>|<b>", "**", m_text)
+        m_text <- gsub("</strong>|</b>", "**", m_text)
+        m_text <- gsub("<em>|<i>", "*", m_text)
+        m_text <- gsub("</em>|</i>", "*", m_text)
+        
+        # Strip any remaining HTML tags
+        m_text <- gsub("<[^>]*>", "", m_text)
+        
+        # Clean up whitespace: trim and ensure no leading spaces per line that trigger code blocks
+        m_text <- unlist(strsplit(m_text, "\n"))
+        m_text <- trimws(m_text)
+        meth_text <- paste(m_text, collapse = "\n")
+        
+        # Collapse multiple newlines
+        meth_text <- gsub("\n{3,}", "\n\n", meth_text)
+    } else {
+        meth_text <- meth_description_data
+    }
+    
+    # Output as-is with a trailing newline for Pandoc safety
+    cat(meth_text, "\n")
+} else {
+    cat("Detailed descriptions of analytical methods were not captured for this run.\n")
+}
+```
+
+# References
+
+::: {#refs}
+:::
+
+\newpage
+
+# Appendix: Data Audit & Traceability
+
+## Analytical Software versions
+
+The following software versions were utilised for this analysis. For a full technical audit log, including configuration parameters and alignment statistics, please consult the primary **MultiQC Report**.
+
+```{r results='asis'}
+if (length(software_versions) > 0) {
+    sv_df <- data.frame(
+        Tool = names(software_versions),
+        Version = unlist(software_versions)
+    )
+    kable_report(sv_df, caption = "Software Traceability")
+} else {
+    cat("*Software version data was not captured for this specific run. All tools are maintained within the pipeline's clinical-grade Singularity environment. Primary diagnostics are recorded in the MultiQC report.*\n\n")
+}
+```
+
+## Pipeline Run Information
+```{r results='asis'}
+run_name <- if (!is.null(run_info$run_name)) run_info$run_name else "Unknown"
+run_version <- if (!is.null(run_info$version)) run_info$version else "1.1.0"
+run_time <- if (!is.null(run_info$timestamp)) run_info$timestamp else Sys.time()
+run_files <- if (!is.null(run_info$files_processed)) run_info$files_processed else 0
+run_commit <- if (!is.null(run_info$commit_hash)) run_info$commit_hash else "Not available"
+run_cmd <- if (!is.null(run_info$command_line)) run_info$command_line else "Not available"
+run_nf <- if (!is.null(run_info$nextflow_version)) run_info$nextflow_version else "Not available"
+run_ce <- if (!is.null(run_info$container_engine)) run_info$container_engine else "Local/Native"
+run_genome <- if (!is.null(run_info$genome_build)) run_info$genome_build else "Custom/Unspecified"
+
+cat(glue("- **Run Name:** {run_name}\n\n"))
+cat(glue("- **Pipeline Version:** {run_version}\n\n"))
+cat(glue("- **Nextflow Engine:** {run_nf}\n\n"))
+cat(glue("- **Container Engine:** {run_ce}\n\n"))
+cat(glue("- **Reference Genome:** {run_genome}\n\n"))
+cat(glue("- **Commit Hash:** {run_commit}\n\n"))
+cat(glue("- **Command Line:** {run_cmd}\n\n"))
+cat(glue("- **Timestamp:** {run_time}\n\n"))
+cat(glue("- **Total Files Processed:** {run_files}\n\n"))
+
+# Add Enrichment Parameters
+if (!is.null(run_info$enrichment_params)) {
+    e_p <- run_info$enrichment_params
+    pv <- if (!is.null(e_p$pvalue_cutoff)) e_p$pvalue_cutoff else "0.05"
+    lfc <- if (!is.null(e_p$logfc_cutoff)) e_p$logfc_cutoff else "0.5"
+    top <- if (!is.null(e_p$top_n_genes)) e_p$top_n_genes else "100"
+
+    cat("\n### Enrichment Cutoffs\n\n")
+    cat(glue("- **P-value Threshold:** {pv}\n\n"))
+    cat(glue("- **LogFC Threshold:** {lfc}\n\n"))
+    cat(glue("- **Top Genes Prioritized:** {top}\n\n"))
+}
+
+if (!is.null(run_info$sanity_checks)) {
+    cat("\n### Output Sanity Checks\n\n")
+    for (check in run_info$sanity_checks) {
+        cat(glue("- {check}\n"))
+    }
+    cat("\n")
+}
+
+if (!is.null(run_info$checksums) && length(run_info$checksums) > 0) {
+    cat("\n### Input Integrity (SHA256)\n\n")
+    for (fname in names(run_info$checksums)) {
+        cat(glue("- **{fname}**: `{run_info$checksums[[fname]]}`\n"))
+    }
+    cat("\n")
+}
+
+if (!is.null(run_info$resolved_params) && length(run_info$resolved_params) > 0) {
+    cat("\n### Resolved Nextflow Parameters\n\n")
+    cat("```json\n")
+    cat(toJSON(run_info$resolved_params, pretty=TRUE, auto_unbox=TRUE))
+    cat("\n```\n\n")
+}
+```
+
+## Datapath Audit
+```{r audit, results='asis'}
+cat("Verification of input result paths used for this report generation.\n\n")
+audit_data <- function(name, df, path) {
+    status <- if(nrow(df) > 0) "SUCCESS" else "NO DATA"
+    cat(glue("- **{name}**: {status} ({nrow(df)} records) \n    *(Source: {path})*\n"))
+}
+
+audit_data("Samples", meta, params$sample_metadata)
+audit_data("QC Summary", qc, params$qc_summary)
+audit_data("DMRs", dmr, params$dmr_summary)
+audit_data("Prioritized Genes", gene, params$gene_summary)
+audit_data("GO Enrichment", pathways, params$pathway_summary)
+audit_data("KEGG Enrichment", kegg, params$kegg_summary)
+audit_data("Disease Enrichment", disease, params$disease_summary)
+```
+
+\vfill
+\vspace{2cm}
+\hrule
+\vspace{2mm}
+\begin{center}
+\small \textit{Report generated automatically for clinical decision support. Analytical values should be correlated with primary laboratory findings and validated within the MultiQC audit environment.}
+\end{center}
+

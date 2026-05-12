@@ -53,8 +53,16 @@ if (opt$method == "edger") {
     )
     x_axis <- "meth.diff"
     y_axis <- "-log10(qvalue)"
+} else if (opt$method == "dss") {
+    results$significance <- case_when(
+        results$diff >= opt$logfc_cutoff & results$fdr < opt$pvalue_cutoff ~ "Hypermethylated",
+        results$diff <= -opt$logfc_cutoff & results$fdr < opt$pvalue_cutoff ~ "Hypomethylated",
+        TRUE ~ "Not Significant"
+    )
+    x_axis <- "diff"
+    y_axis <- "-log10(fdr)"
 } else {
-    stop("Unknown method. Use 'edger' or 'methylkit'.")
+    stop("Unknown method. Use 'edger', 'methylkit', or 'dss'.")
 }
 
 # Derive prefix from results filename
@@ -86,7 +94,7 @@ ggplot(results, aes_string(x = x_axis, y = y_axis, color = "significance")) +
     geom_hline(yintercept = -log10(opt$pvalue_cutoff), linetype = "dashed", color = "black") +
     labs(title = paste("Volcano Plot -", opt$compare, "(", opt$method, ")"), 
          x = ifelse(opt$method == "edger", "Log2 Fold Change", "Methylation Difference"),
-         y = ifelse(opt$method == "edger", "-Log10 P-value", "-Log10 Q-value"),
+         y = ifelse(opt$method == "edger", "-Log10 P-value", ifelse(opt$method == "dss", "-Log10 FDR", "-Log10 Q-value")),
          color = "Methylation Status") +
     theme_minimal() +
     theme(legend.position = "right")
@@ -104,13 +112,16 @@ if (opt$method == "edger") {
         theme_minimal() +
         theme(legend.position = "right")
 } else {
-    ggplot(results, aes(x = meth.diff, y = -log10(qvalue), color = significance)) +
+    x_var <- if(opt$method == "dss") "diff" else "meth.diff"
+    y_var <- if(opt$method == "dss") "fdr" else "qvalue"
+
+    ggplot(results, aes_string(x = x_var, y = paste0("-log10(", y_var, ")"), color = "significance")) +
         geom_point(alpha = 0.6) +
         scale_color_manual(values = color_palette) +
         geom_vline(xintercept = c(-opt$logfc_cutoff, opt$logfc_cutoff), linetype = "dashed", color = "black") +
         geom_hline(yintercept = -log10(opt$pvalue_cutoff), linetype = "dashed", color = "black") +
-        labs(title = paste("Methylation Difference vs Q-value -", opt$compare, "(", opt$method, ")"), 
-             x = "Methylation Difference", y = "-Log10 Q-value",
+        labs(title = paste("Methylation Difference Plot -", opt$compare, "(", opt$method, ")"), 
+             x = "Methylation Difference", y = ifelse(opt$method == "dss", "-Log10 FDR", "-Log10 Q-value"),
              color = "Methylation Status") +
         theme_minimal() +
         theme(legend.position = "right")

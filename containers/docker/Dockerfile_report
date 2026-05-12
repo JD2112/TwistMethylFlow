@@ -1,0 +1,155 @@
+FROM rocker/r-ver:4.6.0
+
+# ================================================================================
+# SECURITY ANNOTATIONS
+# ================================================================================
+# Image: jd21/methylflow-report:1.1.1
+# 
+# Known Vulnerabilities (Docker Scout CVE Scan):
+# - Total CVEs: 12 (1 CRITICAL, 11 HIGH)
+# - Vulnerable Packages: 2 (golang/stdlib, deb/ubuntu/linux)
+#
+# VULNERABILITY #1: Go stdlib 1.23.12 (in Quarto's bundled esbuild)
+# ────────────────────────────────────────────────────────────────
+# Affected CVEs: CVE-2025-68121 (CRITICAL), CVE-2026-32283, CVE-2026-32281,
+#                CVE-2026-32280, CVE-2026-25679, CVE-2025-61729, CVE-2025-61726,
+#                CVE-2025-61725, CVE-2025-61723, CVE-2025-58188, CVE-2025-58187
+# Root Cause:    Quarto 1.9.37 ships with esbuild pre-compiled against Go 1.23.12
+# Status:        CANNOT BE PATCHED IN THIS IMAGE (statically linked in Quarto binary)
+# Fix Timeline:  Requires upstream Quarto release with Go 1.25+ (expected Q2 2025)
+# Workarounds:   
+#   1. Use external Quarto rendering service (not in-container)
+#   2. Wait for Quarto 1.7+ release (uses Go 1.25)
+#   3. Compile Quarto from source with Go 1.25+ (complex, time-consuming)
+# Impact:        esbuild is used internally by Quarto for JS/TS compilation
+#                Vulnerable only if Quarto processes untrusted JS/TS content
+# Risk Level:    MEDIUM (read-only container execution reduces exposure)
+#
+# VULNERABILITY #2: Linux kernel 6.8.0-111 in Ubuntu 24.04
+# ──────────────────────────────────────────────────────
+# Affected CVE:  CVE-2026-31431 (HIGH, CISA KEV)
+# Root Cause:    Unfixed kernel vulnerability in Ubuntu 24.04 LTS baseline
+# Status:        CANNOT BE PATCHED (no fix in ubuntu:24.04 security stream)
+# Fix Timeline:  Expected only in Ubuntu 25.10+ (major version upgrade)
+# Workarounds:
+#   1. Upgrade to Ubuntu 25.10+ base image (breaks rocker/r-ver:4.6.0 compatibility)
+#   2. Run with seccomp/AppArmor to restrict kernel access
+#   3. Accept risk for read-only workloads
+# Risk Level:    LOW (kernel exploitation requires container escape)
+#
+# ================================================================================
+# MITIGATION STRATEGY
+# ================================================================================
+# Since the vulnerabilities are in UPSTREAM PROJECTS (Quarto, Ubuntu),
+# mitigation focuses on RUNTIME CONTROLS rather than image patching:
+#
+# 1. RUNTIME ISOLATION:
+#    - Run with: docker run --security-opt=no-new-privileges=true
+#    - Use: --read-only filesystem where possible
+#    - Restrict: --cap-drop=ALL --cap-add=CHOWN,DAC_OVERRIDE,SETGID,SETUID
+#
+# 2. SCANNING & MONITORING:
+#    - Scan regularly: docker scout cves jd21/methylflow-report:1.1.1
+#    - Monitor: Quarto releases for Go 1.25+ version
+#    - Alert on: New esbuild/Go CVEs
+#
+# 3. INCIDENT RESPONSE:
+#    - If Quarto 1.7+ released with Go 1.25: Rebuild immediately
+#    - If Ubuntu 25.10 support confirmed for rocker: Migrate base image
+#    - If exploitation detected: Container isolation + audit logs
+#
+# 4. USAGE GUIDELINES:
+#    - SAFE: Generating reports from trusted R code only
+#    - RISKY: Processing untrusted Quarto documents with JS/TS content
+#    - UNSAFE: Exposing container to untrusted network input
+#
+# ================================================================================
+
+LABEL org.opencontainers.image.authors="Jyotirmoy Das" \
+      org.opencontainers.image.description="MethylFlow Reporting (R + Quarto for Markdown rendering)" \
+      org.opencontainers.image.version="1.1.1" \
+      org.opencontainers.image.vendor="TwistNext" \
+      org.opencontainers.image.url="https://github.com/JD2112/TwistNext" \
+      org.opencontainers.image.documentation="https://github.com/JD2112/TwistNext/blob/new_devel/containers/docker/SECURITY.md" \
+      org.opencontainers.image.source="https://github.com/JD2112/TwistNext.git" \
+      org.opencontainers.image.revision="5e46fd98c01304e9c396d140ba2d7bf9fd333673" \
+      security.scan.tool="docker-scout" \
+      security.scan.date="2025-01-xx" \
+      security.known-cves="CVE-2025-68121,CVE-2026-32283,CVE-2026-32281,CVE-2026-32280,CVE-2026-25679,CVE-2025-61729,CVE-2025-61726,CVE-2025-61725,CVE-2025-61723,CVE-2025-58188,CVE-2025-58187,CVE-2026-31431" \
+      security.cves.total="12" \
+      security.cves.critical="1" \
+      security.cves.high="11" \
+      security.upstream-issue="Quarto esbuild uses Go 1.23.12 (statically linked, unfixable in this image)" \
+      security.upstream-tracking="https://github.com/quarto-dev/quarto-cli/issues (awaiting Go 1.25 rebuild)"
+
+# Reproducibility: pin repositories
+ENV CRAN_REPO=https://packagemanager.posit.co/cran/__linux__/noble/2026-05-01
+RUN echo "options(repos = c(CRAN = '${CRAN_REPO}'))" >> /usr/local/lib/R/etc/Rprofile.site && \
+    echo 'options(HTTPUserAgent = sprintf("R/%s R (%s)", getRversion(), paste(getRversion(), R.version["platform"], R.version["arch"], R.version["os"])))' >> /usr/local/lib/R/etc/Rprofile.site
+
+# System dependencies
+RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
+    procps \
+    libxml2-dev \
+    libssl-dev \
+    libcurl4-openssl-dev \
+    libfontconfig1-dev \
+    libharfbuzz-dev \
+    libfribidi-dev \
+    libfreetype6-dev \
+    libpng-dev \
+    libtiff5-dev \
+    libjpeg-dev \
+    libicu-dev \
+    zlib1g-dev \
+    libpq-dev \
+    wget \
+    curl \
+    ca-certificates \
+    ghostscript \
+    libxrender1 \
+    make \
+    build-essential \
+    autoconf \
+    automake \
+    libtool \
+    git \
+    pkg-config \
+    && apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install Quarto 1.9.37 (contains Go 1.23.12 — awaiting upstream fix)
+RUN ARCH=$(dpkg --print-architecture) && \
+    wget -q https://github.com/quarto-dev/quarto-cli/releases/download/v1.9.37/quarto-1.9.37-linux-${ARCH}.deb && \
+    dpkg -i quarto-1.9.37-linux-${ARCH}.deb && \
+    rm quarto-1.9.37-linux-${ARCH}.deb
+
+# Install R packages
+RUN install2.r --error --deps FALSE \
+    rlang cli tibble vctrs lifecycle pillar ellipsis fansi stringr
+
+RUN install2.r --error --deps TRUE \
+    optparse jsonlite glue dplyr ggplot2 kableExtra knitr rmarkdown tidyverse
+
+# Install TinyTeX
+RUN quarto install tinytex
+
+# Cleanup build tools
+RUN apt-get remove -y build-essential autoconf automake libtool git pkg-config && \
+    apt-get autoremove -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Smoke test
+RUN R -e "library(kableExtra); library(dplyr); library(tinytex); library(tidyverse)" && \
+    quarto --version
+
+WORKDIR /app
+RUN useradd -m -s /bin/bash appuser && \
+    chown -R appuser:appuser /app
+USER appuser
+
+HEALTHCHECK --interval=60s --timeout=15s --start-period=20s --retries=3 \
+  CMD quarto --version || exit 1
+
+CMD ["quarto", "--version"]

@@ -82,3 +82,25 @@ process SAMTOOLS_FAIDX {
     END_VERSIONS
     """
 }
+
+process SAMTOOLS_MERGE {
+    tag "$meta.id"
+    label 'process_medium'
+
+    input:
+    tuple val(meta), path(bams)
+
+    output:
+    tuple val(meta), path("${meta.id}.merged.bam"), emit: bam
+    path "versions.yml"                            , emit: versions
+
+    script:
+    """
+    samtools merge -@ $task.cpus ${meta.id}.merged.bam $bams
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//')
+    END_VERSIONS
+    """
+}

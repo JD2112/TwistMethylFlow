@@ -10,7 +10,9 @@ process EDGER_ANALYSIS {
     path coverage_files
     path design_file
     val compare_str
-    val coverage_threshold    
+    val coverage_threshold
+    val p_threshold
+    val diff_threshold
 
     output:
     path "EdgeR_*.csv", emit: results
@@ -26,12 +28,14 @@ process EDGER_ANALYSIS {
         --compare "${compare_str}" \\
         --output . \\
         --coverage_threshold ${coverage_threshold} \\
+        --p_threshold ${p_threshold} \\
+        --diff_threshold ${diff_threshold} \\
         ${coverage_files_list} > edger_log.txt 2>&1
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        r-base: \$( R --version | grep "R version" | sed 's/R version //' | sed 's/ .*//' )
-        bioconductor-edger: \$( R -e "library(edgeR); cat(as.character(packageVersion('edgeR')))" )
+        r-base: \$( R --version | head -n 1 | grep -oP '(?<=R version )[0-9.]+' )
+        bioconductor-edger: \$( Rscript -e "library(edgeR); cat(as.character(packageVersion('edgeR')))" | xargs )
     END_VERSIONS
     """
 }

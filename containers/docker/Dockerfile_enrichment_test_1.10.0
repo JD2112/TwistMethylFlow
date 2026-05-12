@@ -1,0 +1,77 @@
+FROM rocker/r-ver:4.6.0
+
+# Test: Quarto v1.10.0 for Go CVE resolution
+
+LABEL org.opencontainers.image.description="MethylFlow Enrichment (Bioconductor analysis) - Test Quarto 1.10.0" \
+      org.opencontainers.image.version="1.1.0-test-quarto1.10.0" \
+      security.test="quarto_1.10.0_go_cve_resolution"
+
+ENV CRAN_REPO=https://packagemanager.posit.co/cran/__linux__/noble/2026-05-01
+ENV BIOC_VERSION=3.23
+
+RUN echo "options(repos = c(CRAN = '${CRAN_REPO}'))" >> /usr/local/lib/R/etc/Rprofile.site && \
+    echo "options(BioC_mirror = 'https://packagemanager.posit.co/bioconductor')" >> /usr/local/lib/R/etc/Rprofile.site && \
+    echo 'options(HTTPUserAgent = sprintf("R/%s R (%s)", getRversion(), paste(getRversion(), R.version["platform"], R.version["arch"], R.version["os"])))' >> /usr/local/lib/R/etc/Rprofile.site
+
+RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
+    procps \
+    libxml2-dev \
+    libssl-dev \
+    libcurl4-openssl-dev \
+    libfontconfig1-dev \
+    libharfbuzz-dev \
+    libfribidi-dev \
+    libfreetype6-dev \
+    libpng-dev \
+    libtiff5-dev \
+    libjpeg-dev \
+    libicu-dev \
+    zlib1g-dev \
+    libpq-dev \
+    make \
+    build-essential \
+    autoconf \
+    automake \
+    libtool \
+    git \
+    pkg-config \
+    && apt-get clean
+
+RUN cd /tmp && \
+    git clone --depth 1 --branch v1.69.0 https://github.com/nghttp2/nghttp2.git && \
+    cd nghttp2 && \
+    autoreconf -i && \
+    ./configure --prefix=/usr/local --disable-examples --disable-man && \
+    make && \
+    make install && \
+    ldconfig && \
+    cd / && \
+    rm -rf /tmp/nghttp2
+
+RUN apt-get remove -y build-essential autoconf automake libtool git pkg-config && \
+    apt-get autoremove -y && \
+    apt-get clean && \
+    find / -name "*casperjs*" -exec rm -rf {} + 2>/dev/null || true && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN install2.r --error --deps TRUE \
+    optparse \
+    dplyr \
+    ggplot2
+
+RUN R -e "\
+    options(repos = c(CRAN = Sys.getenv('CRAN_REPO'))); \
+    if (!requireNamespace('BiocManager', quietly = TRUE)) install.packages('BiocManager'); \
+    BiocManager::install(version = '${BIOC_VERSION}', ask = FALSE); \
+    pkgs <- c('clusterProfiler','org.Hs.eg.db','DOSE','ReactomePA','GOplot'); \
+    BiocManager::install(pkgs, ask = FALSE, update = FALSE);"
+
+WORKDIR /app
+RUN useradd -m -s /bin/bash appuser && \
+    chown -R appuser:appuser /app
+USER appuser
+
+HEALTHCHECK --interval=60s --timeout=15s --start-period=10s --retries=3 \
+  CMD R -e "library(clusterProfiler)" || exit 1
+
+CMD ["R"]

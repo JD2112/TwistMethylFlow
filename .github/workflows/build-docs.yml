@@ -27,9 +27,9 @@ jobs:
       - name: Generate cache key
         run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV
 
-      - name: Extract version from nextflow.config
+      - name: Extract version from base.config
         run: |
-          version=$(grep "version" nextflow.config | tail -1 | sed -e s'/[^=]*= //' | cut -d "'" -f 2)
+          version=$(grep -E "^\s*version\s*=\s*'[^']+'" conf/base.config | sed -E "s/.*version\s*=\s*'([^']+)'.*/\1/")
           [[ $version == *"devel"* ]] && pipeline_version="devel" || pipeline_version=$version
           echo "pipeline_version=$pipeline_version" >> $GITHUB_ENV
 

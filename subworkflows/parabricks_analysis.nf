@@ -1,6 +1,7 @@
 include { PARABRICKS_FQ2BAMMETH; METHYLDACKEL_EXTRACT } from '../modules/nvidia_parabricks'
 include { SAMTOOLS_INDEX; SAMTOOLS_FAIDX } from '../modules/samtools'
 include { BWAMETH_INDEX } from '../modules/bwameth'
+include { QUALIMAP } from '../modules/qualimap'
 
 workflow PARABRICKS_ANALYSIS {
     take:
@@ -20,7 +21,13 @@ workflow PARABRICKS_ANALYSIS {
     
     // Index the BAM
     SAMTOOLS_INDEX(PARABRICKS_FQ2BAMMETH.out.bam)
+    ch_versions = ch_versions.mix(SAMTOOLS_INDEX.out.versions)
     
+    // Qualimap
+    ch_sorted_indexed_bam = PARABRICKS_FQ2BAMMETH.out.bam.join(SAMTOOLS_INDEX.out.bai)
+    QUALIMAP(ch_sorted_indexed_bam)
+    ch_versions = ch_versions.mix(QUALIMAP.out.versions)
+
     // Methylation calling with Parabricks
     // Index the genome fasta
     SAMTOOLS_FAIDX(fasta)
@@ -35,8 +42,9 @@ workflow PARABRICKS_ANALYSIS {
     ch_versions = ch_versions.mix(METHYLDACKEL_EXTRACT.out.versions.first())
 
     emit:
-    coverage_files = METHYLDACKEL_EXTRACT.out.bedgraph
-    bam            = PARABRICKS_FQ2BAMMETH.out.bam
-    bai            = SAMTOOLS_INDEX.out.bai
-    versions       = ch_versions
+    coverage_files   = METHYLDACKEL_EXTRACT.out.bedgraph
+    bam              = PARABRICKS_FQ2BAMMETH.out.bam
+    bai              = SAMTOOLS_INDEX.out.bai
+    qualimap_results = QUALIMAP.out.results
+    versions         = ch_versions
 }

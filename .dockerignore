@@ -1,0 +1,16 @@
+.git
+.gitignore
+.github
+*.md
+LICENSE
+__pycache__
+*.pyc
+.DS_Store
+node_modules
+.env*
+backup/
+tests/
+examples/
+docs/
+# Exclude other containers to keep context small if building from root
+containers/docker/Dockerfile*

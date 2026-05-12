@@ -9,4 +9,5 @@ workflow PREPARE_GENOME {
 
     emit:
     index = BISMARK_GENOME_PREPARATION.out.index
+    versions = BISMARK_GENOME_PREPARATION.out.versions
 }

@@ -1,4 +1,4 @@
-This Nextflow pipeline performs comprehensive analysis of Twist NGS DNA Methylation sequencing data, including quality control, alignment, methylation calling, and differential methylation analysis.
+This Nextflow pipeline performs comprehensive analysis of MethylFlow DNA Methylation sequencing data, including quality control, alignment, methylation calling, and differential methylation analysis.
 
 Usage:
 ------
@@ -8,13 +8,13 @@ Options:
 --------
 --sample_sheet         Path to the sample sheet CSV file (required)
 --bismark_index        Path to the Bismark index directory (required unless --genome or --aligned_bams is provided)
+--bismark_split_reads  Number of reads per split fastq chunk for parallel CPU alignment (e.g., 50000000). Set to 0 to disable.
 --genome               Path to the reference genome FASTA file (required if --bismark_index not provided)
 --aligned_bams         Path to aligned BAM files (use this to start from aligned BAM files instead of FASTQ files)
---refseq_file          Path to RefSeq file for annotation (**mandatory if both/MethylKit method is chosen**).
---gtf_file             Path to GTF file for annotation (**mandatory if both/EdgeR method is chosen**) 
+--refseq_file          Path to RefSeq file for annotation (**mandatory if MethylKit/DSS method is chosen**).
+--gtf_file             Path to GTF file for annotation (**mandatory if EdgeR/DSS method is chosen**) 
 --outdir               Output directory (default: ./results)
---diff_meth_method     Differential methylation method to use: 'edger' or 'methylkit' (default: edger)
---run_both_methods     Run both edgeR and methylkit for differential methylation analysis (default: false)
+--diff_meth_method     Differential methylation method to use: 'dss', 'edger', 'methylkit', or comma-separated list (default: dss)
 --skip_diff_meth	     Skip differential methylation analysis (default: false)
 --coverage_threshold   Minimum read coverage to consider a CpG site (default: 10)
 --methylkit.assembly   genome assembly is required for methylkit analysis (should match with reference genome). Need to change in the `conf/params.config` or can be used directly on terminal (default: hg38).
@@ -65,6 +65,8 @@ The pipeline comes with several pre-configured profiles:
 - docker: Executes pipeline using Docker containers
 - conda: Executes pipeline using Conda environments
 - gpu: Executes pipeline using NVIDIA Parabricks for GPU acceleration
+- test: Executes pipeline with a minimal test dataset to check pipeline functionality.
+- test_full: Executes pipeline with test dataset including the differential methylation analysis.
 
 Example commands:
 -----------------
@@ -83,8 +85,8 @@ Example commands:
 5. Start from aligned BAM files:
    nextflow run main.nf -profile singularity --aligned_bams '/path/to/aligned/*.bam' --outdir /path/to/results
 
-6. Run both edgeR and methylkit for differential methylation analysis:
-   nextflow run main.nf -profile singularity --sample_sheet samples.csv --bismark_index /path/to/bismark_index --run_both_methods --refseq_file data/hg38_RefSeq.bed.gz  --gtf_file data/Homo_sapiens.GRCh38.104.gtf --outdir /path/to/results
+6. Run multiple methods for differential methylation analysis:
+   nextflow run main.nf -profile singularity --sample_sheet samples.csv --bismark_index /path/to/bismark_index --diff_meth_method edger,methylkit --refseq_file examples/hg38_RefSeq.bed.gz  --gtf_file examples/Homo_sapiens.GRCh38.104.gtf --outdir /path/to/results
 
 7. Skip differential methylation analysis:
    nextflow run main.nf -profile singularity --sample_sheet samples.csv --bismark_index /path/to/bismark_index --skip_diff_meth --outdir /path/to/results

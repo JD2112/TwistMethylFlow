@@ -32,7 +32,7 @@ process QUALIMAP {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        qualimap: \$(qualimap 2>&1 | grep 'QualiMap v.' | sed 's/QualiMap v.//g')
+        qualimap: \$(qualimap 2>&1 | grep 'QualiMap v.' | head -n 1 | sed 's/QualiMap v.//g' | xargs)
     END_VERSIONS
     """
 }

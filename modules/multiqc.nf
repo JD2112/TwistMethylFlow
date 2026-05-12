@@ -3,29 +3,27 @@ process MULTIQC {
     publishDir "${params.outdir}/multiqc", mode: 'copy'
 
     input:
-    path(input_files)
+    path(multiqc_files)
+    path(multiqc_config)
+    path(multiqc_logo)
 
     output:
-    path "multiqc_report.html", emit: report
-    path "multiqc_data", emit: data
-    path "versions.yml", emit: versions
-    path "multiqc.log", emit: log
+    path "*_report.html", emit: report
+    path "*_data"       , emit: data
+    path "multiqc.log"  , emit: log
+    path "versions.yml" , emit: versions
 
     script:
     def args = task.ext.args ?: ''
+    def config = multiqc_config ? "--config ${multiqc_config}" : ''
+    // Logo disabled as requested by user to debug exit 2
+    // def logo = multiqc_logo ? "--cl_config 'custom_logo: \"${multiqc_logo}\"'" : ''
     """
-    mkdir temp_multiqc_input
-    for file in ${input_files}; do
-        [ -e "\$file" ] && cp -L "\$file" temp_multiqc_input/ || echo "File \$file not found"
-    done
-
-    multiqc -f $args temp_multiqc_input > multiqc.log 2>&1
-
-    rm -rf temp_multiqc_input
+    multiqc -f $args $config . > multiqc.log 2>&1
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        multiqc: \$( multiqc --version | sed -e "s/multiqc, version //g" )
+        multiqc: \$( multiqc --version | head -n 1 | sed -e "s/multiqc, version //g" )
     END_VERSIONS
     """
 }

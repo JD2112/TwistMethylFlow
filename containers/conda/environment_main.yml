@@ -1,0 +1,31 @@
+name: methylflow
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.9
+  - pandas
+  - numpy
+  - nextflow=24.04.2
+  - fastqc=0.11.9
+  - multiqc=1.13
+  - trim-galore=0.6.7
+  - bismark=0.23.1
+  - bowtie2=2.4.4
+  - samtools=1.15
+  - bedtools=2.30.0
+  - r-base=4.3.3
+  - bioconductor-methylkit=1.20.0
+  - r-ggplot2=3.3.5
+  - r-pheatmap=1.0.12
+  - r-rcolorbrewer=1.1_2
+  - r-reshape2=1.4.4
+  - r-optparse=1.7.1
+  - r-dplyr=1.0.7
+  - bioconductor-org.hs.eg.db=3.14.0
+  - bioconductor-clusterprofiler=4.2.2
+  - r-readr=2.1.1
+  - bioconductor-edger=3.36.0
+  - bioconductor-genomation=1.26.0
+  - bioconductor-dss=2.42.0

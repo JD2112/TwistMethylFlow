@@ -1,14 +1,21 @@
-![](artworks/twistmethylflow_logo.png)
+![](docs/images/methylflow_logo.png)
 
 [![DOI](https://zenodo.org/badge/490592846.svg)](https://doi.org/10.5281/zenodo.14204261)
-[![GitBook Docs](https://img.shields.io/badge/docs-GitBook-blue?logo=gitbook)](https://jyotirmoys-organization.gitbook.io/TwistMethylFlow)
-[![build-docs](https://github.com/JD2112/TwistMethylFlow/actions/workflows/build-docs.yml/badge.svg?branch=main)](https://github.com/JD2112/TwistMethylFlow/actions/workflows/build-docs.yml)
-[![GitHub Invite Collaborators](https://img.shields.io/badge/Invite-Collaborators-blue?style=for-the-badge&logo=github)](https://github.com/JD2112/TwistMethylFlow/settings/access)
+[![GitBook Docs](https://img.shields.io/badge/docs-GitBook-blue?logo=gitbook)](https://jyotirmoys-organization.gitbook.io/MethylFlow)
+[![MethylFlow CI](https://github.com/JD2112/MethylFlow/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/JD2112/MethylFlow/actions/workflows/ci.yml)
+[![build-docs](https://github.com/JD2112/MethylFlow/actions/workflows/build-docs.yml/badge.svg?branch=main)](https://github.com/JD2112/MethylFlow/actions/workflows/build-docs.yml)
+[![GitHub Invite Collaborators](https://img.shields.io/badge/Invite-Collaborators-blue?style=for-the-badge&logo=github)](https://github.com/JD2112/MethylFlow/settings/access)
 [![wakatime](https://wakatime.com/badge/user/fe95275f-909a-4147-a45d-624981173898/project/a44415f0-a274-4c3b-a59a-f8e1067c0fc1.svg)](https://wakatime.com/badge/user/fe95275f-909a-4147-a45d-624981173898/project/a44415f0-a274-4c3b-a59a-f8e1067c0fc1)
 
 ## Overview
 
-**TwistMethylFlow** is a robust, end-to-end Nextflow pipeline tailored for the analysis of Twist NGS DNA Methylation data. It streamlines the entire process from raw FASTQ files to multi-method differential methylation reports. The pipeline is uniquely designed with a dual-track architecture, allowing users to choose between a high-efficiency **GPU-accelerated path** (powered by NVIDIA Parabricks) for rapid processing of large cohorts, or a **traditional CPU-based path** (using Bismark) for standard compatibility. With integrated quality control, modular analysis stages, and automated result visualization, TwistMethylFlow ensures reproducible and scalable methylation profiling.
+**MethylFlow** is a high-performance Nextflow pipeline designed for end-to-end DNA methylation profiling. It features a versatile architecture that seamlessly handles diverse conversion chemistries—including **Enzymatic Methyl-seq (EM-seq)** and traditional **Bisulfite sequencing**—while offering a unique dual-track processing mode for both GPU-accelerated (NVIDIA Parabricks) and CPU-based analysis.
+
+### 🧪 Technology Compatibility
+Although Bismark is traditionally associated with Bisulfite sequencing, MethylFlow fully supports **Enzymatic Methyl-seq (EM-seq)**. Since both methods result in a C→T conversion of unmethylated cytosines, the alignment and methylation extraction logic remains identical. MethylFlow leverages Bismark as a gold-standard, bisulfite-aware aligner to ensure high accuracy and full compatibility with legacy datasets.
+
+> [!NOTE]
+> For a deeper look at our design goals, competitive positioning, and scientific rationale, please see our [Project Philosophy](PHILOSOPHY.md) and our [Benchmarking Strategy](BENCHMARKING.md).
 
 ## Features
 
@@ -17,7 +24,7 @@
 | Generate Genome Index | [Bismark](http://felixkrueger.github.io/Bismark/bismark/genome_preparation/) | [BWA-meth](https://github.com/brentp/bwa-meth) |
 | Raw data QC | [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) | [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) |
 | Adapter trimming | [Trim Galore](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/) | [Trim Galore](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/) |
-| Align Reads | [Bismark (bowtie2)](http://felixkrueger.github.io/Bismark/bismark/alignment/) | [Parabricks (fq2bam_meth)](https://www.nvidia.com/en-us/clara/genomics/) |
+| Align Reads | [Bismark (bowtie2)](http://felixkrueger.github.io/Bismark/bismark/alignment/) (Split-Align support) | [Parabricks (fq2bam_meth)](https://www.nvidia.com/en-us/clara/genomics/) |
 | Deduplicate Alignments | [Bismark](http://felixkrueger.github.io/Bismark/bismark/deduplication/) | Included in `fq2bam_meth` |
 | Sort and indexing | [Samtools](http://www.htslib.org/) | [Samtools](http://www.htslib.org/) |
 | Methylation Extraction | [Bismark](http://felixkrueger.github.io/Bismark/bismark/methylation_extraction/) | [MethylDackel](https://github.com/dpryan79/MethylDackel) |
@@ -25,10 +32,11 @@
 | QC Reporting | [MultiQC](https://seqera.io/multiqc/) | [MultiQC](https://seqera.io/multiqc/) |
 | Diff Methylation | [EdgeR](https://bioconductor.org/packages/release/bioc/html/edgeR.html) / [MethylKit](https://www.bioconductor.org/packages/release/bioc/html/methylKit.html) | [EdgeR](https://bioconductor.org/packages/release/bioc/html/edgeR.html) / [MethylKit](https://www.bioconductor.org/packages/release/bioc/html/methylKit.html) |
 | Post processing | [ggplot2](https://ggplot2.tidyverse.org/) | [ggplot2](https://ggplot2.tidyverse.org/) |
-| GO analysis | [Gene Ontology](https://geneontology.org) | [Gene Ontology](https://geneontology.org) |
+| Enrichment analysis | [GO](https://geneontology.org) / [KEGG](https://www.genome.jp/kegg/) | [GO](https://geneontology.org) / [KEGG](https://www.genome.jp/kegg/) |
+| Unified Reporting | [Quarto](https://quarto.org/) (Clinical Mode) | [Quarto](https://quarto.org/) (Clinical Mode) |
 
 ## Pipeline Schema
-![](artworks/TMF.png)
+![](docs/images/TMF.png)
 
 ## Requirements
 
@@ -43,44 +51,69 @@
 Recommended for large datasets. Requires NVIDIA GPUs and the `gpu` profile.
 
 ```bash
-nextflow run JD2112/TwistMethylFlow \
+nextflow run JD2112/MethylFlow \
     -profile singularity,gpu \
     --sample_sheet Sample_sheet_twist.csv \
     --genome_fasta path/to/genome.fa \
-    --run_both_methods \
+    --diff_meth_method dss,edger \
     --gtf_file /data/Homo_sapiens.GRCh38.104.gtf \
     --refseq_file /data/hg38_RefSeq.bed.gz \
-    --outdir Results/TwistMethylFlow_GPU
+    --outdir Results/MethylFlow_GPU
 ```
 
 ### 2. Traditional CPU Run (Bismark) [default: profile]
 Standard workflow using Bismark for alignment and extraction on CPU-only systems.
 
 ```bash
-nextflow run JD2112/TwistMethylFlow \
+nextflow run JD2112/MethylFlow \
     -profile singularity \
     --sample_sheet Sample_sheet_twist.csv \
     --genome_fasta path/to/genome.fa \
-    --run_both_methods \
+    --diff_meth_method dss,edger \
     --gtf_file /data/Homo_sapiens.GRCh38.104.gtf \
     --refseq_file /data/hg38_RefSeq.bed.gz \
-    --outdir Results/TwistMethylFlow_CPU
+    --outdir Results/MethylFlow_CPU
 ```
 
 ### 3. Execution & Analysis Modes
 Users can also choose to run the differential methylation analysis for specific methods:
 
-1. when using the reference genome indexing, use `--genome_fasta` and `--run_both_methods` for both MethylKit and EdgeR differential analysis.
+1. when using the reference genome indexing, use `--genome_fasta` and `--diff_meth_method all` for comprehensive differential analysis.
 2. if you already have the bisulfite genome index, `--bismark_index`, add `--bismark_index /data/reference_genome/hg38/` file PATH, the workflow will skip indexing and uses the provided index.
-3. If you want to run only **EdgeR** for differential methylation analysis, use `--diff_meth_method edger`. It is the **default** method.
-4. If you want to run only **MethylKit** for differential methylation analysis, use `--diff_meth_method methylkit`.
-5. If you want to run the pipeline without differential methylation analysis, use `--skip_diff_meth`.
-6. If you want to run the pipeline with aligned BAM files instead of FASTQ files, use `--aligned_bams`.
-7. If you want to run both **MethylKit** and **EdgeR** for differential methylation analysis, use `--run_both_methods`.
+3. If you want to run only **DSS** for differential methylation analysis, use `--diff_meth_method dss`. It is the **default** method.
+4. If you want to run only **EdgeR** for differential methylation analysis, use `--diff_meth_method edger`.
+5. If you want to run only **MethylKit** for differential methylation analysis, use `--diff_meth_method methylkit`.
+6. If you want to run the pipeline without differential methylation analysis, use `--skip_diff_meth`.
+7. If you want to run the pipeline with aligned BAM files instead of FASTQ files, use `--aligned_bams`.
+8. If you want to run the **Clinical Mode** with unified reporting and disease annotation, use `-profile clinical`.
+9. If you want to trigger the automatic PDF report generation, use `--run_clinical_report`.
+
+### 4. Applied Clinical Genomics (New in v1.1.0)
+The pipeline now features a high-fidelity **Clinical Mode** (`--mode clinical`) used for diagnostic-ready reporting:
+- **Unified Aggregation Layer**: Automatically synthesizes results from all differential methods into a standardized schema.
+- **Disease Mapping**: Mapped gene-level results to clinical descriptors using the [DisGeNET](https://www.disgenet.org/) database.
+- **Regional Context**: Automatic annotation of DMRs into **Promoter**, **Enhancer**, or **Intergenic** regions based on TSS distance.
+- **Outlier Detection**: Detection of sample-level cohort deviations using multi-dimensional Z-score PCA on QC metrics.
+- **Pathway Integration**: Combined GO and KEGG enrichment analysis with automated narrative generation.
+- **CPU Parallelization**: Automated FastQ splitting and BAM merging for ultra-fast Bismark alignment on HPC clusters.
+
 
 > [!TIP] "demo data check"
 > Demo data runs with `hg19` reference genome. Rememeber to update the GTF/Refseq file accordingly
 
+## Testing the Pipeline
+
+You can easily test the pipeline's execution locally using the configured test data profiles. The configurations are powered by NVIDIA Parabricks for fast alignment analysis.
+
+```bash
+# Test the core mapping and QC steps (6 subset samples, runs fast)
+nextflow run main.nf -profile test_local,singularity,gpu
+
+# Test the core steps + all differential methylation methods (24 samples)
+nextflow run main.nf -profile test_full,singularity,gpu
+```
+
+## Example usage
 ## ⚙️ Parameters Reference
 
 | options | Description |
@@ -89,13 +122,13 @@ Users can also choose to run the differential methylation analysis for specific 
 | `--bismark_index`      | Path to the Bismark index directory (required unless `--genome` or `--aligned_bams` is provided) |
 | `--genome`             | Path to the reference genome FASTA file (required if `--bismark_index` not provided)| 
 | `--aligned_bams`       | Path to aligned BAM files (use this to start from aligned BAM files instead of FASTQ files) |
+| `--bismark_split_reads`| Number of reads per chunk for parallel Bismark alignment (default: 0 / disabled) |
 | `--refseq_file`        | Path to RefSeq file for annotation (**reuired** to run `both` or `methylkit`)  |
 | `--gtf_file`           | Path to GTF file for annotation (**reuired** to run `both` or `edger`)  |
 | `--outdir`             | Output directory (default: ./results) |
-| `--diff_meth_method`   | Differential methylation method to use: 'edger' or 'methylkit' (default: edger) | 
-| `--run_both_methods`   | Run both edgeR and methylkit for differential methylation analysis (default: false) | 
+| `--diff_meth_method`   | Differential methylation method to use: 'dss', 'edger', 'methylkit', or comma-separated list (default: dss) | 
 | `--skip_diff_meth`     | Skip differential methylation analysis (default: false)   | 
-| `--coverage_threshold` | Minimum read coverage to consider a CpG site (default: 10) |
+| `--coverage_threshold` | Minimum read coverage to consider a CpG site (default: 3) |
 | `--logfc_cutoff`       | Differential methylation cut-off for Volcano or MA plot (default: 1.5)    |  
 | `--pvalue_cutoff`      | Differential methylation P-value cut-off for Volcano or MA plot (default: 0.05)      | 
 | `--hyper_color`        | Hypermethylation color for Volcano or MA plot (default: red) |
@@ -108,9 +141,9 @@ Users can also choose to run the differential methylation analysis for specific 
 ## Pipeline HELP
 
 ```bash
-nextflow run JD2112/TwistMethylFlow --help --outdir .
+nextflow run JD2112/MethylFlow --help --outdir .
 ```
-Find the details on the [manual](https://jd2112.github.io/TwistMethylFlow/)
+Find the details on the [manual](https://jd2112.github.io/MethylFlow/)
 
 ## Credits
 - Main Author: 
@@ -121,17 +154,17 @@ Find the details on the [manual](https://jd2112.github.io/TwistMethylFlow/)
 
 ## Citation
 
-Das, J. (2024). TwistMethylFlow (v1.0.0). Zenodo. [https://doi.org/10.5281/zenodo.14204261](https://doi.org/10.5281/zenodo.14204261)
+Das, J. (2025). MethylFlow (v1.1.0). Zenodo. [https://doi.org/10.5281/zenodo.14204261](https://doi.org/10.5281/zenodo.14204261)
 
 ## FAQ/Troubleshooting
 
-Please check the [manual](https://jd2112.github.io/TwistMethylFlow/) for details.
+Please check the [manual](https://jd2112.github.io/MethylFlow/) for details.
 
-Please create [issues](https://github.com/JD2112/TwistMethylFlow/issues) on github.
+Please create [issues](https://github.com/JD2112/MethylFlow/issues) on github.
 
 ## License(s)
 
-[GNU-3 public license](https://github.com/JD2112/TwistMethylFlow/blob/v1.0.3/LICENSE).
+[GNU-3 public license](https://github.com/JD2112/MethylFlow/blob/v1.0.3/LICENSE).
 
 ## Acknowledgement
 

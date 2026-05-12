@@ -1,0 +1,14 @@
+name: methylflow-report
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - r-base=4.2.1
+  - r-tidyverse
+  - r-knitr
+  - r-kableextra
+  - r-jsonlite
+  - r-glue
+  - r-rlang
+  - r-rmarkdown

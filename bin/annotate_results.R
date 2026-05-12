@@ -9,7 +9,11 @@ suppressPackageStartupMessages({
     library(optparse)
     library(edgeR)
     library(dplyr)
+    library(org.Hs.eg.db)
 })
+
+# Enforce deterministic random sampling and clustering
+set.seed(42)
 
 # ---- Parse command line arguments ----
 option_list <- list(
@@ -48,31 +52,80 @@ safe_annotate <- function(f) {
         return(NULL)
     }
 
-    results <- tryCatch(read.csv(f), error = function(e) {
-        cat("  ⚠️ Error reading file:", e$message, "\n\n")
-        return(NULL)
+    results <- tryCatch({
+        read.csv(f)
+    }, error = function(e) {
+        stop(paste("Error reading file:", f, "-", e$message))
     })
-    if (is.null(results)) return(NULL)
+
+    # Handle different coordinate systems (Site-level vs Region-level)
+    # 1. Site-level (EdgeR/DSS DML): Chr, Locus
+    # 2. Region-level (DSS DMR): Chr, start, end
+    
+    if (!("Locus" %in% colnames(results))) {
+        if ("start" %in% colnames(results) && "end" %in% colnames(results)) {
+            cat("  Detection: Region-level data (DMR) found. Using midpoint for annotation.\n")
+            results$Locus <- as.integer((results$start + results$end) / 2)
+        } else if ("pos" %in% colnames(results)) {
+            cat("  Detection: 'pos' column found. Mapping to 'Locus'.\n")
+            results$Locus <- results$pos
+        }
+    }
 
     required_cols <- c("Chr", "Locus")
+    cat("  Columns found:", paste(colnames(results), collapse = ", "), "\n")
+    cat("  Preview of data (first 5 rows):\n")
+    print(head(results, 5))
     missing <- setdiff(required_cols, colnames(results))
     if (length(missing) > 0) {
-        cat("  ⚠️ Missing columns:", paste(missing, collapse = ", "), "→ skipping", "\n\n")
+        stop(paste("File", f, "is missing required columns:", paste(missing, collapse = ", "), ". It must have (Chr, Locus) or (Chr, start, end)."))
+    }
+
+    # Normalize chromosome names and handle NAs
+    results <- results[!is.na(results$Chr) & !is.na(results$Locus), ]
+    results$Chr <- as.character(results$Chr)
+    results$Chr <- ifelse(grepl("^chr", results$Chr), results$Chr, paste0("chr", results$Chr))
+    # Remove any that became "chrNA"
+    results <- results[results$Chr != "chrNA", ]
+    
+    # Ensure Locus is integer
+    results$Locus <- as.integer(as.character(results$Locus))
+    
+    # Filter for standard human chromosomes to avoid nearestTSS internal errors
+    valid_chrs <- c(paste0("chr", c(1:22, "X", "Y", "M", "MT")), c(1:22, "X", "Y", "M", "MT"))
+    results <- results[results$Chr %in% valid_chrs, ]
+    results <- results[!is.na(results$Chr) & !is.na(results$Locus), ]
+
+    cat("  Rows after chromosome filtering:", nrow(results), "\n")
+    if (nrow(results) == 0) {
+        cat("  ⚠️ No valid rows to annotate. Writing empty file with headers.\n")
+        # Ensure the columns for annotation exist even if empty
+        results$EntrezID <- character(0)
+        results$Symbol   <- character(0)
+        results$Strand   <- character(0)
+        results$Distance <- numeric(0)
+        results$Width    <- numeric(0)
+        
+        base <- tools::file_path_sans_ext(basename(f))
+        out_file <- paste0(base, "_annotated.csv")
+        write.csv(results, file = out_file, row.names = FALSE)
+        cat("  ✅ Written empty file:", out_file, "\n\n")
         return(NULL)
     }
 
-    # Normalize chromosome names
-    results$Chr <- ifelse(grepl("^chr", results$Chr), results$Chr, paste0("chr", results$Chr))
+    cat("  Sample of data to be annotated:\n")
+    print(head(results[, c("Chr", "Locus")], 5))
 
     # Perform annotation
     cat("  Finding nearest TSS...\n")
+    # Use unname() and as.vector() to prevent 'invalid row.names length' errors in nearestTSS
     TSS <- tryCatch({
-        nearestTSS(results$Chr, results$Locus, species = "Hs")
+        nearestTSS(as.vector(unname(results$Chr)), 
+                   as.vector(unname(results$Locus)), 
+                   species = "Hs")
     }, error = function(e) {
-        cat("  ⚠️ Annotation failed for", f, ":", e$message, "\n\n")
-        return(NULL)
+        stop(paste("Annotation failed for", f, ":", e$message))
     })
-    if (is.null(TSS)) return(NULL)
 
     results$EntrezID <- TSS$gene_id
     results$Symbol   <- TSS$symbol

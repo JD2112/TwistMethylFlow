@@ -1,5 +1,6 @@
 include { EDGER_ANALYSIS } from '../modules/edger'
 include { METHYLKIT_ANALYSIS } from '../modules/methylkit'
+include { DSS_ANALYSIS } from '../modules/dss'
 
 workflow DIFFERENTIAL_METHYLATION {
     take:
@@ -13,11 +14,20 @@ workflow DIFFERENTIAL_METHYLATION {
     methylkit_mc_cores
     methylkit_diff
     methylkit_qvalue
+    methylkit_bed
+    dss_p_threshold
+    dss_diff_threshold
+    edger_p_threshold
+    edger_logfc_cutoff
+    methylkit_min_per_group
 
     main:    
     ch_versions = Channel.empty()
     ch_edger_results = Channel.empty()
     ch_methylkit_results = Channel.empty()
+    ch_dss_results = Channel.empty()
+
+    def methods = method.split(',').collect { it.trim().toLowerCase() }
 
     // Prepare the coverage files channel
     coverage_files_prepared = coverage_files
@@ -26,42 +36,52 @@ workflow DIFFERENTIAL_METHYLATION {
         }
         .collect()
     
-    //log.info "DIFFERENTIAL_METHYLATION: Prepared coverage files: ${coverage_files_prepared}"
+    log.info "DIFFERENTIAL_METHYLATION: Prepared coverage files for analysis"
 
-    if (method == 'edger' || method == 'both') {
-        //log.info "DIFFERENTIAL_METHYLATION: Running EdgeR analysis"        
+    if (methods.contains('edger') || methods.contains('all')) {
+        log.info "DIFFERENTIAL_METHYLATION: Running EdgeR analysis"        
         EDGER_ANALYSIS (
             coverage_files_prepared,
             design_file,
             compare_str,
-            coverage_threshold
+            coverage_threshold,
+            edger_p_threshold,
+            edger_logfc_cutoff
         )
         ch_edger_results = EDGER_ANALYSIS.out.results
         ch_versions = ch_versions.mix(EDGER_ANALYSIS.out.versions)
-        //log.info "DIFFERENTIAL_METHYLATION: EdgeR analysis completed"        
     }
 
-    if (method == 'methylkit' || method == 'both') {
-        //log.info "DIFFERENTIAL_METHYLATION: Running MethylKit analysis"        
-        try {
-            METHYLKIT_ANALYSIS (
-                coverage_files_prepared,
-                design_file,
-                compare_str,
-                coverage_threshold,
-                refseq_file,
-                methylkit_assembly,
-                methylkit_mc_cores,
-                methylkit_diff,
-                methylkit_qvalue
-            )
-            ch_methylkit_results = METHYLKIT_ANALYSIS.out.results
-            ch_versions = ch_versions.mix(METHYLKIT_ANALYSIS.out.versions)
-            //log.info "DIFFERENTIAL_METHYLATION: MethylKit analysis completed"            
-        } catch (Exception e) {
-            //log.error "DIFFERENTIAL_METHYLATION: Error in METHYLKIT_ANALYSIS: ${e.message}"
-            e.printStackTrace()
-        }
+    if (methods.contains('methylkit') || methods.contains('all')) {
+        log.info "DIFFERENTIAL_METHYLATION: Running MethylKit analysis"        
+        METHYLKIT_ANALYSIS (
+            coverage_files_prepared,
+            design_file,
+            compare_str,
+            coverage_threshold,
+            refseq_file,
+            methylkit_assembly,
+            methylkit_mc_cores,
+            methylkit_diff,
+            methylkit_qvalue,
+            methylkit_bed,
+            methylkit_min_per_group
+        )
+        ch_methylkit_results = METHYLKIT_ANALYSIS.out.results
+        ch_versions = ch_versions.mix(METHYLKIT_ANALYSIS.out.versions)
+    }
+
+    if (methods.contains('dss') || methods.contains('all')) {
+        DSS_ANALYSIS (
+            coverage_files_prepared,
+            design_file,
+            compare_str,
+            coverage_threshold,
+            dss_p_threshold,
+            dss_diff_threshold
+        )
+        ch_dss_results = DSS_ANALYSIS.out.results
+        ch_versions = ch_versions.mix(DSS_ANALYSIS.out.versions)
     }
 
     // Combine the results for RESULT_ANALYSIS
@@ -72,6 +92,7 @@ workflow DIFFERENTIAL_METHYLATION {
     emit:
     edger_results = ch_edger_results
     methylkit_results = ch_methylkit_results
+    dss_results = ch_dss_results
     //combined_results = ch_combined_results
     versions = ch_versions
 }

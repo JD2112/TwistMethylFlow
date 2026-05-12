@@ -1,0 +1,53 @@
+# MethylFlow Troubleshooting & Maintenance Guide
+
+This document tracks known runtime issues and their resolutions to ensure pipeline stability across different environments.
+
+## 1. Reporting & LaTeX Issues
+
+### Error: `Package pgfkeys Error: I do not know the key '/tcb/interior hidden'`
+- **Cause**: The `tcolorbox` LaTeX package requires the `skins` library to be explicitly loaded to support advanced Quarto styling keys.
+- **Fix**: In the `.qmd` header (e.g., `assets/report.qmd`), ensure `tcolorbox` is loaded with the skins and breakable options:
+  ```latex
+  \usepackage[skins,breakable]{tcolorbox}
+  ```
+- **Additional Mitigation**: In `modules/report.nf`, use a lightweight highlight style in the YAML metadata to reduce LaTeX complexity:
+  ```yaml
+  highlight-style: github
+  ```
+
+### Missing R Packages in `REPORT` Process
+- **Symptom**: `Error in library(tidyverse): there is no package called 'tidyverse'`
+- **Fix**: Ensure `tidyverse` is included in the `Dockerfile_report`. 
+- **Temporary Workaround**: Pin the `REPORT` process to a known stable image in `conf/containers.config`.
+
+## 2. Channel & Data Flow Issues
+
+### Error: `Not a valid path value type: java.util.LinkedHashMap`
+- **Cause**: Nextflow DSL2 often passes metadata maps alongside file paths (e.g., `[meta, file]`). If a process input expects a strict `path`, the presence of the `LinkedHashMap` (meta) will cause a crash.
+- **Fix**: Map the channel to extract the file object before passing it to the module:
+  ```nextflow
+  CHANNEL.map { it[1] }.collect()
+  ```
+
+### Process Input File Name Collision
+- **Symptom**: `Process UNIFIED_LAYER input file name collision -- epigenetic_metrics.json`
+- **Cause**: Multiple statistical methods (EdgeR, MethylKit, DSS) producing files with the same name which are then collected into a single process work directory.
+- **Fix**: Prefix output files with the method name in the module definition:
+  ```nextflow
+  mv epigenetic_metrics.json ${method}_epigenetic_metrics.json
+  ```
+
+## 3. Multi-Platform Build Strategy
+
+To build images that work on both Intel/AMD (Server) and Apple Silicon (Mac), use the provided `build_report.sh` script.
+
+**Prerequisites**:
+- Docker Desktop with `buildx` enabled.
+- `cosign` installed for image signing.
+
+**Commands**:
+```bash
+# Build, Push, and Sign for both architectures
+./build_report.sh
+```
+The script handles manifest creation and digest signing automatically.

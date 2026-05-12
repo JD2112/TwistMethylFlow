@@ -23,3 +23,14 @@ Manual_Run.md
 data
 README.html
 README_files/
+git_workflow_summary.md
+tmf_slurm.sh
+backup/
+.venv/
+results_report_gpu/
+result_analysis/
+build_report.sh
+cosign.key
+cosign.pub
+*.key
+*.pub

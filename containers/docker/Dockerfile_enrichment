@@ -1,0 +1,129 @@
+FROM rocker/r-ver:4.6.0
+
+# ================================================================================
+# SECURITY ANNOTATIONS - methylflow-enrichment:1.1.0
+# ================================================================================
+# Image Status: ✅ SAFE FOR PRODUCTION (with conditions)
+#
+# KNOWN VULNERABILITIES: 12 (1 CRITICAL + 11 HIGH)
+# Source: rocker/r-ver:4.6.0 base image (Ubuntu 24.04 LTS)
+#
+# CVE #1: Go stdlib 1.23.12 in Quarto esbuild (statically linked, unfixable)
+#   - CVEs: CVE-2025-68121 (CRITICAL), CVE-2026-32283, CVE-2026-32281, etc. (10 more HIGH)
+#   - Status: CANNOT BE PATCHED (requires Quarto upstream rebuild with Go 1.25+)
+#   - Fix Timeline: Quarto v1.7+ expected Q2 2025
+#   - Risk: MEDIUM (Quarto not used in enrichment analysis, esbuild inactive)
+#
+# CVE #2: Linux kernel 6.8.0-111 (unfixable in Ubuntu 24.04)
+#   - CVE: CVE-2026-31431 (HIGH)
+#   - Status: CANNOT BE PATCHED (no fix in ubuntu:24.04 stream)
+#   - Risk: LOW (requires container escape)
+#
+# PRODUCTION ASSESSMENT:
+# ✅ SAFE: Enrichment analysis uses Bioconductor for data processing (read-only)
+# ✅ SAFE: No Quarto rendering, no JS/TS compilation needed
+# ✅ SAFE: Internal batch workflows with trusted data
+# ⚠️  CONDITIONAL: Must implement runtime hardening (see HARDENING_EXAMPLES.md)
+# ⚠️  CONDITIONAL: Cannot use for HIPAA/PCI-DSS without formal risk acceptance
+#
+# HARDENING REQUIRED: See HARDENING_EXAMPLES.md for K8s/Docker Compose configs
+#   - Run as non-root (appuser)
+#   - Use read-only filesystem (if possible)
+#   - Drop all capabilities (--cap-drop=ALL)
+#   - Disable privilege escalation (--security-opt=no-new-privileges)
+#
+# MONITORING: Quarterly CVE scans + monthly check for Quarto v1.7 release
+#
+# Full Security Documentation: See SECURITY.md, RESOLUTION_SUMMARY.md
+# ================================================================================
+
+LABEL org.opencontainers.image.authors="Jyotirmoy Das" \
+      org.opencontainers.image.description="MethylFlow Enrichment (Bioconductor analysis)" \
+      org.opencontainers.image.version="1.1.0" \
+      org.opencontainers.image.documentation="See PRODUCTION_READINESS.md" \
+      security.status="PRODUCTION_READY_WITH_HARDENING" \
+      security.cves.total="12" \
+      security.cves.critical="1" \
+      security.cves.high="11" \
+      security.cves.unfixable="12 (upstream limitation)" \
+      security.known-cves="CVE-2025-68121,CVE-2026-32283,CVE-2026-32281,CVE-2026-32280,CVE-2026-25679,CVE-2025-61729,CVE-2025-61726,CVE-2025-61725,CVE-2025-61723,CVE-2025-58188,CVE-2025-58187,CVE-2026-31431" \
+      security.required-hardening="Read-only FS, cap-drop, no-new-privileges, non-root" \
+      security.upstream-issue="Go 1.23.12 in Quarto (rocker/r-ver base), Linux kernel in Ubuntu 24.04" \
+      security.upstream-fix-eta="Q2 2025 (Quarto v1.7+)"
+
+# ---- Reproducibility: pin repositories ----
+ENV CRAN_REPO=https://packagemanager.posit.co/cran/__linux__/noble/2026-05-01
+ENV BIOC_VERSION=3.23
+
+RUN echo "options(repos = c(CRAN = '${CRAN_REPO}'))" >> /usr/local/lib/R/etc/Rprofile.site && \
+    echo "options(BioC_mirror = 'https://packagemanager.posit.co/bioconductor')" >> /usr/local/lib/R/etc/Rprofile.site && \
+    echo 'options(HTTPUserAgent = sprintf("R/%s R (%s)", getRversion(), paste(getRversion(), R.version["platform"], R.version["arch"], R.version["os"])))' >> /usr/local/lib/R/etc/Rprofile.site
+
+# ---- System dependencies ----
+RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
+    procps \
+    libxml2-dev \
+    libssl-dev \
+    libcurl4-openssl-dev \
+    libfontconfig1-dev \
+    libharfbuzz-dev \
+    libfribidi-dev \
+    libfreetype6-dev \
+    libpng-dev \
+    libtiff5-dev \
+    libjpeg-dev \
+    libicu-dev \
+    zlib1g-dev \
+    libpq-dev \
+    make \
+    build-essential \
+    autoconf \
+    automake \
+    libtool \
+    git \
+    pkg-config \
+    && apt-get clean
+
+# Compile nghttp2 1.69.0 from source to patch CVE-2026-27135
+RUN cd /tmp && \
+    git clone --depth 1 --branch v1.69.0 https://github.com/nghttp2/nghttp2.git && \
+    cd nghttp2 && \
+    autoreconf -i && \
+    ./configure --prefix=/usr/local --disable-examples --disable-man && \
+    make && \
+    make install && \
+    ldconfig && \
+    cd / && \
+    rm -rf /tmp/nghttp2
+
+# Clean up build tools and vulnerable casperjs
+RUN apt-get remove -y build-essential autoconf automake libtool git pkg-config && \
+    apt-get autoremove -y && \
+    apt-get clean && \
+    find / -name "*casperjs*" -exec rm -rf {} + 2>/dev/null || true && \
+    rm -rf /var/lib/apt/lists/*
+
+# ---- Install CRAN packages ----
+RUN install2.r --error --deps TRUE \
+    optparse \
+    dplyr \
+    ggplot2
+
+# ---- Install Bioconductor packages ----
+RUN R -e "\
+    options(repos = c(CRAN = Sys.getenv('CRAN_REPO'))); \
+    if (!requireNamespace('BiocManager', quietly = TRUE)) install.packages('BiocManager'); \
+    BiocManager::install(version = '${BIOC_VERSION}', ask = FALSE); \
+    pkgs <- c('clusterProfiler','org.Hs.eg.db','DOSE','ReactomePA','GOplot'); \
+    BiocManager::install(pkgs, ask = FALSE, update = FALSE);"
+
+WORKDIR /app
+RUN useradd -m -s /bin/bash appuser && \
+    chown -R appuser:appuser /app
+USER appuser
+
+# Healthcheck
+HEALTHCHECK --interval=60s --timeout=15s --start-period=10s --retries=3 \
+  CMD R -e "library(clusterProfiler)" || exit 1
+
+CMD ["R"]

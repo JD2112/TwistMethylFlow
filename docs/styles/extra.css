@@ -1,120 +1,190 @@
 :root {
-    --font-family-main: "Inter", "Helvetica Neue", Arial, sans-serif;
-    --font-size: 17px;
-  }
-
-  .md-typeset {
-    font-family: var(--font-family-main);
-    font-size: var(--font-size);
-    line-height: 1.7;
-  }
-
-  /* --- HEADING STYLES LIKE QUARTO --- */
-  .md-typeset h1 {
-    font-size: 2.2em;
-    margin-bottom: 0.5em;
-  }
-  .md-typeset h2 {
-    font-size: 1.7em;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 0.2em;
-    margin-top: 2em;
-  }
-  .md-typeset h3 {
-    font-size: 1.3em;
-    margin-top: 1.5em;
-  }
-
-  /* --- SIDEBAR / NAV TWEAKS --- */
-  .md-sidebar {
-    font-size: 0.95rem;
-  }
-  .md-nav__link--active {
-    background: #f0f0f0;
-    border-left: 3px solid #007acc;
-    font-weight: bold;
-  }
-
-  /* --- CODE BLOCKS --- */
-  .md-typeset pre code {
-    background: #f7f7f7;
-    border: 1px solid #ddd;
-    padding: 1em;
-    border-radius: 6px;
-    font-size: 0.9em;
-  }
-
-  /* --- CUSTOM FOOTER CLEANUP --- */
-  footer {
-    background: #000 !important;
-    color: #fff;
-  }
-  footer a {
-    color: #bbb;
-  }
-  footer a:hover {
-    color: #fff;
-  }
-
-/* Make sidebar footer always visible below the nav */
-/* Sidebar GitHub footer */
-.md-sidebar-footer--custom {
-    margin-top: auto;          /* push content to bottom */
-    padding: 1rem;
-    text-align: center;
+  --font-family-main: "Inter", "Helvetica Neue", Arial, sans-serif;
+  --font-size: 17px;
 }
 
-.sidebar-github img {
-    display: inline-block;
-    transition: transform 0.2s;
+.md-typeset {
+  font-family: var(--font-family-main);
+  font-size: var(--font-size);
+  line-height: 1.7;
 }
 
-.sidebar-github img:hover {
-    transform: scale(1.2);
+/* --- HERO SECTION --- */
+.hero-container {
+  text-align: center;
+  padding: 3rem 1rem;
+  background: linear-gradient(135deg, rgba(33, 150, 243, 0.05) 0%, rgba(156, 39, 176, 0.05) 100%);
+  border-radius: 1rem;
+  margin-bottom: 3rem;
+  border: 1px solid var(--md-default-fg-color--lightest);
 }
 
-.md-icon--github {
-  font-size: 1.2em;
-  margin-right: 0.3em;
+.hero-container h1 {
+  margin-bottom: 0.5rem !important;
+  font-weight: 800;
+  letter-spacing: -0.02em;
 }
 
-.repo-icon {
-  margin-left: 6px;
-  display: inline-flex;
-  align-items: center;
+.hero-subtitle {
+  font-size: 1.2rem;
+  color: var(--md-default-fg-color--light);
+  margin-bottom: 1.5rem;
+}
+
+.hero-badges {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* --- GRID LAYOUT (80/20) --- */
+.grid-container {
+  display: flex;
+  gap: 3.5rem;
+  margin-top: 2rem;
+}
+
+.main-content {
+  flex: 0 0 75%;
+  min-width: 0;
+}
+
+.side-panel {
+  flex: 0 0 22%;
+  font-size: 0.85rem;
+  border-left: 1px solid var(--md-default-fg-color--lightest);
+  padding-left: 2rem;
+}
+
+@media (max-width: 1100px) {
+  .grid-container {
+    flex-direction: column;
+  }
+
+  .main-content,
+  .side-panel {
+    flex: 0 0 100%;
+    border-left: none;
+    padding-left: 0;
+  }
+}
+
+/* --- CARDS & PANELS --- */
+.side-panel h2 {
+  font-size: 0.8rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--md-default-fg-color--light);
+  border-bottom: none !important;
+  margin-top: 2rem !important;
+  margin-bottom: 0.8rem !important;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.8rem 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.stats-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.stats-value {
+  font-weight: 700;
+  font-size: 1rem;
   color: var(--md-default-fg-color);
 }
-.repo-icon:hover {
-  color: var(--md-accent-fg-color);
+
+.stats-label {
+  font-size: 0.72rem;
+  color: var(--md-default-fg-color--light);
+  text-transform: lowercase;
 }
 
-.md-content {
-  margin-left: auto;
-  margin-right: 0;
-  max-width: 900px;   /* adjust width */
+.tag-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
 }
-.md-typeset h1, .md-typeset h2 {
-    font-weight: 600; /* make headings bold */
-    color: cadetblue;
+
+.tag-section a {
+  text-decoration: none !important;
+}
+
+.tag-section span {
+  background: #f1f3f4;
+  color: #5f6368;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  border: 1px solid #dadce0;
+  transition: all 0.2s;
+  display: inline-block;
+}
+
+.tag-section span:hover {
+  background: #e1f5fe;
+  color: #01579b;
+  border-color: #039be5;
+  transform: translateY(-1px);
+}
+
+.contrib-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+}
+
+.contrib-img {
+  width: 42px;
+  height: 42px;
+  border-radius: 4px;
+  /* Square with slight rounding */
+  border: 1px solid #ddd;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.contrib-img:hover {
+  transform: scale(1.08);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* --- HEADING STYLES --- */
+.md-typeset h2 {
+  font-size: 1.5em;
+  border-bottom: 1px solid var(--md-default-fg-color--lightest);
+  padding-bottom: 0.3em;
+  margin-top: 2em;
 }
 
 .md-typeset h3 {
-    font-weight: 600; /* make headings bold */
-    color: rgb(91, 2, 123);
+  font-size: 1.25em;
+  font-weight: 600;
 }
 
-.md-typeset h4 {
-    font-weight: 500; /* make headings bold */
-    color: rgb(19, 4, 148);
+/* Custom image styling for the homepage */
+.main-content img {
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  margin: 1.5rem 0;
 }
 
-.md-typeset p {
-    margin-bottom: 1.2em; /* increase spacing between paragraphs */
+/* Code block customization */
+.md-typeset pre code {
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
 }
-.md-typeset a {
-    color: #007acc; /* link color */
-    text-decoration: none;
-}
-.md-typeset a:hover {
-    text-decoration: underline;
+
+/* Hide navigation and TOC only on the homepage */
+body.homepage .md-sidebar--secondary,
+body.homepage .md-sidebar--primary {
+  display: none;
 }
