@@ -1,7 +1,6 @@
 include { FASTQC } from '../modules/fastqc'
 include { TRIM_GALORE } from '../modules/trim_galore'
 include { CHECKSUM_VERIFY } from '../modules/checksum'
-
 include { VALIDATE_SYNC } from '../modules/validate_sync'
 
 workflow READ_PROCESSING {
@@ -26,5 +25,6 @@ workflow READ_PROCESSING {
     fastqc_reports = FASTQC.out.reports
     trimming_reports = TRIM_GALORE.out.reports
     checksums = CHECKSUM_VERIFY.out.checksums
+    sync_status = VALIDATE_SYNC.out.status
     versions = ch_versions
 }

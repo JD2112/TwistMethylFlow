@@ -8,38 +8,48 @@ process PRE_STAGE_FILES {
     script:
     """
     echo "===================================================="
-    echo "Reviewer Mode: Auto-Staging Human EM-seq Test Data"
+    echo "PRE-STAGE: System and Sample Sheet Audit"
     echo "===================================================="
     
-    # Check for GPU availability if parabricks is intended to be used
-    if [ "${params.use_parabricks}" = "true" ]; then
-        echo "Checking for NVIDIA GPU availability..."
-        if command -v nvidia-smi &> /dev/null; then
-            nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
-        else
-            echo "WARNING: nvidia-smi not found. GPU acceleration may fail or fall back to CPU!"
-        fi
+    # Check GPU visibility
+    if command -v nvidia-smi &> /dev/null; then
+        echo "GPU Audit:"
+        nvidia-smi --query-gpu=name,memory.total,utilization.gpu --format=csv,noheader
+    else
+        echo "No NVIDIA GPUs detected on host."
     fi
 
-    # Validate sample sheet hardware column if it exists
-    echo "Validating sample sheet hardware assignments..."
-    python3 -c "
+    # Validate Sample Sheet Hardware column
+    python3 <<EOF
 import csv
 import sys
+import os
+
+sample_sheet = "${params.sample_sheet}"
+if not os.path.exists(sample_sheet):
+    print(f"Sample sheet not found: {sample_sheet}")
+    sys.exit(0)
+
 try:
-    with open('${params.sample_sheet}', 'r') as f:
+    with open(sample_sheet, 'r') as f:
         reader = csv.DictReader(f)
         for row in reader:
             hw = row.get('hardware', '').lower()
-            if hw and hw not in ['cpu', 'gpu']:
-                print(f\"ERROR: Invalid hardware type '{hw}' for sample {row.get('sample_id', 'unknown')}\")
+            if not hw:
+                print(f"WARNING: No hardware specified for sample {row.get('sample_id', 'unknown')}. Defaulting to GPU.")
+            elif hw not in ['cpu', 'gpu']:
+                print(f"ERROR: Invalid hardware type '{hw}' for sample {row.get('sample_id', 'unknown')}")
+                print("Allowed values: 'cpu' or 'gpu'")
                 sys.exit(1)
-    print(\"Sample sheet hardware validation passed.\")
+    print("Sample sheet validation complete.")
 except Exception as e:
-    print(f\"Validation skipped: {e}\")
-"
+    print(f"Validation skipped: {e}")
+EOF
 
-    bash ${projectDir}/bin/download_test_data.sh ${projectDir} ${params.sample_sheet}
+    # Download test data if script exists
+    if [ -f "${projectDir}/bin/download_test_data.sh" ]; then
+        bash ${projectDir}/bin/download_test_data.sh ${projectDir} ${params.sample_sheet}
+    fi
     """
 }
 

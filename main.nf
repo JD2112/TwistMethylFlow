@@ -34,10 +34,10 @@ def validate_input_parameters() {
     // Show help message
     if (params.help) {
         def helpMessage = file("$projectDir/conf/USAGE.md").text
-        log.info"""
-        ===========================================================================
-                      MethylFlow DNA Methylation Data Analysis Pipeline
-        ===========================================================================
+        log.info """
+        ========================================================================================
+                      milou: Methylation Integrated Layer for Omics Unification
+        ========================================================================================
         ${helpMessage}
         """.stripIndent()
         exit 0
@@ -45,44 +45,47 @@ def validate_input_parameters() {
 
     // Validate parameters using nf-validation
     validateParameters()
+}
 
-    // Print pipeline info
-    log.info """
-    ===============================================================================
-    ▗▄▄▄▖▗▖ ▗▖▗▄▄▄▖ ▗▄▄▖▗▄▄▄▖▗▖  ▗▖▗▄▄▄▖▗▄▄▄▖▗▖ ▗▖▗▖  ▗▖▗▖   ▗▄▄▄▖▗▖    ▗▄▖ ▗▖ ▗▖
-      █  ▐▌ ▐▌  █  ▐▌     █  ▐▛▚▞▜▌▐▌     █  ▐▌ ▐▌ ▝▚▞▘ ▐▌   ▐▌   ▐▌   ▐▌ ▐▌▐▌ ▐▌
-      █  ▐▌ ▐▌  █   ▝▀▚▖  █  ▐▌  ▐▌▐▛▀▀▘  █  ▐▛▀▜▌  ▐▌  ▐▌   ▐▛▀▀▘▐▌   ▐▌ ▐▌▐▌ ▐▌
-      █  ▐▙█▟▌▗▄█▄▖▗▄▄▞▘  █  ▐▌  ▐▌▐▙▄▄▖  █  ▐▌ ▐▌  ▐▌  ▐▙▄▄▖▐▌   ▐▙▄▄▖▝▚▄▞▘▐▙█▟▌
+validate_input_parameters()
 
-    MethylFlow DNA Methylation Data Analysis Pipeline
-    ================================================================================
-    Execution Profile       : \${workflow.profile}
-    Operating Mode          : \${params.mode}
-    Sample Sheet            : \${params.sample_sheet}
-    Output Directory        : \${params.outdir}
+// Print pipeline info
+log.info """
+===============================================================================
+           _ _               
+ _ __ ___ (_) | ___  _   _ 
+| '_ ` _ \\| | |/ _ \\| | | |
+| | | | | | | | (_) | |_| |
+|_| |_| |_|_|_|\\___/ \\__,_|
+
+milou: Methylation Integrated Layer for Omics Unification
+================================================================================
+    Execution Profile       : ${workflow.profile}
+    Operating Mode          : ${params.mode}
+    Sample Sheet            : ${params.sample_sheet}
+    Output Directory        : ${params.outdir}
 
     [Reference & Environment]
-    Genome Fasta            : \${params.genome_fasta}
-    Pre-stage Test Data     : \${params.pre_stage_test_data}
+    Genome Fasta            : ${params.genome_fasta}
+    Pre-stage Test Data     : ${params.pre_stage_test_data}
 
     [Alignment Strategy]
-    Primary Aligner         : \${params.aligner}
-    GPU Acceleration        : \${params.use_parabricks}
+    Primary Aligner         : ${params.aligner}
+    GPU Acceleration        : ${params.use_parabricks}
 
     [DMR & Clinical Setup]
-    Compare String          : \${params.compare_str}
-    Coverage Threshold      : \${params.coverage_threshold}x
-    DMR Method              : \${params.diff_meth_method}
-    Skip Diff Meth          : \${params.skip_diff_meth}
+    Compare String          : ${params.compare_str}
+    Coverage Threshold      : ${params.coverage_threshold}x
+    DMR Method              : ${params.diff_meth_method}
+    Skip Diff Meth          : ${params.skip_diff_meth}
 
     [Consensus Thresholds]
-    MethylKit (Diff / Q)    : \${params.methylkit.diff} / \${params.methylkit.qvalue}
-    DSS (Diff / P)          : \${params.dss.diff_threshold} / \${params.dss.p_threshold}
-    EdgeR (LogFC / P)       : \${params.edger.logfc_cutoff} / \${params.edger.p_threshold}
-    Top N Genes Exported    : \${params.top_n_genes}
+    MethylKit (Diff / Q)    : ${params.methylkit.diff} / ${params.methylkit.qvalue}
+    DSS (Diff / P)          : ${params.dss.diff_threshold} / ${params.dss.p_threshold}
+    EdgeR (LogFC / P)       : ${params.edger.logfc_cutoff} / ${params.edger.p_threshold}
+    Top N Genes Exported    : ${params.top_n_genes}
     ================================================================================
     """
-}
 
 
 def create_sample_channel(sample_sheet) {
@@ -148,10 +151,6 @@ workflow {
                 def id = row.sample_id ?: row.sample
                 def read1 = row.read1 ?: row.fastq_1
                 def read2 = row.read2 ?: row.fastq_2
-                def hardware = row.hardware ?: (params.use_parabricks ? 'gpu' : 'cpu')
-                
-                // Log hardware assignment for visibility
-                log.info "Sample [${id}] assigned to [${hardware.toUpperCase()}] track"
                 
                 // Handle remote URLs vs local paths
                 def r1_path = read1
@@ -173,7 +172,7 @@ workflow {
                 def r1 = file(r1_path)
                 def r2 = r2_path ? file(r2_path) : null
                 
-                def meta = [ id: id, single_end: r2 ? false : true, hardware: hardware ]
+                def meta = [ id: id, single_end: r2 ? false : true ]
                 def reads = r2 ? [r1, r2] : [r1]
                 rows << [meta, reads]
             }
@@ -200,13 +199,57 @@ workflow {
         ch_trimming_reports = READ_PROCESSING.out.trimming_reports
         ch_checksums = READ_PROCESSING.out.checksums
 
-        // Branching based on hardware
+        // Process validation results and filter zombies
         READ_PROCESSING.out.trimmed_reads
+            .join(READ_PROCESSING.out.sync_status)
+            .map { meta, reads, status_file ->
+                def status = status_file.text.trim()
+                [ meta + [ status: status ], reads ]
+            }
             .branch { meta, reads ->
-                gpu: meta.hardware == 'gpu'
+                zombie: meta.status.startsWith('zombie')
+                passed: true
+            }
+            .set { ch_validated_reads }
+
+        // Report excluded zombies
+        def total_input_samples = 0
+        ch_samples.count().subscribe { total_input_samples = it }
+
+        ch_validated_reads.zombie
+            .map { meta, reads -> meta.id }
+            .collect()
+            .subscribe { ids ->
+                if (ids) {
+                    log.warn "=========================================================================="
+                    log.warn "ZOMBIE SAMPLES DETECTED: ${ids.join(', ')}"
+                    log.warn "These samples have mismatched/truncated reads and were EXCLUDED."
+                    log.warn "Proceeding with remaining healthy samples."
+                    log.warn "=========================================================================="
+                }
+            }
+
+        // Report hardware assignments
+        ch_validated_reads.passed
+            .branch { meta, reads ->
+                gpu: meta.hardware == 'gpu' || !meta.hardware
                 cpu: meta.hardware == 'cpu'
             }
             .set { ch_branched_reads }
+
+        ch_branched_reads.gpu
+            .map { meta, reads -> meta.id }
+            .collect()
+            .subscribe { ids ->
+                if (ids) log.info "HARDWARE TRACK [GPU]: ${ids.size()} samples (${ids.join(', ')})"
+            }
+        
+        ch_branched_reads.cpu
+            .map { meta, reads -> meta.id }
+            .collect()
+            .subscribe { ids ->
+                if (ids) log.info "HARDWARE TRACK [CPU]: ${ids.size()} samples (${ids.join(', ')})"
+            }
 
         // Parabricks analysis (GPU)
         ch_coverage_files_pb = Channel.empty()

@@ -7,29 +7,58 @@ process VALIDATE_SYNC {
 
     output:
     tuple val(meta), path(reads), emit: reads
+    tuple val(meta), path("sync_status.txt"), emit: status
 
     script:
     if (meta.single_end) {
         """
-        echo "Single-end sample, skipping sync check."
+        echo "passed" > sync_status.txt
         """
     } else {
         """
-        # Extract first 1000 IDs from both files and compare
-        # We handle .gz files and look for the first field (the ID)
-        zgrep -m 1000 '^@' ${reads[0]} | cut -d' ' -f1 | sort > r1_ids.txt
-        zgrep -m 1000 '^@' ${reads[1]} | cut -d' ' -f1 | sort > r2_ids.txt
+        # 0. Check for empty files
+        if [ ! -s ${reads[0]} ] || [ ! -s ${reads[1]} ]; then
+            echo "zombie" > sync_status.txt
+            exit 0
+        fi
+
+        # 1. Check first 1000 IDs (Maintain order, strip suffixes)
+        zgrep -m 1000 '^@' ${reads[0]} | cut -d' ' -f1 | sed 's/\\/[12]\$//; s/_[12]\$//' > r1_head.txt
+        zgrep -m 1000 '^@' ${reads[1]} | cut -d' ' -f1 | sed 's/\\/[12]\$//; s/_[12]\$//' > r2_head.txt
         
-        if diff r1_ids.txt r2_ids.txt > /dev/null; then
-            echo "FastQ Synchronicity Check Passed for ${meta.id}"
+        # 2. Check last 1000 IDs (To catch truncation, strip suffixes)
+        zcat ${reads[0]} | tail -n 4000 | grep '^@' | cut -d' ' -f1 | sed 's/\\/[12]\$//; s/_[12]\$//' > r1_tail.txt
+        zcat ${reads[1]} | tail -n 4000 | grep '^@' | cut -d' ' -f1 | sed 's/\\/[12]\$//; s/_[12]\$//' > r2_tail.txt
+
+        HEAD_DIFF=0
+        TAIL_DIFF=0
+        diff r1_head.txt r2_head.txt > /dev/null || HEAD_DIFF=1
+        diff r1_tail.txt r2_tail.txt > /dev/null || TAIL_DIFF=1
+
+        # 3. Strict Read Count Equality Check
+        # Optimized: Only check if line counts are identical without reading full file twice if possible
+        # We use a subshell to capture exit status 141 (SIGPIPE) as success
+        R1_COUNT=\$(zcat ${reads[0]} | wc -l) || [ \$? -eq 141 ]
+        R2_COUNT=\$(zcat ${reads[1]} | wc -l) || [ \$? -eq 141 ]
+
+        # 4. Check for excessive 'N' content (Low Diversity/Corruption)
+        # Sample first 10,000 lines, extract sequence lines (2nd in every 4)
+        N_COUNT=\$(zcat ${reads[0]} | head -n 10000 | sed -n '2~4p' | tr -cd 'N' | wc -c) || [ \$? -eq 141 ]
+        
+        if [ "\$R1_COUNT" -ne "\$R2_COUNT" ]; then
+            echo "zombie (count mismatch: R1=\$R1_COUNT, R2=\$R2_COUNT)" > sync_status.txt
+            exit 0
+        fi
+
+        if [ "\$N_COUNT" -gt 500 ]; then
+            echo "zombie (high N content: \$N_COUNT)" > sync_status.txt
+            exit 0
+        fi
+
+        if [ \$HEAD_DIFF -eq 0 ] && [ \$TAIL_DIFF -eq 0 ]; then
+            echo "passed" > sync_status.txt
         else
-            echo "========================================================================"
-            echo "ERROR: FastQ Synchronicity Check FAILED for ${meta.id}"
-            echo "Mismatched read IDs detected between R1 and R2."
-            echo "This sample will likely cause Parabricks to hang or crash."
-            echo "Please check FastQ integrity."
-            echo "========================================================================"
-            exit 1
+            echo "zombie (ID mismatch: head_diff=\$HEAD_DIFF, tail_diff=\$TAIL_DIFF)" > sync_status.txt
         fi
         """
     }

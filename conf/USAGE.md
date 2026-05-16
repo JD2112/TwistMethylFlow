@@ -1,4 +1,4 @@
-This Nextflow pipeline performs comprehensive analysis of MethylFlow DNA Methylation sequencing data, including quality control, alignment, methylation calling, and differential methylation analysis.
+This Nextflow pipeline performs comprehensive analysis using MILOU (Methylation Integrated Layer for Omics Unification) for DNA Methylation sequencing data.
 
 Usage:
 ------

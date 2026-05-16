@@ -7,23 +7,23 @@ hide:
 # Introduction
 
 [![DOI](https://zenodo.org/badge/490592846.svg)](https://doi.org/10.5281/zenodo.14204261)
-[![GitBook Docs](https://img.shields.io/badge/docs-GitBook-blue?logo=gitbook)](https://jyotirmoys-organization.gitbook.io/MethylFlow)
-[![build-docs](https://github.com/JD2112/MethylFlow/actions/workflows/build-docs.yml/badge.svg?branch=main)](https://github.com/JD2112/MethylFlow/actions/workflows/build-docs.yml)
-[![GitHub Invite Collaborators](https://img.shields.io/badge/Invite-Collaborators-blue?style=for-the-badge&logo=github)](https://github.com/JD2112/MethylFlow/settings/access)
+[![GitBook Docs](https://img.shields.io/badge/docs-GitBook-blue?logo=gitbook)](https://jyotirmoys-organization.gitbook.io/milou)
+[![build-docs](https://github.com/JD2112/milou/actions/workflows/build-docs.yml/badge.svg?branch=main)](https://github.com/JD2112/milou/actions/workflows/build-docs.yml)
+[![GitHub Invite Collaborators](https://img.shields.io/badge/Invite-Collaborators-blue?style=for-the-badge&logo=github)](https://github.com/JD2112/milou/settings/access)
 [![wakatime](https://wakatime.com/badge/user/fe95275f-909a-4147-a45d-624981173898/project/a44415f0-a274-4c3b-a59a-f8e1067c0fc1.svg)](https://wakatime.com/badge/user/fe95275f-909a-4147-a45d-624981173898/project/a44415f0-a274-4c3b-a59a-f8e1067c0fc1)
 
 <div class="grid-container" markdown="1">
 
 <div class="main-content" markdown="1">
 
-**MethylFlow** is a robust, end-to-end Nextflow pipeline for comprehensive analysis of DNA methylation data. It streamlines the workflow from raw FASTQ files to structured outputs and **automated, publication-ready reports**.
+**milou** is a robust, end-to-end Nextflow pipeline for comprehensive analysis of DNA methylation data. It streamlines the workflow from raw FASTQ files to structured outputs and **automated, publication-ready reports**.
 
 The pipeline features a flexible dual-mode design:
 
 - **Research mode** for rapid, exploratory analysis
 - **Clinical-style mode** for structured, interpretation-oriented reporting
 
-To support diverse computational environments, MethylFlow provides:
+To support diverse computational environments, milou provides:
 
 - ⚡ **GPU-accelerated execution** using NVIDIA Parabricks for fast turnaround
 - 🧪 **CPU-based workflows** using Bismark for standard reproducible analysis
@@ -124,28 +124,28 @@ Each row represents a pair of fastq files (paired end).
 Now run the pipeline using:
 
 ```bash
-nextflow run JD2112/MethylFlow \
+nextflow run JD2112/milou \
     -profile singularity,gpu \
     --sample_sheet Sample_sheet_twist.csv \
     --genome_fasta path/to/genome.fa \
     --diff_meth_method dss,edger \
     --gtf_file /data/Homo_sapiens.GRCh38.104.gtf \
     --refseq_file /data/hg38_RefSeq.bed.gz \
-    --outdir Results/MethylFlow_GPU
+    --outdir Results/milou_GPU
 ```
 
 ???+ warning "pipeline run" 
     1. Running on NVIDIA GPUs with CUDA will reduce the time significantly, but if not available, runs on cpu using bismark -
 
     ```bash
-    nextflow run JD2112/MethylFlow \
+    nextflow run JD2112/milou \
     -profile singularity \
     --sample_sheet Sample_sheet_twist.csv \
     --genome_fasta path/to/genome.fa \
     --diff_meth_method dss,edger \
     --gtf_file /data/Homo_sapiens.GRCh38.104.gtf \
     --refseq_file /data/hg38_RefSeq.bed.gz \
-    --outdir Results/MethylFlow_CPU
+    --outdir Results/milou_CPU
     ```
     2. Consider to check the pipeline parameters before running. You can change it via `conf/params.config`
 
@@ -153,7 +153,7 @@ For more details and further functionality, please refer to the [usage documenta
 
 ## Pipeline Output
 
-MethylFlow generates a comprehensive `results/` folder including:
+milou generates a comprehensive `results/` folder including:
 
 - **MultiQC Report**: Combined stats for all QC and alignment steps.
 - **Clinical Research Report**: Automated PDF/HTML report (Quarto) containing physician-ready summaries of DMRs and pathways.
@@ -175,7 +175,7 @@ Benchmarked on **hg38** (Human Genome) using 24 paired-end samples on the Dardel
 
 ## Credits
 
-**MethylFlow** was originally written by **Jyotirmoy Das** ([@JD2112](https://github.com/JD2112)) at the Bioinformatics Unit, BKV, Linköping University to reduce the gap between the identification of methylation sites per sample and then perform the differential analysis separately.
+**milou** was originally written by **Jyotirmoy Das** ([@JD2112](https://github.com/JD2112)) at the Bioinformatics Unit, BKV, Linköping University to reduce the gap between the identification of methylation sites per sample and then perform the differential analysis separately.
 
 Maintenace is now lead by Jyotirmoy Das.
 
@@ -193,7 +193,7 @@ We thank the **Core Facility of Linköping University** and **Clinical Genomics,
 
 ## Citation
 
-> Das, J. (2025). MethylFlow (v1.1.0). Zenodo. [https://doi.org/10.5281/zenodo.14204261](https://doi.org/10.5281/zenodo.14204261)
+> Das, J. (2025). milou (v1.1.0). Zenodo. [https://doi.org/10.5281/zenodo.14204261](https://doi.org/10.5281/zenodo.14204261)
 
 </div>
 
@@ -244,7 +244,7 @@ We thank the **Core Facility of Linköping University** and **Clinical Genomics,
 ## Get Help
 
 - [Slack Community](https://nfcore.slack.com/channels/twistmethylflow)
-- [GitHub Issues](https://github.com/JD2112/MethylFlow/issues)
+- [GitHub Issues](https://github.com/JD2112/milou/issues)
 
 </div>
 
