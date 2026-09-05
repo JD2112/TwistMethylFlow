@@ -10,15 +10,16 @@ import numpy as np
 from datetime import datetime
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Build Unified Results for TwistNext Clinical Report")
-    parser.add_argument('--run_name', type=str, default="TwistNextRun")
+    parser = argparse.ArgumentParser(description="Build Unified Results for milou Clinical Report")
+    parser.add_argument('--run_name', type=str, default="milouRun")
     parser.add_argument('--project_dir', type=str, default=".")
-    parser.add_argument('--pipeline_version', type=str, default="1.1.0")
+    parser.add_argument('--pipeline_version', type=str, default="1.2.0")
     parser.add_argument('--promoter_dist', type=int, default=2000)
     parser.add_argument('--enhancer_dist', type=int, default=10000)
     parser.add_argument('--pvalue_cutoff', type=float, default=0.05)
     parser.add_argument('--logfc_cutoff', type=float, default=0.5)
     parser.add_argument('--top_n_genes', type=int, default=100)
+    parser.add_argument('--mode', type=str, default='research', help="Pipeline execution mode (research or clinical)")
     parser.add_argument('--metadata', type=str, help="Path to sample sheet/metadata")
     parser.add_argument('--methods_yml', type=str, help="Path to methods description")
     parser.add_argument('--citations_bib', type=str, help="Path to citations bib")
@@ -89,15 +90,31 @@ def process_qc(output_dir, metadata=None):
     for _, row in df.iterrows():
         try:
             raw_s = str(row['Sample'])
-            # Normalize ID: remove suffixes common in MultiQC/Nextflow
-            s = raw_s.split('.')[0].split('_')[0]
+            matched_id = None
+            if valid_ids:
+                # 1. Try exact match (case-insensitive)
+                for vid in valid_ids:
+                    if vid.lower() == raw_s.lower():
+                        matched_id = vid
+                        break
+                # 2. Try matching if valid_id is in raw_s (e.g. NEB_EM_Rep1 in NEB_EM_Rep1_bam)
+                if not matched_id:
+                    for vid in valid_ids:
+                        if vid.lower() in raw_s.lower():
+                            matched_id = vid
+                            break
+                # 3. Try matching if raw_s is in valid_id
+                if not matched_id:
+                    for vid in valid_ids:
+                        if raw_s.lower() in vid.lower():
+                            matched_id = vid
+                            break
             
-            matched_id = s
-            if valid_ids and s not in valid_ids:
-                # Try finding if s is a substring of any valid_id
-                potential = [vid for vid in valid_ids if s in vid or vid in s]
-                if potential: matched_id = potential[0]
-                else: continue
+            # 4. Fallback if no match found
+            if not matched_id:
+                if valid_ids:
+                    continue
+                matched_id = raw_s.split('.')[0]
             
             if matched_id in seen: continue
             seen.add(matched_id)
@@ -243,6 +260,20 @@ def process_dmr_and_genes(output_dir, args):
             
         grouped = combined_dmr.groupby('gene').agg(**agg_map).reset_index()
         
+        # 3.1 Algorithmic Consensus Voting Guardrail
+        if args.mode == 'clinical':
+            # Enforce strict majority vote: must be detected by >= 2 methods
+            grouped['Num_Methods'] = grouped['Methods_Detected'].apply(lambda x: len([m for m in str(x).split(',') if m.strip()]))
+            initial_count = len(grouped)
+            consensus = grouped[grouped['Num_Methods'] >= 2].copy()
+            if len(consensus) > 0:
+                grouped = consensus
+                grouped.drop(columns=['Num_Methods'], inplace=True, errors='ignore')
+                print(f"CLINICAL MODE ACTIVE: Filtered {initial_count} exploratory DMRs down to {len(grouped)} consensus-validated DMRs (>=2 algorithms).")
+            else:
+                grouped.drop(columns=['Num_Methods'], inplace=True, errors='ignore')
+                print(f"CLINICAL MODE ACTIVE: 0 consensus DMRs found. Falling back to union of single-algorithm DMRs ({initial_count} total).")
+        
         if 'Distance' in grouped.columns:
             def get_region(d):
                 if pd.isna(d): return 'Unknown'
@@ -378,13 +409,45 @@ def process_gene_prioritization(output_dir):
     for f in gp_files:
         try:
             df = pd.read_csv(f)
-            if not df.empty: all_gp.append(df)
+            if not df.empty:
+                method = "edgeR" if "edger" in f.lower() else "methylKit" if "methylkit" in f.lower() else "DSS" if "dss" in f.lower() else "Unknown"
+                df['Method'] = method
+                
+                # Harmonize Symbol column
+                col_map = {c.lower(): c for c in df.columns}
+                if 'symbol' in col_map and col_map['symbol'] != 'Symbol':
+                    df = df.rename(columns={col_map['symbol']: 'Symbol'})
+                if 'diff' in col_map and col_map['diff'] != 'diff':
+                    df = df.rename(columns={col_map['diff']: 'diff'})
+                elif 'meth.diff' in col_map:
+                    df = df.rename(columns={col_map['meth.diff']: 'diff'})
+                elif 'logfc' in col_map:
+                    df = df.rename(columns={col_map['logfc']: 'diff'})
+                
+                if 'fdr' in col_map and col_map['fdr'] != 'fdr':
+                    df = df.rename(columns={col_map['fdr']: 'fdr'})
+                elif 'qvalue' in col_map:
+                    df = df.rename(columns={col_map['qvalue']: 'fdr'})
+                elif 'p.adjust' in col_map:
+                    df = df.rename(columns={col_map['p.adjust']: 'fdr'})
+                
+                all_gp.append(df)
         except: pass
     if all_gp:
-        combined = pd.concat(all_gp).sort_values('Rank_Score', ascending=False).drop_duplicates('Symbol')
+        combined = pd.concat(all_gp, ignore_index=True)
+        # Drop rows where Symbol is missing/NA
+        combined = combined.dropna(subset=['Symbol'])
+        combined = combined[combined['Symbol'].astype(str).str.strip() != '']
+        
+        # Calculate methods detected
+        combined = combined.sort_values('Rank_Score', ascending=False)
+        methods_detected = combined.groupby('Symbol')['Method'].apply(lambda x: ", ".join(sorted(set(x)))).reset_index()
+        
+        combined = combined.drop_duplicates('Symbol')
+        combined = combined.drop(columns=['Method']).merge(methods_detected, on='Symbol')
         combined.to_csv(os.path.join(output_dir, "gene_prioritized.csv"), sep=",", index=False)
     else:
-        pd.DataFrame(columns=["Symbol", "Rank_Score", "Region"]).to_csv(os.path.join(output_dir, "gene_prioritized.csv"), sep=",", index=False)
+        pd.DataFrame(columns=["Symbol", "Rank_Score", "Region", "Method"]).to_csv(os.path.join(output_dir, "gene_prioritized.csv"), sep=",", index=False)
 
 def process_plots(output_dir):
     print("Consolidating plots...")
@@ -498,7 +561,7 @@ def main():
         if len(grouped) > 0 and len(pathways) > 0:
             top_gene = grouped.iloc[0]['Symbol']
             top_pathway = pathways.iloc[0]['Description']
-            narrative = f"Significant biological deviation was observed in {top_gene}, heavily associated with {top_pathway}. The epigenetic profile in these regions warrants clinical correlation."
+            narrative = f"Significant biological deviation was observed in {top_gene}, heavily associated with {top_pathway}. The epigenetic profile in these regions warrants further experimental investigation."
         else:
             narrative = "Analysis completed, but no statistically significant DMRs or pathways were identified."
     except:
@@ -517,16 +580,19 @@ def main():
     
     # Load separate epigenetic metrics if available
     epi_metrics = {}
-    epi_file = os.path.join(output_dir, "..", "epigenetic_metrics.json")
-    if not os.path.exists(epi_file):
-        # search in current dir too
-        epi_file = "epigenetic_metrics.json"
-    
-    if os.path.exists(epi_file):
+    epi_files = glob.glob("*_epigenetic_metrics.json") + glob.glob("../*_epigenetic_metrics.json")
+    for epi_file in set(epi_files):
         try:
             with open(epi_file, 'r') as f:
-                epi_metrics = json.load(f)
-        except: pass
+                data = json.load(f)
+                if isinstance(data, dict):
+                    for k, v in data.items():
+                        if k in epi_metrics and isinstance(epi_metrics[k], dict) and isinstance(v, dict):
+                            epi_metrics[k].update(v)
+                        else:
+                            epi_metrics[k] = v
+        except Exception as e:
+            print(f"Warn: Could not parse epigenetic metrics file {epi_file}: {e}")
 
     citations_text = ""
     if args.citations_bib and os.path.exists(args.citations_bib):
@@ -580,11 +646,12 @@ def main():
         sanity_checks.append("PASS: All samples met coverage and alignment quality thresholds.")
 
     run_info = {
-        "pipeline": "MethylFlow",
+        "pipeline": "milou",
         "version": args.pipeline_version,
         "run_name": args.run_name,
         "timestamp": datetime.now().isoformat(),
         "files_processed": len(glob.glob("*")),
+        "narrative": narrative,
         "clinical_narrative": narrative,
         "epigenetic_summary": epi_metrics,
         "commit_hash": args.commit,

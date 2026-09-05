@@ -21,6 +21,7 @@ PARAMS_EOF
 
     python3 ${workflow.projectDir}/bin/build_unified_results.py \
         --run_name "${workflow.runName}" \
+        --mode "${params.mode}" \
         --commit "${workflow.commitId ?: 'Not available'}" \
         --command_line "${workflow.commandLine}" \
         --promoter_dist ${params.promoter_dist} \

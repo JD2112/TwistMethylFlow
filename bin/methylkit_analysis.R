@@ -105,7 +105,40 @@ for (id in available_ids) {
 coverage_files <- aligned_coverage_files
 sample_names <- aligned_sample_names
 
-cat("Coverage files (aligned):\n")
+# Preprocess coverage files: check for track line (common in MethylDackel output) and create temp files without it if necessary
+cleaned_coverage_files <- character(length(coverage_files))
+for (i in seq_along(coverage_files)) {
+    f <- coverage_files[i]
+    if (file.exists(f)) {
+        is_gz <- grepl("\\.gz$", f)
+        if (is_gz) {
+            con <- gzfile(f, "r")
+        } else {
+            con <- file(f, "r")
+        }
+        first_line <- readLines(con, n=1)
+        close(con)
+        
+        if (grepl("^track", first_line)) {
+            cat(paste("Detected track line in", f, "- creating temporary cleaned file.\n"))
+            tmp_f <- tempfile(pattern = basename(f))
+            if (is_gz) {
+                lines <- readLines(gzfile(f))
+                writeLines(lines[-1], tmp_f)
+            } else {
+                system(paste("tail -n +2", shQuote(f), ">", shQuote(tmp_f)))
+            }
+            cleaned_coverage_files[i] <- tmp_f
+        } else {
+            cleaned_coverage_files[i] <- f
+        }
+    } else {
+        cleaned_coverage_files[i] <- f
+    }
+}
+coverage_files <- cleaned_coverage_files
+
+cat("Coverage files (aligned & cleaned):\n")
 print(coverage_files)
 cat("Sample names (aligned):\n")
 print(sample_names)
@@ -130,7 +163,9 @@ myObj <- tryCatch({
     for (file in coverage_files) {
         cat(paste("File:", file, "\n"))
         tryCatch({
-            print(head(read.table(gzfile(file), header=FALSE, nrows=5)))
+            is_gz <- grepl("\\.gz$", file)
+            con <- if(is_gz) gzfile(file) else file(file)
+            print(head(read.table(con, header=FALSE, nrows=5)))
         }, error = function(e) {
             cat(paste("Error reading file:", e$message, "\n"))
         })
@@ -279,6 +314,34 @@ for (comp in comparisons) {
     # Reorganize object to include only selected samples
     meth_subset <- reorganize(meth1, sample.ids = subset_samples, treatment = subset_treatment)
     
+    cat("Filtering meth_subset to ensure at least 2 samples per group to prevent variance calculation crash...\n")
+    meth_data <- getData(meth_subset)
+    
+    # In methylBase, coverage columns are at 5, 8, 11, ... (3 * i + 2)
+    cov_cols <- 3 * (1:length(subset_samples)) + 2
+    
+    group1_cols <- cov_cols[subset_treatment == 0]
+    group2_cols <- cov_cols[subset_treatment == 1]
+    
+    if (length(group1_cols) >= 2 && length(group2_cols) >= 2) {
+        group1_non_na <- rowSums(!is.na(meth_data[, group1_cols, drop=FALSE]))
+        group2_non_na <- rowSums(!is.na(meth_data[, group2_cols, drop=FALSE]))
+        
+        valid_rows <- (group1_non_na >= 2) & (group2_non_na >= 2)
+        
+        if (!all(valid_rows)) {
+            cat(paste("Removing", sum(!valid_rows), "CpGs that have fewer than 2 valid samples in either group...\n"))
+            meth_subset <- meth_subset[valid_rows, ]
+        }
+    }
+    
+    if (nrow(meth_subset) < 100) {
+        cat("Warning: Too few sites (", nrow(meth_subset), ") left for differential methylation analysis.\n")
+        output_name <- file.path(opt$output, paste0("MethylKit_", group1, "_vs_", group2, ".csv"))
+        write.csv(data.frame(Status="Not enough valid sites (>=2 samples/group) for statistical testing"), file = output_name, quote = FALSE, row.names=FALSE)
+        next
+    }
+    
     cat(paste("Calculating differential methylation for", group1, "vs", group2, "\n"))
     
     myDiff <- tryCatch({
@@ -287,10 +350,25 @@ for (comp in comparisons) {
                           adjust = "BH",
                           mc.cores = opt$mc_cores)
     }, error = function(e) {
-        cat("Error in calculateDiffMeth:", e$message, "\n")
-        print(str(meth1))
-        print(table(design$group))
-        stop("Failed to calculate differential methylation")
+        cat("Error in calculateDiffMeth with multi-cores:", e$message, "\n")
+        if (opt$mc_cores > 1) {
+            cat("Retrying calculateDiffMeth with mc.cores = 1 for stability...\n")
+            myDiff <- tryCatch({
+                calculateDiffMeth(meth_subset,
+                                  overdispersion = "MN",
+                                  adjust = "BH",
+                                  mc.cores = 1)
+            }, error = function(e_fallback) {
+                cat("Error in fallback calculateDiffMeth:", e_fallback$message, "\n")
+                print(str(meth1))
+                print(table(design$group))
+                stop("Failed to calculate differential methylation in both multi-core and fallback modes.")
+            })
+        } else {
+            print(str(meth1))
+            print(table(design$group))
+            stop("Failed to calculate differential methylation")
+        }
     })
 
     cat("Differential methylation calculation successful\n")
@@ -351,7 +429,7 @@ for (comp in comparisons) {
             # Skip the rest of the annotation but write the unannotated results
             cat("Writing results without annotation (SYMBOL column will be missing)...\n")
             output_name <- file.path(opt$output, paste0("MethylKit_", group1, "_vs_", group2, ".csv"))
-            write.csv(getData(myDiff5p), file = output_name, quote = FALSE, row.names = FALSE)
+            write.csv(getData(myDiff5p), file = output_name, row.names = FALSE)
             next 
         }
 
@@ -398,7 +476,7 @@ for (comp in comparisons) {
 
         # Write results
         output_name <- file.path(opt$output, paste0("MethylKit_", group1, "_vs_", group2, ".csv"))
-        write.csv(DMC.final.annot, file = output_name, quote = FALSE)
+        write.csv(DMC.final.annot, file = output_name, row.names = FALSE)
         cat(paste("Results written to:", output_name, "\n"))
     }, error = function(e) {
         cat(paste("Error in annotation process:", e$message, "\n"))

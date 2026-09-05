@@ -68,19 +68,22 @@ process DISEASE_ENRICHMENT {
     tuple val(method), path(results)
     val logfc_cutoff
     val pvalue_cutoff
+    path disgenet_db
 
     output:
     tuple val(method), path("*_disease_*"), emit: results
     path "versions.yml", emit: versions
 
     script:
+    def disgenet_arg = disgenet_db.name != 'NO_FILE' ? "--disgenet_db ${disgenet_db}" : ""
     """
     Rscript ${workflow.projectDir}/bin/disease_enrichment.R \
         --results ${results} \
         --output . \
         --method ${method} \
         --logfc_cutoff ${logfc_cutoff} \
-        --pvalue_cutoff ${pvalue_cutoff}
+        --pvalue_cutoff ${pvalue_cutoff} \
+        ${disgenet_arg}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -103,20 +106,20 @@ process CLINICAL_ANNOTATION {
     tuple val(method), path("*_gene_prioritized.csv"), emit: prioritized
     tuple val(method), path("${method}_top_gene_metadata.tsv"), emit: tsv_meta
     tuple val(method), path("${method}_top_gene_symbol.txt"), emit: symbol_txt
-    tuple val(method), path("${method}_epigenetic_metrics.json"), emit: metrics
+    tuple val(method), path("${results.simpleName}_epigenetic_metrics.json"), emit: metrics
     path "versions.yml", emit: versions
 
     script:
     """
     Rscript ${workflow.projectDir}/bin/clinical_annotation.R \
-        --results ${results} \
-        --output . \
-        --method ${method} \
-        --promoter_dist ${promoter_dist} \
-        --enhancer_dist ${enhancer_dist}
+         --results ${results} \
+         --output . \
+         --method ${method} \
+         --promoter_dist ${promoter_dist} \
+         --enhancer_dist ${enhancer_dist}
 
     # Rename outputs to avoid collisions in UNIFIED_LAYER
-    mv epigenetic_metrics.json ${method}_epigenetic_metrics.json
+    mv epigenetic_metrics.json ${results.simpleName}_epigenetic_metrics.json
     mv top_gene_metadata.tsv ${method}_top_gene_metadata.tsv
     mv top_gene_symbol.txt ${method}_top_gene_symbol.txt
 

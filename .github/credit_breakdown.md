@@ -1,18 +1,20 @@
-## 🛠️ Contribution Breakdown
+# 🛠️ Contribution Breakdown
 
-### Conceptualization
+### Project Roles & Core Team
 
-| Role               | Name & Link                                                                | Description                                                                                       |
-|--------------------|-----------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|
-| **Conceptualization** | [Jyotirmoy Das](https://github.com/JD2112)                                  | Lead design and conceptual framework of the **TwistMethNext** pipeline. Developed the overall approach and strategy for DNA methylation data analysis. |
-| **Development**      | [Jyotirmoy Das](https://github.com/JD2112)                                  | Developed core functionality of the pipeline, integrated tools like **Bismark** and **methylKit** for downstream analysis. |
-|       | External Contributors                                                       | Contributions to specific modules, bug fixes, and documentation updates are highly appreciated.     |
-| **Implementation**   | [Jyotirmoy Das](https://github.com/JD2112)                                  | Implemented the pipeline in **Nextflow**, ensured scalability, flexibility, and compatibility with NGS workflows. Integrated **FastQC**, **Trim Galore**, and other quality control tools. |
-|    | Collaborators                                                              | Assisted in optimizing the pipeline's performance for large-scale datasets and adapting it to different computational environments. |
-| **Testing & Validation** | [Jyotirmoy Das](https://github.com/JD2112)                                  | Validated the pipeline’s correctness, tested with synthetic datasets, and ensured robust error handling. Conducted performance testing. |
-|  | External Users                                                            | Early adopters and collaborators who contributed feedback, bug reports, and insights for improving the robustness and accuracy. |
-| **Documentation**    | [Jyotirmoy Das](https://github.com/JD2112)                                  | Authored documentation, including the user manual and installation guide. Ensured clarity and ease of use. |
-|    | Contributors                                                               | External contributions to documentation for clarifications, additional use cases, and examples.     |
-
+| Role | Contributor | Description |
+|---|---|---|
+| **Lead Architecture & Conceptualization** | [Jyotirmoy Das](https://github.com/JD2112) | Lead design, conceptualization, and algorithmic framework of **milou**. Formulated the multi-method consensus strategy ($\pi$-value) and modular DSL2 architecture. |
+| **Pipeline Development & Integration** | [Jyotirmoy Das](https://github.com/JD2112) | Implemented end-to-end Nextflow workflows, GPU acceleration (NVIDIA Clara Parabricks), Bismark alignment, differential methylation engines (**DSS**, **edgeR**, **methylKit**), and automated Quarto reporting. |
+| **Testing, Validation & Benchmarking** | [Jyotirmoy Das](https://github.com/JD2112) | Benchmarking on WGBS, EM-seq, and Twist targeted capture datasets. Container hardening, test suites, and Slurm HPC deployment validation. |
+| **Documentation & Quality Control** | [Jyotirmoy Das](https://github.com/JD2112) | Authored complete documentation, parameter guides, interactive SVG transit diagrams, and QC reporting standards. |
+| **Community Contributions** | Open Source Contributors | Community bug fixes, issue reports, and feature suggestions. |
 
 ---
+
+### Acknowledgements
+
+- **Core Facility & Clinical Genomics Linköping**, Department of Biomedical and Clinical Sciences (BKV), Faculty of Medicine and Health Sciences, Linköping University, Sweden.
+- **Science for Life Laboratory (SciLifeLab)**, Sweden.
+- **PDC Center for High-Performance Computing**, KTH Royal Institute of Technology, Sweden, for computing and storage access.
+- **Region Östergötland (ALF funding)** and **Genomic Medicine Sweden (GMS)** for infrastructure and computational support.

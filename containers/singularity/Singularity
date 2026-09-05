@@ -10,7 +10,7 @@ From: continuumio/miniconda3:4.10.3
 
 %labels
     authors="Jyotirmoy Das" 
-    description="Singularity image containing all requirements for TwistMethNext pipeline"
+    description="Singularity image containing all requirements for milou pipeline"
 
 %post
     apt-get update && apt-get install -y procps

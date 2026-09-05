@@ -3,9 +3,9 @@ hide:
   - navigation
 ---
 
-# MethylFlow Pipeline Parameters
+# milou Pipeline Parameters
 
-This page provides a complete reference for all command-line parameters available in MethylFlow. Default values are appropriately showcased. 
+This page provides a complete reference for all command-line parameters available in **milou**. Default values are appropriately showcased. 
 
 To modify or adjust any parameters, please edit the
 
@@ -24,8 +24,9 @@ User can also adjust the DAG rendering options in `conf/dag.config` file.
 
 | Parameter | Description | Type | Default | Required | Hidden? |
 | :--- | :--- | :--- | :--- | :---: | :---: |
-| `--sample_sheet` | Path to Samplesheet.csv with following headers: `sample_id, group, read1, read2`. | `string` | `null` | ✔️ | ❌ |
+| `--sample_sheet` | Path to Samplesheet.csv with following headers: `sample_id, group, read1, read2, assay_type` (optional). | `string` | `null` | ✔️ | ❌ |
 | `--genome_fasta` | Path to the reference genome FASTA file. | `string` | `null` | ✔️ | ❌ |
+| `--assay_type` | Global chemistry override for clipping offsets (`'wgbs'`, `'emseq'`, `'twist'`). | `string` | `'wgbs'` | ❌ | ❌ |
 | `--save_reference` | If `true`, the Bismark/BWA-meth index is saved to a persistent storeDir for reuse. | `boolean` | `false` | ❌ | ❌ |
 | `--bismark_index` | Path to a pre-built Bismark index directory. | `string` | `false` | ❌ | ❌ |
 | `--aligned_bams` | Start the pipeline from previously aligned BAM files instead of fastQ. | `boolean` | `false` | ❌ | ❌ |
@@ -54,6 +55,7 @@ User can also adjust the DAG rendering options in `conf/dag.config` file.
 | :--- | :--- | :--- | :--- | :---: | :---: |
 | `--diff_meth_method` | Differential method(s) to use: `'dss'`, `'edger'`, `'methylkit'`, or a comma-separated list. | `string` | `'dss'` | ✔️ | ❌ |
 | `--compare_str` | The group comparison string limit (e.g., `'Healthy-Tumor'`). | `string` | `'all'` | ✔️ | ❌ |
+| `--smoothing` | Enable or disable moving-average spline smoothing in DSS. Set to `false` (`--smoothing FALSE`) for whole-genome WGBS cohorts (~28M CpGs) to reduce peak RAM from >250 GB to <50 GB. | `boolean` | `true` | ❌ | ❌ |
 | `--skip_diff_meth` | Skip the differential methylation stage completely. | `boolean` | `false` | ❌ | ❌ |
 | `--methylkit.assembly`| Assembly name for MethylKit context. | `string` | `'hg38'` | ✔️ | ❌ |
 | `--methylkit.diff` | Minimum methylation difference percentage for Methylkit. | `number` | `0.05` | ✔️ | ❌ |
@@ -67,6 +69,7 @@ User can also adjust the DAG rendering options in `conf/dag.config` file.
 | :--- | :--- | :--- | :--- | :---: | :---: |
 | `--gtf_file` | Path to a GTF annotation file (e.g., Gencode/Ensembl) for gene mapping. | `string` | `null` | ✔️ | ❌ |
 | `--refseq_file` | Path to a RefSeq BED file for annotation. | `string` | `null` | ✔️ | ❌ |
+| `--disgenet_db` | Path to a sovereign, local DisGeNET TSV release for clinical offline mapping. | `string` | `null` | ❌ | ❌ |
 | `--post_processing` | Enable post-processing summaries and visualization. | `boolean`| `true` | ✔️ | ❌ |
 | `--logfc_cutoff` | Log2 Fold Change threshold for significance. | `number` | `0.5` | ✔️ | ❌ |
 | `--pvalue_cutoff` | P-value threshold for statistical significance. | `number` | `0.05` | ✔️ | ❌ |
@@ -79,8 +82,9 @@ User can also adjust the DAG rendering options in `conf/dag.config` file.
 
 | Parameter | Description | Type | Default | Required | Hidden? |
 | :--- | :--- | :--- | :--- | :---: | :---: |
-| `--mode` | Pipeline mode: `'research'` or `'clinical'`. | `string` | `'research'` | ❌ | ❌ |
-| `--run_clinical_report` | Force generation of automated Quarto clinical PDF report. | `boolean` | `false` | ❌ | ❌ |
+| `--mode` | Pipeline mode: `'research'` (standard) or `'clinical'` (enforces 2-out-of-3 consensus voting). | `string` | `'research'` | ❌ | ❌ |
+| `--offline` | Disables internet access and API queries. Enforced automatically in `clinical_offline` profile. | `boolean` | `false` | ❌ | ❌ |
+| `--run_clinical_report` | Force generation of automated Quarto clinical PDF/HTML report. | `boolean` | `false` | ❌ | ❌ |
 | `--promoter_dist` | Distance from TSS (upstream) to define a Promoter region. | `integer` | `2000` | ❌ | ❌ |
 | `--enhancer_dist` | Distance from TSS to define an Enhancer/Distal region. | `integer` | `10000` | ❌ | ❌ |
 
@@ -102,7 +106,7 @@ User can also adjust the DAG rendering options in `conf/dag.config` file.
 
 | Parameter | Description | Type | Default | Required | Hidden? |
 | :--- | :--- | :--- | :--- | :---: | :---: |
-| `-profile` | Configuration profile: `docker`, `singularity`, `gpu`, `conda`, `benchmark`. | `string` | *variable* | ✔️ | ❌ |
+| `-profile` | Configuration profile: `docker`, `singularity`, `gpu`, `clinical`, `clinical_offline`, `benchmark`. | `string` | *variable* | ✔️ | ❌ |
 | `-resume` | Re-start the pipeline from where it left off. | `boolean`| `false` | ❌ | ❌ |
 | `-w` | Custom working directory for intermediate files. | `string` | `'work/'` | ❌ | ✔️ |
 | `--help` | Display the pipeline help message. | `boolean`| `false` | ❌ | ✔️ |

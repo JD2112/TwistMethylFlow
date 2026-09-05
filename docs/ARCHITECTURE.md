@@ -1,6 +1,6 @@
-# MethylFlow Pipeline Architecture
+# milou Pipeline Architecture
 
-This document contains the master architecture diagram for the **MethylFlow** pipeline. It is designed for use in manuscripts, GitBook documentation, and technical presentations.
+This document contains the master architecture diagram for the **milou** pipeline. It is designed for use in manuscripts, documentation, and technical presentations.
 
 ## Master Clinical Architecture (Mermaid)
 
@@ -144,7 +144,7 @@ linkStyle default stroke-width:4px,stroke:gray;
 
 ## Figure Legend (Manuscript Draft)
 
-**Figure 1: The MethylFlow end-to-end clinical-grade DNA methylation orchestration.** 
+**Figure 1: The milou end-to-end clinical-grade DNA methylation orchestration.** 
 (0) The pipeline utilizes an integrated 'nf-security-audit' suite (nf-core lint, Semgrep, Trivy, Snyk, Grype, Syft, and Cosign) for comprehensive static analysis, OCI vulnerability scanning, SBOM generation, and cryptographic signing. 
 (1) All input data undergoes mandatory SHA256 integrity verification and privacy-aware metadata schema validation to ensure data de-identification and integrity. 
 (2) Users can select between a high-speed GPU track (NVIDIA Parabricks) or a highly-optimized parallelized CPU track (Bismark). 

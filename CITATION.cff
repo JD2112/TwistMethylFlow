@@ -4,9 +4,9 @@ authors:
   - family-names: Das
     given-names: Jyotirmoy
     orcid: https://orcid.org/0000-0002-5649-4658
-title: "TwistNext"
-version: 1.0.0
+title: "milou"
+version: 1.2.0
 identifiers:
   - type: doi
-    value: 10.5281/zenodo.14204261
-date-released: 2024-11-22
+    value: 10.5281/zenodo.14204260
+date-released: 2026-09-04

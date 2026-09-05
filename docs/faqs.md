@@ -1,12 +1,15 @@
-# FAQs
+---
+hide:
+  - navigation
+---
 
-# MethylFlow FAQs
+# milou Frequently Asked Questions (FAQs)
 
 ## Pipeline Steps
 
 ### Generate Reference Genome
 ??? question "What is the purpose of Generate Reference Genome?"
-    This step creates reference genome index files for **Bismark**, which are required for bisulfite read alignment.
+    This step creates reference genome index files for **Bismark** (CPU track) or **BWA-meth** (GPU track), which are required for bisulfite or enzymatic read alignment.
 
 ### Raw Data QC
 ??? question "How is raw sequencing data quality assessed?"
@@ -18,44 +21,53 @@
 
 ### Align Reads
 ??? question "How are reads aligned to the reference genome?"
-    **Bismark (Bowtie2)** aligns bisulfite-treated reads to the reference genome.  
-    Accurate alignment is crucial for downstream methylation analysis.
+    milou supports two alignment tracks:
+    - **CPU Track**: **Bismark (Bowtie2)** aligns converted reads with high fidelity and gold-standard reproducibility.
+    - **GPU Track**: **NVIDIA Parabricks (`fq2bam_meth`)** accelerates alignment and deduplication by **18× to 24×**, cutting runtimes from days to minutes with >99.5% coordinate concordance.
 
 ### Deduplicate Removal
 ??? question "What is deduplicate removal?"
-    **Bismark** removes PCR duplicates from aligned reads to prevent bias in methylation calling.
+    PCR duplicates are removed from aligned reads (**Bismark Deduplicate** on CPU or **Parabricks** on GPU) to prevent amplification bias in methylation calling.
 
 ### Sort and Indexing
 ??? question "How are BAM files prepared after alignment?"
-    **Samtools** sorts and indexes deduplicated BAM files for efficient access in downstream analyses.
+    **Samtools** sorts and indexes deduplicated BAM files for efficient coordinate-based access in downstream analyses.
 
 ### Extract Methylation Calls
 ??? question "How are methylation calls extracted?"
-    **Bismark** extracts cytosine methylation calls from aligned reads, generating the input for differential methylation analysis.
+    Cytosine methylation calls are extracted using **Bismark Methylation Extractor** (CPU) or **MethylDackel** (GPU), producing standard bedGraph and coverage outputs.
 
 ### Summary Report
 ??? question "How is the summary report generated?"
-    **Bismark** summarizes alignment statistics and methylation extraction results, including conversion efficiency.
+    Alignment statistics and methylation extraction results are summarized, including conversion efficiency and lambda phage spike-in controls.
 
 ### Alignment QC
 ??? question "How is alignment quality assessed?"
-    **Qualimap** generates metrics such as coverage, mapping quality, and duplication rate for aligned reads.
+    **Qualimap** generates metrics such as coverage depth, mapping quality, and duplication rates across aligned BAMs.
 
 ### QC Reporting
 ??? question "How are QC reports aggregated?"
-    **MultiQC** compiles QC reports from FastQC, Bismark, and Qualimap into a single comprehensive report.
+    **MultiQC** compiles QC metrics from FastQC, Bismark/Parabricks, and Qualimap into an interactive HTML quality dashboard.
 
 ### Differential Methylation
 ??? question "How is differential methylation analysis performed?"
-    **DSS**, **EdgeR**, and **MethylKit** identify differentially methylated positions or regions, considering replicates and experimental design.
+    milou implements three independent statistical frameworks: **DSS** (beta-binomial hierarchical model), **EdgeR** (quasi-likelihood GLMs), and **MethylKit** (logistic regression). Users can select any individual tool or run all three simultaneously.
+
+??? question "How do I avoid memory spikes during Whole-Genome (WGBS) DSS runs?"
+    Human WGBS datasets span ~28–30 million CpG sites. Computing moving-average spline smoothing across this entire genomic space can cause memory spikes exceeding 250 GB. Setting `--smoothing FALSE` bypasses the moving-average spline while preserving empirical Bayes dispersion shrinkage and contiguous DMR detection via `callDMR()`, keeping peak memory under **50 GB**.
+
+??? question "What is the multi-method consensus score (π-value)?"
+    To provide a deterministic clinical ranking, milou combines statistical significance and biological effect size across all agreeing callers:
+    $$\pi_{g} = \overline{\left| \log_{2}{(FC)}_{g} \right|} \times \left( - \log_{10}(P_{\min,g}) \right)$$
+    This prioritizes genes that have both robust statistical evidence and large biological methylation differences.
 
 ### Post Processing
 ??? question "How are results visualized?"
-    **ggplot2** creates summary plots like heatmaps, volcano plots, and coverage plots for differential methylation results.
+    Publication-ready visualizations are rendered using **ggplot2**, **pheatmap**, and **Gviz**, including volcano plots, methylation heatmaps, and genomic locus tracks overlaid with gene models.
 
-### GO Analysis
-??? question "How is Gene Ontology analysis performed?"
-    Functional enrichment analysis identifies pathways associated with differentially methylated genes, providing biological interpretation.
+### Functional Enrichment Analysis
+??? question "How is Gene Ontology and pathway analysis performed?"
+    **clusterProfiler** and **DOSE** perform Gene Ontology (GO), KEGG pathway enrichment with Pathview diagrams, and disease enrichment to provide clinical and biological context for differentially methylated genes.
 
 ---
 

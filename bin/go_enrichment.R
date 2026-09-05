@@ -35,6 +35,21 @@ prefix <- tools::file_path_sans_ext(basename(opt$results))
 
 # Load and Filter
 df <- read.csv(opt$results)
+
+# Check if there are no sites or if the result file contains the "Status" column indicating no sites found
+is_empty_or_status <- FALSE
+if (dim(df)[1] == 0) {
+    is_empty_or_status <- TRUE
+} else if ("Status" %in% colnames(df)) {
+    is_empty_or_status <- TRUE
+}
+
+if (is_empty_or_status) {
+    write.csv(data.frame(Message="No differentially methylated sites found with current criteria"), 
+              file.path(opt$output, paste0(prefix, "_go_results.csv")), row.names=F)
+    cat("No significant sites to process for GO. Exiting gracefully.\n")
+    quit(save = "no", status = 0)
+}
 if (opt$method == "edger" || opt$method == "dss") {
     logfc_col <- ifelse("logFC" %in% colnames(df), "logFC", "diff")
     pval_col <- ifelse("PValue" %in% colnames(df), "PValue", "fdr")

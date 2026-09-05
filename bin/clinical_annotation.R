@@ -27,6 +27,55 @@ if (ncol(raw_df) <= 1) {
 }
 df <- raw_df
 
+# Check if there are no sites or if the result file contains the "Status" column indicating no sites found
+is_empty_or_status <- FALSE
+if (dim(df)[1] == 0) {
+    is_empty_or_status <- TRUE
+} else if ("Status" %in% colnames(df)) {
+    is_empty_or_status <- TRUE
+}
+
+if (is_empty_or_status) {
+    # 1. Epigenetic metrics json
+    metrics_list <- list(
+        total_significant = 0,
+        hypermethylated = 0,
+        hypomethylated = 0,
+        method = opt$method
+    )
+    write(toJSON(metrics_list, auto_unbox=TRUE), file.path(outdir, "epigenetic_metrics.json"))
+
+    # 2. top_gene_metadata.tsv
+    dummy_meta <- data.frame(
+        symbol = character(),
+        chr = character(),
+        dmr_start = integer(),
+        dmr_end = integer(),
+        rank_score = numeric()
+    )
+    write.table(dummy_meta, file.path(outdir, "top_gene_metadata.tsv"), sep="\t", row.names=FALSE, quote=FALSE)
+
+    # 3. top_gene_symbol.txt
+    writeLines("NoSignificantGenes", file.path(outdir, "top_gene_symbol.txt"))
+
+    # 4. region_annotated and gene_prioritized csv
+    dummy_df <- data.frame(
+        chr = character(),
+        start = integer(),
+        end = integer(),
+        Region = character(),
+        Rank_Score = numeric(),
+        Coordinates = character(),
+        OMIM = character(),
+        gnomAD = character()
+    )
+    write.csv(dummy_df, file.path(outdir, paste0(prefix, "_region_annotated.csv")), row.names=FALSE)
+    write.csv(dummy_df, file.path(outdir, paste0(prefix, "_gene_prioritized.csv")), row.names=FALSE)
+
+    cat("No significant sites found. Created placeholder files and exiting gracefully.\n")
+    quit(save = "no", status = 0)
+}
+
 # Clean empty/NA column names to prevent dplyr::mutate crashes
 valid_names <- colnames(df)
 valid_names[is.na(valid_names)] <- paste0("Unknown_", seq_along(valid_names)[is.na(valid_names)])

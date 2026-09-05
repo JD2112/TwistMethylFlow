@@ -23,16 +23,17 @@ A clear and concise description of what you expected to happen.
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
+**Environment (please complete the following information):**
+ - Nextflow Version: [e.g. 24.04.2]
+ - Container Engine: [e.g. Docker, Singularity, Apptainer, Conda]
+ - Operating System: [e.g. Ubuntu 22.04, RHEL, macOS]
+ - Profile Used: [e.g. test_bisulfite_cpu, twist_minimal_gpu]
+ - GPU Specs (if applicable): [e.g. NVIDIA L40S, A100]
 
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
+**Nextflow Execution Log & Error Snippet:**
+```bash
+# Paste error snippet from .nextflow.log or work directory .command.err here
+```
 
 **Additional context**
 Add any other context about the problem here.

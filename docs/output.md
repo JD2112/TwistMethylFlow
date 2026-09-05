@@ -3,15 +3,16 @@ hide:
   - navigation
 ---
 
+# Pipeline Outputs & Directory Structure
 
 This document describes the pipeline output files and the tools used to generate them. The results are organized into logical subdirectories within the specified output directory (default: `results/`). 
 
-Example command: `--outdir results`.
+Example execution: `nextflow run JD2112/milou --outdir results`
 
-## Quality Control & Trimmed Data
+## 1. Quality Control & Trimmed Data
 
-### Read Processing
-This directory contains the initial quality checks and the processed sequencing reads.
+### 1.1 Read Processing (FastQC & Trim Galore!)
+This directory contains the initial quality checks and the adapter-trimmed sequencing reads.
 
 | Path | Description |
 | ---- | ----------- |
@@ -20,21 +21,23 @@ This directory contains the initial quality checks and the processed sequencing 
 | `read_processing/trim_galore/<SAMPLE_ID>_R1_val_1.fq.gz` | High-quality, adapter-trimmed reads used for alignment by [Trim Galore!](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/). |
 | `read_processing/trim_galore/<SAMPLE_ID>_R1.fastq.gz_trimming_report.txt` | Trimming report containing summary of operations performed by Trim Galore. |
 
-## Genome Indexing
+## 2. Reference Genome Indexing
 
+### 2.1 Bismark & BWA-meth Indices
 Contains the indices required for bisulfite alignment. The content adapts based on whether the CPU (Bismark) or GPU (BWA-meth) track is used.
 
 | Path | Description |
 | ---- | ----------- |
 | `prepare_genome/bismark_genome_preparation/bismark_index/Bisulfite_Genome/` | Directory containing the C->T and G->A converted indices created during CPU Indexing with [Bismark](https://www.bioinformatics.babraham.ac.uk/projects/bismark/). |
 | `prepare_genome/bismark_genome_preparation/bismark_index/hg38.fa` | The reference genome FASTA sequence used for the index. |
+| `parabricks_analysis/bwameth_index/` | Directory containing the BWA-meth specific index files built for GPU execution. |
 
-## Alignment
+## 3. Read Alignment & BAM Processing
 
-MethylFlow supports two alignment tracks. The outputs are stored in either `bismark_analysis` or `parabricks_analysis`.
+milou supports two alignment tracks. Outputs are stored in either `bismark_analysis` or `parabricks_analysis`.
 
-### CPU Track (Bismark)
-The standard path for methylation mapping and deduplication.
+### 3.1 CPU Track (Bismark Suite)
+The standard path for bisulfite and EM-seq mapping and deduplication.
 
 | Path | Description |
 | ---- | ----------- |
@@ -45,18 +48,17 @@ The standard path for methylation mapping and deduplication.
 | `bismark_analysis/samtools_sort/<SAMPLE_ID>.sorted.bam` | Sorted BAM file of the deduplicated aligned reads. |
 | `bismark_analysis/samtools_index/<SAMPLE_ID>.sorted.bam.bai` | BAM index file for fast access to the sorted deduplicated reads. |
 
-### GPU Track (NVIDIA Parabricks)
+### 3.2 GPU Track (NVIDIA Clara Parabricks)
 Ultra-fast mapping and deduplication using NVIDIA GPUs.
 
 | Path | Description |
 | ---- | ----------- |
-| `parabricks_analysis/bwameth_index/` | Directory containing the BWA-meth specific index files. |
 | `parabricks_analysis/parabricks_fq2bammeth/<SAMPLE_ID>.bam` | GPU-accelerated sorted and deduplicated BAM file produced by [NVIDIA Parabricks](https://www.nvidia.com/en-us/clara/genomics/). |
 | `parabricks_analysis/samtools_index/<SAMPLE_ID>.bam.bai` | BAM index file for the Parabricks aligned BAM. |
 
-## Methylation calls Extraction
+## 4. Methylation Calling & Extraction
 
-### Bismark Extractor (CPU Track)
+### 4.1 Bismark Extractor (CPU Track)
 Standard extraction of C->T conversion counts.
 
 | Path | Description |
@@ -66,15 +68,16 @@ Standard extraction of C->T conversion counts.
 | `bismark_analysis/bismark_methylation_extractor/<SAMPLE_ID>_pe.deduplicated_splitting_report.txt` | Extractor splitting report with basic statistics. |
 | `bismark_analysis/bismark_report/<SAMPLE_ID>_bismark_report.html` | Bismark summary HTML report visualizing mapping and extraction metrics. |
 
-### MethylDackel (GPU Track)
+### 4.2 MethylDackel Extractor (GPU Track)
 High-throughput extraction directly from GPU-aligned BAMs.
 
 | Path | Description |
 | ---- | ----------- |
 | `parabricks_analysis/methyldackel_extract/<SAMPLE_ID>_CpG.bedGraph` | BedGraph file containing high-throughput CpG methylation metrics extracted by [MethylDackel](https://github.com/dpryan79/MethylDackel). |
 
-## Quality Mapping
+## 5. Post-Alignment Quality Mapping
 
+### 5.1 Qualimap Coverage & Insert Size Metrics
 Comprehensive metrics on mapping coverage and insert sizes using Qualimap.
 
 | Path | Description |
@@ -84,9 +87,10 @@ Comprehensive metrics on mapping coverage and insert sizes using Qualimap.
 | `qualimap/<SAMPLE_ID>/images_qualimapReport/genome_coverage_histogram.png` | Histogram plot showing depth of coverage distribution. |
 | `qualimap/<SAMPLE_ID>/images_qualimapReport/genome_insert_size_histogram.png` | Histogram plot showing the distribution of read insert sizes. |
 
-## Differential Methylation Analysis
+## 6. Differential Methylation Analysis
 
-Statistical results identifying significantly different CpG sites between groups using [DSS](https://bioconductor.org/packages/release/bioc/html/DSS.html), [EdgeR](https://bioconductor.org/packages/release/bioc/html/edgeR.html) and [MethylKit](https://bioconductor.org/packages/release/bioc/html/methylKit.html).
+### 6.1 Statistical Differential Engines (DSS, edgeR, methylKit)
+Statistical results identifying significantly different CpG sites between groups using [DSS](https://bioconductor.org/packages/release/bioc/html/DSS.html), [EdgeR](https://bioconductor.org/packages/release/bioc/html/edgeR.html), and [MethylKit](https://bioconductor.org/packages/release/bioc/html/methylKit.html).
 
 | Path | Description |
 | ---- | ----------- |
@@ -97,13 +101,16 @@ Statistical results identifying significantly different CpG sites between groups
 | `differential_methylation/dss_analysis/DSS_group_<COMPARISON>_coverage3.csv` | Table containing DSS Difference, P-values, and FDR for differentially methylated regions. |
 | `differential_methylation/dss_analysis/dss_log.txt` | Execution log for the DSS analysis step. |
 
-## Result Analysis & Visualization
+## 7. Functional Annotation & Visualizations
 
-Annotated results, high-quality plots, and pathway enrichment.
-
+### 7.1 Gene Annotation & Locus Mapping
 | Path | Description |
 | ---- | ----------- |
 | `result_analysis/annotate_results/EdgeR_group_<COMPARISON>_annotated.csv` | DMRs fully annotated with gene names, overlaps, and distances to TSS. |
+
+### 7.2 Volcano & MA Plots
+| Path | Description |
+| ---- | ----------- |
 | `result_analysis/post_processing_edger/<COMPARISON>/edger_volcano_plot.png` | Volcano plot showing EdgeR biological (Fold Change) vs. statistical (P-value) significance. |
 | `result_analysis/post_processing_edger/<COMPARISON>/edger_summary_stats.csv` | Summary statistics of EdgeR hyper- and hypo-methylated regions. |
 | `result_analysis/post_processing_edger/<COMPARISON>/edger_ma_or_scatter_plot.png` | Visualizes global consistency of methylation levels between groups for EdgeR. |
@@ -112,14 +119,46 @@ Annotated results, high-quality plots, and pathway enrichment.
 | `result_analysis/post_processing_dss/<COMPARISON>/dss_volcano_plot.png` | Volcano plot showing DSS biological (Methylation Difference) vs. statistical (FDR) significance. |
 | `result_analysis/post_processing_dss/<COMPARISON>/dss_summary_stats.csv` | Summary statistics of DSS hyper- and hypo-methylated regions. |
 | `result_analysis/post_processing_dss/<COMPARISON>/dss_ma_or_scatter_plot.png` | Visualizes global consistency of methylation levels between groups for DSS. |
+
+### 7.3 Gene Ontology (GO) & Pathway Enrichment
+| Path | Description |
+| ---- | ----------- |
 | `result_analysis/go_analysis_edger/<COMPARISON>_go_enrichment_results.csv` | Table containing Gene Ontology enrichment analysis results from EdgeR DMRs using [clusterProfiler](https://bioconductor.org/packages/release/bioc/html/clusterProfiler.html). |
 | `result_analysis/go_analysis_edger/<COMPARISON>_gochord_plot.png` | Chord diagram depicting relationships between genes and EdgeR GO terms. |
 | `result_analysis/go_analysis_methylkit/<COMPARISON>_go_enrichment_results.csv` | Table containing Gene Ontology enrichment analysis results from MethylKit DMRs. |
 | `result_analysis/go_analysis_dss/<COMPARISON>_go_enrichment_results.csv` | Table containing Gene Ontology enrichment analysis results from DSS DMRs. |
 
-## MultiQC & Metadata
+## 8. Unified Results Layer & Consensus Scoring
+
+The consolidated analytical layer synthesizing orthogonal differential callers via the $\pi$-value framework.
+
+### 8.1 Multi-Method Consensus Rankings (π-Value)
+
+| Path | Description |
+| ---- | ----------- |
+| `unified_layer/unified_consensus_ranking.csv` | Master candidate gene table prioritized by the cross-method $\pi$-value score ($\pi = \overline{|\log_2(FC)|} \times (-\log_{10}(P_{\min}))$). |
+| `unified_layer/consensus_pi_value_ranking.tsv` | Tab-delimited candidate ranking with individual engine metrics (DSS, edgeR, methylKit). |
+| `unified_layer/consensus_genes.csv` | List of high-confidence genes supported by cross-caller agreement (filtered by majority voting in clinical mode). |
+| `unified_layer/dml_consensus_summary.csv` | Summary table of CpG-level and DMR-level concordance metrics. |
+
+## 9. Clinical Reporting Layer
+
+Diagnostic-ready reports and compliance provenance generated by the Quarto reporting engine.
+
+### 9.1 Interactive Quarto Reports & Audit Artifacts
+
+| Path | Description |
+| ---- | ----------- |
+| `clinical_reporting/milou_clinical_report.html` | Interactive, standalone clinical summary report with integrated MultiQC metrics, consensus rankings, and interactive volcano plots. |
+| `clinical_reporting/milou_clinical_report.pdf` | Print-ready, archival publication/clinical PDF summary report. |
+| `clinical_reporting/sha256_checksums.txt` | Cryptographic SHA256 audit log verifying input FASTQ integrity. |
+| `clinical_reporting/qc_gate_audit.json` | Automated target coverage and conversion quality pass/fail evaluation log. |
+
+## 10. MultiQC & Metadata
 
 Aggregates all logs into a single interactive HTML report.
+
+### 10.1 Aggregated MultiQC Dashboard & Software Provenance
 
 | Path | Description |
 | ---- | ----------- |
@@ -130,8 +169,11 @@ Aggregates all logs into a single interactive HTML report.
 | `multiqc/versions.yml` | Software versions of tools used during the pipeline run. |
 | `multiqc/software_versions.csv` | A CSV summary table of all tools and their respective versions retrieved during the run. |
 
-## Pipeline Info
+## 11. Pipeline Runtime Information
+
 Technical reports on resource usage and execution flow.
+
+### 11.1 Execution Reports, Traces & DAGs
 
 | Path | Description |
 | ---- | ----------- |

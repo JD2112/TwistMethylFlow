@@ -16,8 +16,13 @@ process TRIM_GALORE {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     
+    def assay_args = ''
+    if (meta.assay_type == 'twist' || meta.assay_type == 'emseq') {
+        assay_args = '--clip_R1 10 --clip_R2 10 --three_prime_clip_R1 10 --three_prime_clip_R2 10'
+    }
+    
     """
-    trim_galore --paired --cores $task.cpus $args $reads
+    trim_galore --paired --cores $task.cpus $args $assay_args $reads
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         trim_galore: \$( trim_galore --version | head -n 1 | grep -oP '(?<=version )[0-9.]+' || trim_galore --version | head -n 1 | sed -e "s/^trim_galore //g" )

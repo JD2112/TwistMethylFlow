@@ -59,7 +59,27 @@ gene_df <- read.csv(opt$prioritized_csv, stringsAsFactors=FALSE)
 symbol_col <- grep("Symbol", colnames(gene_df), ignore.case=TRUE, value=TRUE)[1]
 logfc_col <- grep("logFC|diff", colnames(gene_df), ignore.case=TRUE, value=TRUE)[1]
 
+if (nrow(gene_df) == 0 || is.na(symbol_col) || is.na(logfc_col) || length(gene_df[[symbol_col]]) == 0) {
+    cat("Warning: No prioritized genes found in", opt$prioritized_csv, ". Creating placeholder Pathview plot.\n")
+    png(file.path(".", "top_kegg_pathview.png"), width=800, height=600)
+    plot(1, type="n", axes=FALSE, xlab="", ylab="")
+    text(1, 1, "No prioritized genes for Pathview", cex=1.5)
+    dev.off()
+    quit(save="no", status=0)
+}
+
 symbols <- gene_df[[symbol_col]]
+symbols <- symbols[!is.na(symbols) & symbols != ""]
+
+if (length(symbols) == 0) {
+    cat("Warning: No valid gene symbols found. Creating placeholder Pathview plot.\n")
+    png(file.path(".", "top_kegg_pathview.png"), width=800, height=600)
+    plot(1, type="n", axes=FALSE, xlab="", ylab="")
+    text(1, 1, "No valid gene symbols for Pathview", cex=1.5)
+    dev.off()
+    quit(save="no", status=0)
+}
+
 mapping <- mapIds(org.Hs.eg.db, keys=symbols, column="ENTREZID", keytype="SYMBOL", multiVals="first")
 
 # Create the data vector for Pathview (logFC mapped to Entrez)
@@ -70,7 +90,11 @@ names(pv_data) <- mapping
 pv_data <- pv_data[!is.na(names(pv_data))]
 
 if (length(pv_data) == 0) {
-    cat("No Entrez mappings found for prioritized genes. Skipping Pathview.\n")
+    cat("No Entrez mappings found for prioritized genes. Creating placeholder Pathview plot.\n")
+    png(file.path(".", "top_kegg_pathview.png"), width=800, height=600)
+    plot(1, type="n", axes=FALSE, xlab="", ylab="")
+    text(1, 1, "No Entrez mappings found", cex=1.5)
+    dev.off()
     quit(save="no", status=0)
 }
 
@@ -95,7 +119,16 @@ tryCatch({
         file.rename(gen_file[1], "top_kegg_pathview.png")
     }
 }, error = function(e) {
-    cat("Pathview Error:", message(e), "\n")
+    cat("Pathview Error:", conditionMessage(e), "\n")
 })
 
+# Guarantee output exists so Nextflow does not fail
+if (!file.exists("top_kegg_pathview.png")) {
+    png(file.path(".", "top_kegg_pathview.png"), width=800, height=600)
+    plot(1, type="n", axes=FALSE, xlab="", ylab="")
+    text(1, 1, "Pathview generation skipped", cex=1.5)
+    dev.off()
+}
+
 cat("Pathview analysis complete!\n")
+

@@ -1,0 +1,13 @@
+sample_id,group,read1,read2
+12B,VD,ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/041/ERR11435641/ERR11435641_1.fastq.gz,ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/041/ERR11435641/ERR11435641_2.fastq.gz
+13B,CS,ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/043/ERR11435643/ERR11435643_1.fastq.gz,ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/043/ERR11435643/ERR11435643_2.fastq.gz
+1B,CS,ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/045/ERR11435645/ERR11435645_1.fastq.gz,ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/045/ERR11435645/ERR11435645_2.fastq.gz
+20B,VD,ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/047/ERR11435647/ERR11435647_1.fastq.gz,ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/047/ERR11435647/ERR11435647_2.fastq.gz
+21B,VD,ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/049/ERR11435649/ERR11435649_1.fastq.gz,ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/049/ERR11435649/ERR11435649_2.fastq.gz
+22B,VD,ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/051/ERR11435651/ERR11435651_1.fastq.gz,ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/051/ERR11435651/ERR11435651_2.fastq.gz
+23B,VD,ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/053/ERR11435653/ERR11435653_1.fastq.gz,ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/053/ERR11435653/ERR11435653_2.fastq.gz
+25B,CS,ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/055/ERR11435655/ERR11435655_1.fastq.gz,ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/055/ERR11435655/ERR11435655_2.fastq.gz
+26B,VD,ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/057/ERR11435657/ERR11435657_1.fastq.gz,ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/057/ERR11435657/ERR11435657_2.fastq.gz
+2B,CS,ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/059/ERR11435659/ERR11435659_1.fastq.gz,ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/059/ERR11435659/ERR11435659_2.fastq.gz
+3B,VD,ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/061/ERR11435661/ERR11435661_1.fastq.gz,ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/061/ERR11435661/ERR11435661_2.fastq.gz
+5B,CS,ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/063/ERR11435663/ERR11435663_1.fastq.gz,ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/063/ERR11435663/ERR11435663_2.fastq.gz

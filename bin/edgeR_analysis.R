@@ -25,7 +25,9 @@ option_list <- list(
     make_option(c("--p_threshold"), type="double", default=1.0, 
                 help="FDR threshold for filtering [default= %default]", metavar="NUMBER"),
     make_option(c("--diff_threshold"), type="double", default=0.0, 
-                help="LogFC threshold for filtering [default= %default]", metavar="NUMBER")
+                help="LogFC threshold for filtering [default= %default]", metavar="NUMBER"),
+    make_option(c("--filter_var"), type="character", default="FDR", 
+                help="Variable to filter on: 'FDR' or 'PValue' [default= %default]", metavar="STRING")
 )
 
 # Parse command line arguments
@@ -204,9 +206,10 @@ for(comp in comparisons) {
     # Filter for significance
     p_threshold <- if(!is.null(opt$options$p_threshold)) opt$options$p_threshold else 1.0
     diff_threshold <- if(!is.null(opt$options$diff_threshold)) opt$options$diff_threshold else 0.0
+    filter_var <- if(!is.null(opt$options$filter_var)) opt$options$filter_var else "FDR"
     
-    cat("Applying filters: FDR <", p_threshold, "and |logFC| >", diff_threshold, "\n")
-    results <- results_all[results_all$FDR < p_threshold & abs(results_all$logFC) > diff_threshold, ]
+    cat("Applying filters:", filter_var, "<", p_threshold, "and |logFC| >", diff_threshold, "\n")
+    results <- results_all[results_all[[filter_var]] < p_threshold & abs(results_all$logFC) > diff_threshold, ]
     
     cat("Number of sites before filtering:", nrow(results_all), "\n")
     cat("Number of sites after filtering:", nrow(results), "\n")

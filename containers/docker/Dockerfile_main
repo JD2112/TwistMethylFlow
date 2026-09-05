@@ -34,7 +34,7 @@ FROM debian:12
 # ================================================================================
 
 LABEL org.opencontainers.image.authors="Jyotirmoy Das" \
-      org.opencontainers.image.description="MethylFlow Methylome Profiling (Nextflow/Conda) - Fixed" \
+      org.opencontainers.image.description="milou Methylome Profiling (Nextflow/Conda) - Fixed" \
       org.opencontainers.image.version="1.1.1" \
       security.status="PRODUCTION_READY" \
       security.base-image="debian:12 (LTS until 2028)" \

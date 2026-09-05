@@ -20,6 +20,7 @@ process EDGER_ANALYSIS {
     path "edger_log.txt", emit: log
 
     script:
+    def args = task.ext.args ?: ''
     def coverage_files_list = coverage_files.collect { it.toString() }.join(' ')
     
     """
@@ -30,6 +31,7 @@ process EDGER_ANALYSIS {
         --coverage_threshold ${coverage_threshold} \\
         --p_threshold ${p_threshold} \\
         --diff_threshold ${diff_threshold} \\
+        $args \\
         ${coverage_files_list} > edger_log.txt 2>&1
 
     cat <<-END_VERSIONS > versions.yml

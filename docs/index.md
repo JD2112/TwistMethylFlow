@@ -6,9 +6,8 @@ hide:
 
 # Introduction
 
-[![DOI](https://zenodo.org/badge/490592846.svg)](https://doi.org/10.5281/zenodo.14204261)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14204260.svg)](https://doi.org/10.5281/zenodo.14204260)
 [![GitBook Docs](https://img.shields.io/badge/docs-GitBook-blue?logo=gitbook)](https://jyotirmoys-organization.gitbook.io/milou)
-[![build-docs](https://github.com/JD2112/milou/actions/workflows/build-docs.yml/badge.svg?branch=main)](https://github.com/JD2112/milou/actions/workflows/build-docs.yml)
 [![GitHub Invite Collaborators](https://img.shields.io/badge/Invite-Collaborators-blue?style=for-the-badge&logo=github)](https://github.com/JD2112/milou/settings/access)
 [![wakatime](https://wakatime.com/badge/user/fe95275f-909a-4147-a45d-624981173898/project/a44415f0-a274-4c3b-a59a-f8e1067c0fc1.svg)](https://wakatime.com/badge/user/fe95275f-909a-4147-a45d-624981173898/project/a44415f0-a274-4c3b-a59a-f8e1067c0fc1)
 
@@ -16,76 +15,29 @@ hide:
 
 <div class="main-content" markdown="1">
 
-**milou** is a robust, end-to-end Nextflow pipeline for comprehensive analysis of DNA methylation data. It streamlines the workflow from raw FASTQ files to structured outputs and **automated, publication-ready reports**.
+**milou** is a robust, end-to-end Nextflow pipeline for comprehensive analysis of DNA methylation data, streamlining the workflow from raw FASTQ files to harmonized analytical outputs and automated, publication-ready reports.
 
-The pipeline features a flexible dual-mode design:
-
-- **Research mode** for rapid, exploratory analysis
-- **Clinical-style mode** for structured, interpretation-oriented reporting
-
-To support diverse computational environments, milou provides:
-
-- ⚡ **GPU-accelerated execution** using NVIDIA Parabricks for fast turnaround
-- 🧪 **CPU-based workflows** using Bismark for standard reproducible analysis
-
-A unified results layer aggregates differential methylation, functional enrichment (e.g., GO/KEGG), and downstream summaries into harmonized outputs, enabling consistent reporting and interpretation.
+The pipeline features a dual-mode operational design supporting both rapid exploratory research and structured, interpretation-oriented clinical reporting. To accommodate diverse institutional and high-performance computing infrastructures, milou provides GPU-accelerated alignment and deduplication via NVIDIA Parabricks alongside CPU-based execution with Bismark for reproducible, cross-platform analysis. A unified results layer aggregates differential methylation calls across three complementary statistical frameworks (DSS, edgeR, methylKit), functional enrichment (Gene Ontology and KEGG Pathview diagrams), and clinical annotations (gnomAD, OMIM) into harmonized, deterministic outputs.
 
 ???+ danger "Research Use Only (RUO)"
 
     This pipeline is intended for **Research Use Only (RUO)**. It has not been clinically validated and is not approved for diagnostic use. The generated reports are designed to support data interpretation and hypothesis generation, and must not be used for medical decision-making.
 
-![](images/TMF.png)
+![milou overview](images/TMF.png)
 
-## 🚀 Key Features
+## 1. Key Features
 
-- 🧬 **End-to-End Methylation Analysis**
-  Complete workflow from raw FASTQ files to differential methylation, functional enrichment (GO/KEGG), and integrated downstream interpretation.
+- **End-to-End Methylation Analysis**: Complete workflow from raw FASTQ files to differential methylation, functional enrichment (GO/KEGG), and integrated downstream interpretation.
+- **Dual Execution Engine (GPU + CPU)**: Flexible support for high-speed GPU-accelerated processing (NVIDIA Parabricks) and standard CPU-based workflows (Bismark), enabling both rapid turnaround and reproducible analysis.
+- **Dual-Mode Reporting (Research vs Clinical-Style)**: Supports both research mode for fast, exploratory analysis and clinical-style mode for structured, interpretation-oriented outputs with prioritized results and summaries.
+- **Unified Analysis Layer**: Harmonizes outputs across modules into standardized result tables, integrating differentially methylated regions (DMRs), gene-level summaries, functional enrichment (GO/KEGG), and disease association layers.
+- **Integrated Biological Interpretation**: Built-in annotation modules connect methylation changes to biological pathways and disease-relevant genes, facilitating downstream interpretation without manual integration.
+- **Automated, Publication-Ready Reports**: Generates clean, structured reports (PDF/HTML) via Quarto, combining statistical results with narrative summaries for easy interpretation and sharing.
+- **Security & Container Auditing ([quindecagon](https://github.com/JD2112/quindecagon))**: All containers within milou undergo strict continuous security verification using quindecagon, incorporating automated static analysis, OCI image vulnerability scanning (Trivy, Grype), Software Bill of Materials (SBOM) generation (Syft), and cryptographic image signing (Cosign).
+- **FAIR Open Science Archive (Zenodo)**: Complete execution reports, timelines, MultiQC dashboards, and Python evaluation scripts are permanently archived on Zenodo at **DOI: [10.5281/zenodo.22326688](https://doi.org/10.5281/zenodo.22326688)**.
+- **Reproducible & Scalable Architecture**: Built with Nextflow DSL2 and containerized environments, ensuring portability across HPC, cloud, and local systems with bitwise determinism (`set.seed(42)`).
 
-- ⚡ **Dual Execution Engine (GPU + CPU)**
-  Flexible support for high-speed **GPU-accelerated processing** (NVIDIA Parabricks) and standard **CPU-based workflows** (Bismark), enabling both rapid turnaround and reproducible analysis.
-
-- 🔀 **Dual-Mode Reporting (Research vs Clinical-Style)**
-  A unique reporting framework that supports:
-  
-    - **Research mode** for fast, exploratory analysis
-    - **Clinical-style mode** for structured, interpretation-oriented outputs with prioritized results and summaries
-
-- 📊 **Unified Analysis Layer**
-  Harmonizes outputs across modules into standardized result tables, integrating:
-  
-    - Differentially methylated regions (DMRs)
-  - Gene-level summaries
-  - Functional enrichment (GO/KEGG)
-  - Disease association layers
-
-- 🧠 **Integrated Biological Interpretation**
-  Built-in annotation modules connect methylation changes to biological pathways and disease-relevant genes, facilitating downstream interpretation without manual integration.
-
-- 📄 **Automated, Publication-Ready Reports**
-  Generates clean, structured reports (PDF/HTML) via Quarto, combining statistical results with narrative summaries for easy interpretation and sharing.
-
-- 🔁 **Reproducible & Scalable Architecture**
-  Built with Nextflow DSL2 and containerized environments, ensuring portability across HPC, cloud, and local systems with consistent results.
-
-- ⚙️ **One-Command Execution with Configurable Profiles**
-  Simple execution with predefined profiles for:
-  
-    - test datasets (quick validation)
-    - full-scale analysis
-    - GPU-enabled runs
-
-- 🧪 **Built-in Case Study & Reproducibility Support**
-  
-  Includes configurations to reproduce published datasets, enabling validation and benchmarking of the workflow.
-
-- 🛡️ **Clinical-Grade Data Integrity & Determinism**
-  
-    - **SHA256 Verification**: Automatic cryptographic checksumming of input FASTQ files to detect data corruption.
-    - **Bitwise Determinism**: Fixed random seeds (`set.seed(42)`) across all statistical modules for bit-identical results.
-    - **HIPAA-Compliant Validation**: Strict schema enforcement to prevent Patient Identifiable Information (PII) in sample IDs.
-    - **Automated Sanity Checks**: Real-time validation of coverage and mapping rates with high-visibility warnings.
-
-## 📊 Pipeline Capabilities
+## 2. Pipeline Capabilities
 
 | Category            | Feature                                                       | Status |
 | :------------------ | :------------------------------------------------------------ | :----: |
@@ -106,7 +58,7 @@ A unified results layer aggregates differential methylation, functional enrichme
 | **Infrastructure**  | Containerized (Singularity, Docker, Conda)                    |   ✅   |
 |                     | Reproducible DSL2 Modular Architecture                        |   ✅   |
 
-## Usage
+## 3. Quick Start & Execution Syntax
 
 Sample sheet (CSV format) with sample information `Sample_sheet.csv`:
 
@@ -151,7 +103,7 @@ nextflow run JD2112/milou \
 
 For more details and further functionality, please refer to the [usage documentation](usage.md) and the [parameter documentation](parameters.md).
 
-## Pipeline Output
+## 4. Pipeline Output Directory Structure
 
 milou generates a comprehensive `results/` folder including:
 
@@ -160,46 +112,89 @@ milou generates a comprehensive `results/` folder including:
 - **Unified Analysis Layer**: Integrated tables combining DMR statistics with GO, KEGG, and disease associations.
 - **Visualizations**: Volcano plots, MA plots, dot plots, and GO/KEGG chord diagrams.
 
+
+<div class="grid cards" markdown>
+
+<div>
+        <h4>GPU output</h4>
+        ```
+        results_test_bisulfite_gpu/
+        ├── clinical_reporting
+        ├── conversion_qc
+        ├── differential_methylation
+        ├── multiqc
+        ├── parabricks_analysis
+        ├── pipeline_info
+        ├── prepare_genome
+        ├── read_processing
+        ├── report
+        ├── result_analysis
+        └── unified_layer
+        ```
+</div>
+
+<div>
+        <h4>CPU output</h4>
+        ```
+        results_test_bisulfite_cpu/
+        ├── bismark_analysis
+        ├── clinical_reporting
+        ├── conversion_qc
+        ├── differential_methylation
+        ├── multiqc
+        ├── pipeline_info
+        ├── prepare_genome
+        ├── read_processing
+        ├── report
+        ├── result_analysis
+        └── unified_layer
+
+        ```
+    </div>
+</div>
+
 For more details about the output files and reports, please refer to the [output documentation](output.md).
 
-## Benchmarking
+## 5. Hardware Benchmarking
 
 Benchmarked on **hg38** (Human Genome) using 24 paired-end samples on the Dardel HPC and Fraka HPC.
 
 | Feature             | CPU Track (Standard) | GPU Track (Parabricks)  |
 | :------------------ | :------------------- | :---------------------- |
 | **Indexing**        | Bismark Index        | BWA-meth Index          |
-| **Alignment Speed** | 1.0x (Baseline)      | **~40x Faster**         |
+| **Alignment Speed** | 1.0x (Baseline)      | **~28x Faster**         |
 | **Data Extraction** | Bismark Extractor    | MethylDackel            |
 | **Hardware**        | 12+ CPU Cores        | NVIDIA GPU (16GB+ VRAM) |
 
-## Credits
+## 6. Development & Authorship
 
-**milou** was originally written by **Jyotirmoy Das** ([@JD2112](https://github.com/JD2112)) at the Bioinformatics Unit, BKV, Linköping University to reduce the gap between the identification of methylation sites per sample and then perform the differential analysis separately.
+### Core Developers & Contributors
 
-Maintenace is now lead by Jyotirmoy Das.
+**milou** was originally conceptualized and written by **Jyotirmoy Das** ([@JD2112](https://github.com/JD2112)) at the Bioinformatics Core Facility and Clinical Genomics Linköping, Linköping University to reduce the gap between the identification of methylation sites per sample and then perform the differential analysis separately.
 
-Main developer:
+Main developer & maintainer:
 
 - [Jyotirmoy Das](https://github.com/JD2112)
 
-We thank the following people for their assistance in the development of this pipeline:
+Contributors:
 
 - [Debojyoti Das](https://github.com/biodebojyoti)
 
-## Acknowledgements
+### Acknowledgements
 
-We thank the **Core Facility of Linköping University** and **Clinical Genomics, Linköping, SciLifeLab** for support. Benchmarking was performed using resources provided by **PDC (KTH, Sweden)** and **Fraka (LiU)**.
+The authors would like to acknowledge Dr. Vesa Loitto, the Core Facility, Dept. of Biomedical and Clinical Sciences, Faculty of Medicine and Health Sciences at Linköping University, Sweden for his support on this application development. We would like to acknowledge the Core Facility, Faculty of Medicine and Health Sciences, Linköping University, Linköping, Sweden and Clinical Genomics Linköping, Science for Life Laboratory, Sweden for their support. We thank the PDC (Parallelldatorcentrum) Center for High-Performance Computing, KTH Royal Institute of Technology, Sweden, for providing access to the computing resources and storage used in this research. We thank ALF funding support from Region Östergötland (RÖ) and Genomic Medicine Sweden for the computational facility. Clinical Genomics Linköping receives funding from the Science for Life Laboratory.
 
-## Citation
+### Citation
 
-> Das, J. (2025). milou (v1.1.0). Zenodo. [https://doi.org/10.5281/zenodo.14204261](https://doi.org/10.5281/zenodo.14204261)
+> Das, J., et al. (2026). *milou: An End-to-End Nextflow Pipeline for Translational DNA Methylation Profiling with Multi-Method Consensus Scoring*.  
+> **Software Pipeline Archive:** [https://doi.org/10.5281/zenodo.14204260](https://doi.org/10.5281/zenodo.14204260)  
+> **Benchmark Data Archive:** [https://doi.org/10.5281/zenodo.22326688](https://doi.org/10.5281/zenodo.22326688)
 
 </div>
 
 <div class="side-panel" markdown="1">
 
-![](images/methylflow_logo.png)
+![](images/milou_logo.png)
 
 ## Run with
 

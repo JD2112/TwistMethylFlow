@@ -1,4 +1,4 @@
-# Contributing to MethylFlow
+# Contributing to milou
 
 First off, thanks for taking the time to contribute! ❤️
 
@@ -15,15 +15,15 @@ All types of contributions are encouraged and valued. See the [Table of Contents
 
 ## Code of Conduct
 
-This project and everyone participating in it is governed by the [MethylFlow Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.
+This project and everyone participating in it is governed by the [milou Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.
 
 ## I Have a Question
 
-Before you ask a question, it is best to search for existing [Issues](https://github.com/JD2112/MethylFlow/issues) that might help you. In case you have found a suitable issue and still need clarification, you can write your question in this issue.
+Before you ask a question, it is best to search for existing [Issues](https://github.com/JD2112/milou/issues) that might help you. In case you have found a suitable issue and still need clarification, you can write your question in this issue.
 
 If you then still feel the need to ask a question and need clarification, we recommend the following:
 
-- Open an [Issue](https://github.com/JD2112/MethylFlow/issues/new).
+- Open an [Issue](https://github.com/JD2112/milou/issues/new).
 - Provide as much context as you can about what you're running into.
 - Provide project and platform versions (Nextflow, Singularity/Docker, OS).
 
@@ -31,12 +31,12 @@ If you then still feel the need to ask a question and need clarification, we rec
 
 ### Reporting Bugs
 
-- Ensure the bug was not already reported by searching on GitHub under [Issues](https://github.com/JD2112/MethylFlow/issues).
-- If you're unable to find an open issue addressing the problem, [open a new one](https://github.com/JD2112/MethylFlow/issues/new). Be sure to include a title and clear description, as much relevant information as possible, and a code sample or an executable test case demonstrating the expected behavior that is not occurring.
+- Ensure the bug was not already reported by searching on GitHub under [Issues](https://github.com/JD2112/milou/issues).
+- If you're unable to find an open issue addressing the problem, [open a new one](https://github.com/JD2112/milou/issues/new). Be sure to include a title and clear description, as much relevant information as possible, and a code sample or an executable test case demonstrating the expected behavior that is not occurring.
 
 ### Suggesting Enhancements
 
-- Open a new [Issue](https://github.com/JD2112/MethylFlow/issues/new) and describe your enhancement.
+- Open a new [Issue](https://github.com/JD2112/milou/issues/new) and describe your enhancement.
 - Explain why this enhancement would be useful to most users.
 
 ### Pull Requests

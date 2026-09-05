@@ -13,15 +13,29 @@ workflow BISMARK_ANALYSIS {
     // Align reads to reference genome with Bismark
     if (params.bismark_split_reads > 0) {
         // Split FASTQ into chunks for parallel alignment
-        ch_chunks = trimmed_reads
-            .splitFastq(by: params.bismark_split_reads, pe: true)
+        trimmed_reads.branch { meta, reads ->
+            single: meta.single_end
+            paired: true
+        }.set { ch_to_split }
+
+        ch_chunks_se = ch_to_split.single
+            .splitFastq(by: params.bismark_split_reads, file: true)
             .map { meta, reads ->
-                // Create a unique prefix for each chunk to avoid filename collisions
-                // We use the file's hash or a unique string from the path
                 def chunk_id = reads instanceof List ? reads[0].name.split(/\.f/)[0] : reads.name.split(/\.f/)[0]
                 def new_meta = meta + [ id: "${meta.id}_${chunk_id}", original_id: meta.id ]
-                return [ new_meta, reads ]
+                return [ new_meta, reads instanceof List ? reads : [reads] ]
             }
+
+        ch_chunks_pe = ch_to_split.paired
+            .map { meta, reads -> [meta, reads[0], reads[1]] }
+            .splitFastq(by: params.bismark_split_reads, pe: true, file: true)
+            .map { meta, read1, read2 ->
+                def chunk_id = read1.name.split(/\.f/)[0]
+                def new_meta = meta + [ id: "${meta.id}_${chunk_id}", original_id: meta.id ]
+                return [ new_meta, [read1, read2] ]
+            }
+
+        ch_chunks = ch_chunks_se.mix(ch_chunks_pe)
 
         BISMARK_ALIGN ( ch_chunks, bismark_index )
         ch_versions = ch_versions.mix(BISMARK_ALIGN.out.versions.first())
@@ -42,9 +56,13 @@ workflow BISMARK_ANALYSIS {
         // For reports, we take the first chunk's report as a proxy, 
         // or we could collect all (bismark2report doesn't support multiple align reports natively)
         ch_align_reports = BISMARK_ALIGN.out.report
-            .map { meta, report -> [ meta.original_id, report ] }
+            .map { meta, report -> [ meta.original_id, meta, report ] }
             .groupTuple(by: 0)
-            .map { id, reports -> [ [id: id], reports[0] ] } // Just take the first for now
+            .map { original_id, metas, reports -> 
+                def new_meta = metas[0].clone()
+                new_meta.id = original_id
+                return [ new_meta, reports[0] ] 
+            }
     } else {
         BISMARK_ALIGN ( trimmed_reads, bismark_index )
         ch_versions = ch_versions.mix(BISMARK_ALIGN.out.versions.first())

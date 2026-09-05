@@ -1,5 +1,5 @@
 process PRE_STAGE_FILES {
-    label 'process_low'
+    label 'process_long'
     cache false
     
     output:
@@ -11,10 +11,9 @@ process PRE_STAGE_FILES {
     echo "PRE-STAGE: System and Sample Sheet Audit"
     echo "===================================================="
     
-    # Check GPU visibility
     if command -v nvidia-smi &> /dev/null; then
         echo "GPU Audit:"
-        nvidia-smi --query-gpu=name,memory.total,utilization.gpu --format=csv,noheader
+        nvidia-smi --query-gpu=name,memory.total,utilization.gpu --format=csv,noheader || true
     else
         echo "No NVIDIA GPUs detected on host."
     fi

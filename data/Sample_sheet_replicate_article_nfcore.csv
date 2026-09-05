@@ -1,0 +1,13 @@
+sample,fastq_1,fastq_2,strandedness
+12A,/path/to/milou/data/test_data/ERR11435640_1.fastq.gz,/path/to/milou/data/test_data/ERR11435640_2.fastq.gz,auto
+13A,/path/to/milou/data/test_data/ERR11435642_1.fastq.gz,/path/to/milou/data/test_data/ERR11435642_2.fastq.gz,auto
+1A,/path/to/milou/data/test_data/ERR11435644_1.fastq.gz,/path/to/milou/data/test_data/ERR11435644_2.fastq.gz,auto
+20A,/path/to/milou/data/test_data/ERR11435646_1.fastq.gz,/path/to/milou/data/test_data/ERR11435646_2.fastq.gz,auto
+21A,/path/to/milou/data/test_data/ERR11435648_1.fastq.gz,/path/to/milou/data/test_data/ERR11435648_2.fastq.gz,auto
+22A,/path/to/milou/data/test_data/ERR11435650_1.fastq.gz,/path/to/milou/data/test_data/ERR11435650_2.fastq.gz,auto
+23A,/path/to/milou/data/test_data/ERR11435652_1.fastq.gz,/path/to/milou/data/test_data/ERR11435652_2.fastq.gz,auto
+25A,/path/to/milou/data/test_data/ERR11435654_1.fastq.gz,/path/to/milou/data/test_data/ERR11435654_2.fastq.gz,auto
+26A,/path/to/milou/data/test_data/ERR11435656_1.fastq.gz,/path/to/milou/data/test_data/ERR11435656_2.fastq.gz,auto
+2A,/path/to/milou/data/test_data/ERR11435658_1.fastq.gz,/path/to/milou/data/test_data/ERR11435658_2.fastq.gz,auto
+3A,/path/to/milou/data/test_data/ERR11435660_1.fastq.gz,/path/to/milou/data/test_data/ERR11435660_2.fastq.gz,auto
+5A,/path/to/milou/data/test_data/ERR11435662_1.fastq.gz,/path/to/milou/data/test_data/ERR11435662_2.fastq.gz,auto

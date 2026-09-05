@@ -2,9 +2,9 @@
 hide:
   - navigation
 ---
-# MethylFlow Developer Guide & Technical History
+# milou Developer Guide & Technical History
 
-This document serves as a "brain dump" and maintenance manual for the **MethylFlow** pipeline. It tracks the major architectural shifts made during the v1.1.0 update to address reviewer feedback and clinical requirements.
+This document serves as a "brain dump" and maintenance manual for the **milou** pipeline. It tracks the major architectural shifts made during the v1.1.0 update to address reviewer feedback and clinical requirements.
 
 ---
 
@@ -59,20 +59,20 @@ To maintain clinical reproducibility, follow this exact sequence when updating t
 When writing the manuscript or responding to reviewers, emphasize these three pillars:
 
 ### **Pillar 1: The Translational Gap**
-Standard pipelines (like `nf-core/methylseq`) stop at the `bedGraph` level. **MethylFlow** bridges the gap between raw methylation math and clinical pathology by providing automated gene-disease enrichment (DisGeNET) and a Unified Consensus Score.
+Standard pipelines (like `nf-core/methylseq`) stop at the `bedGraph` level. **milou** bridges the gap between raw methylation math and clinical pathology by providing automated gene-disease enrichment (DisGeNET) and a Unified Consensus Score.
 
 ### **Pillar 2: Mathematical Rigor**
 Address "lack of innovation" comments by highlighting the **π-value consensus**. Instead of relying on a single tool's p-value, we use a validated mathematical framework to find the "biological truth" where multiple tools agree.
 
 ### **Pillar 3: Clinical Readiness**
-MethylFlow is designed for regulated environments. The inclusion of **30x coverage gates**, **checksumming**, and **security-hardened containers** makes it a "turnkey" solution for diagnostic labs, not just a research script.
+milou is designed for regulated environments. The inclusion of **30x coverage gates**, **checksumming**, and **security-hardened containers** makes it a "turnkey" solution for diagnostic labs, not just a research script.
 
 ---
 
 ## 4. Benchmarking Strategy
 To prove performance, the current strategy is a head-to-head run against `nf-core/methylseq` using the **NEB EM-seq** public dataset. 
 *   **Metric 1**: Concordance of methylation calls (should be >99%).
-*   **Metric 2**: Time-to-Insight (MethylFlow provides the Quarto report automatically; nf-core requires manual downstream work).
+*   **Metric 2**: Time-to-Insight (milou provides the Quarto report automatically; nf-core requires manual downstream work).
 
 ---
 

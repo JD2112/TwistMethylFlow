@@ -12,3 +12,4 @@ dependencies:
   - r-glue
   - r-rlang
   - r-rmarkdown
+  - r-dt

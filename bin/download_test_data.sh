@@ -1,18 +1,5 @@
 #!/bin/bash
 
-# Acceptance of project directory and sample sheet as arguments
-PROJECT_DIR=${1:-"."}
-SAMPLE_SHEET=${2}
-DATA_DIR="${PROJECT_DIR}/data/test_data"
-
-mkdir -p "$DATA_DIR"
-
-echo "===================================================="
-echo "MethylFlow: Reference & Test Data Staging"
-echo "Target Directory: $DATA_DIR"
-echo "Current Time: $(date)"
-echo "===================================================="
-
 # Validation function - checks size and gzip integrity
 validate_file() {
     local file=$1
@@ -47,6 +34,89 @@ validate_file() {
     return 0
 }
 
+# Subroutine for downloading a single file
+if [ "$1" = "download_single" ]; then
+    PROJECT_DIR="$2"
+    URL="$3"
+    DATA_DIR="${PROJECT_DIR}/data/test_data"
+    
+    if [[ "$URL" == *"hg38_RefSeq"* ]]; then FILE_NAME="hg38_RefSeq.bed.gz"
+    elif [[ "$URL" == *"hg19_RefSeq"* ]]; then FILE_NAME="hg19_RefSeq.bed.gz"
+    else FILE_NAME=$(basename "$URL"); fi
+
+    TARGET_FILE="$DATA_DIR/$FILE_NAME"
+    UNCOMPRESSED_FILE="${TARGET_FILE%.gz}"
+    
+    # If uncompressed exists, skip
+    if [ -f "$UNCOMPRESSED_FILE" ] && [ -s "$UNCOMPRESSED_FILE" ]; then
+        echo "OK: $FILE_NAME (already ready)"
+        exit 0
+    fi
+
+    # Download loop
+    ATTEMPT=1
+    SUCCESS=0
+    while [ $ATTEMPT -le 3 ]; do
+        if [ -f "$TARGET_FILE" ]; then
+            if validate_file "$TARGET_FILE"; then
+                echo "OK: $FILE_NAME"
+                SUCCESS=1
+                break
+            else
+                echo "!! Removing invalid file: $FILE_NAME (Attempt $ATTEMPT)"
+                rm -f "$TARGET_FILE"
+            fi
+        fi
+
+        echo "Downloading $FILE_NAME (Attempt $ATTEMPT)..."
+        if command -v wget >/dev/null 2>&1; then
+            # Quiet mode -q is preferred when running in parallel to prevent output interleaving
+            wget -q -c --timeout=60 --tries=5 -w 5 -O "$TARGET_FILE" "$URL"
+        elif command -v curl >/dev/null 2>&1; then
+            curl -s -L -C - --connect-timeout 60 --retry 5 --retry-delay 5 -o "$TARGET_FILE" "$URL"
+        else
+            echo "!! ERROR: Neither wget nor curl found. Cannot download $FILE_NAME."
+            exit 1
+        fi
+        
+        if validate_file "$TARGET_FILE"; then
+            echo "OK: $FILE_NAME"
+            SUCCESS=1
+            break
+        fi
+        
+        ATTEMPT=$((ATTEMPT + 1))
+        [ $ATTEMPT -le 3 ] && sleep 5
+    done
+
+    if [ $SUCCESS -eq 0 ]; then
+        echo "!! CRITICAL ERROR: Failed to download valid copy of $FILE_NAME after 3 attempts."
+        exit 1
+    else
+        # Decompress FASTA and GTF
+        if [[ "$FILE_NAME" == *.fa.gz ]] || [[ "$FILE_NAME" == *.gtf.gz ]] || [[ "$FILE_NAME" == curated_gene_disease_associations.tsv.gz ]]; then
+            if [ -f "$TARGET_FILE" ] && [ ! -f "$UNCOMPRESSED_FILE" ]; then
+                echo "Decompressing $FILE_NAME..."
+                gunzip -k "$TARGET_FILE" || gunzip "$TARGET_FILE"
+            fi
+        fi
+    fi
+    exit 0
+fi
+
+# Main script execution
+PROJECT_DIR=${1:-"."}
+SAMPLE_SHEET=${2}
+DATA_DIR="${PROJECT_DIR}/data/test_data"
+
+mkdir -p "$DATA_DIR"
+
+echo "===================================================="
+echo "milou: Reference & Test Data Staging"
+echo "Target Directory: $DATA_DIR"
+echo "Current Time: $(date)"
+echo "===================================================="
+
 # Base reference files (hg38 and hg19/GRCh37)
 FILES=(
     # hg38 (Ensembl 104)
@@ -74,78 +144,15 @@ fi
 FILES=($(for f in "${FILES[@]}"; do echo $f; done | sort -u))
 
 echo "Checking ${#FILES[@]} unique files..."
+echo "Downloading files in parallel (16 concurrent threads)..."
 
-FAILED_ANY=0
+# Run parallel downloads using xargs
+printf "%s\n" "${FILES[@]}" | xargs -n 1 -P 16 "$0" "download_single" "$PROJECT_DIR"
+XARGS_STATUS=$?
 
-for URL in "${FILES[@]}"
-do
-    # Handle SourceForge download redirects
-    if [[ "$URL" == *"hg38_RefSeq"* ]]; then FILE_NAME="hg38_RefSeq.bed.gz"
-    elif [[ "$URL" == *"hg19_RefSeq"* ]]; then FILE_NAME="hg19_RefSeq.bed.gz"
-    else FILE_NAME=$(basename $URL); fi
-
-    TARGET_FILE="$DATA_DIR/$FILE_NAME"
-    UNCOMPRESSED_FILE="${TARGET_FILE%.gz}"
-    
-    # If uncompressed exists, skip
-    if [ -f "$UNCOMPRESSED_FILE" ] && [ -s "$UNCOMPRESSED_FILE" ]; then
-        echo "OK: $FILE_NAME (already ready)"
-        continue
-    fi
-
-    # Download loop
-    ATTEMPT=1
-    SUCCESS=0
-    while [ $ATTEMPT -le 3 ]; do
-        if [ -f "$TARGET_FILE" ]; then
-            if validate_file "$TARGET_FILE"; then
-                echo "OK: $FILE_NAME"
-                SUCCESS=1
-                break
-            else
-                echo "!! Removing invalid file: $FILE_NAME (Attempt $ATTEMPT)"
-                rm -f "$TARGET_FILE"
-            fi
-        fi
-
-        echo "----------------------------------------------------"
-        echo "Downloading $FILE_NAME (Attempt $ATTEMPT)..."
-        if command -v wget >/dev/null 2>&1; then
-            wget -c --timeout=60 --tries=5 -w 5 --show-progress -O "$TARGET_FILE" "$URL"
-        elif command -v curl >/dev/null 2>&1; then
-            curl -L -C - --connect-timeout 60 --retry 5 --retry-delay 5 -o "$TARGET_FILE" "$URL"
-        else
-            echo "!! ERROR: Neither wget nor curl found in this container. Cannot download $FILE_NAME."
-            exit 1
-        fi
-        
-        if validate_file "$TARGET_FILE"; then
-            echo "OK: $FILE_NAME"
-            SUCCESS=1
-            break
-        fi
-        
-        ATTEMPT=$((ATTEMPT + 1))
-        [ $ATTEMPT -le 3 ] && sleep 5
-    done
-
-    if [ $SUCCESS -eq 0 ]; then
-        echo "!! CRITICAL ERROR: Failed to download valid copy of $FILE_NAME after 3 attempts."
-        FAILED_ANY=1
-    else
-        # Decompress FASTA and GTF
-        if [[ "$FILE_NAME" == *.fa.gz ]] || [[ "$FILE_NAME" == *.gtf.gz ]] || [[ "$FILE_NAME" == curated_gene_disease_associations.tsv.gz ]]; then
-            if [ -f "$TARGET_FILE" ] && [ ! -f "$UNCOMPRESSED_FILE" ]; then
-                echo "Decompressing $FILE_NAME..."
-                gunzip -k "$TARGET_FILE" || gunzip "$TARGET_FILE"
-            fi
-        fi
-    fi
-done
-
-if [ $FAILED_ANY -eq 1 ]; then
+if [ $XARGS_STATUS -ne 0 ]; then
     echo "===================================================="
-    echo "STAGING FAILED: One or more files are missing or corrupt."
+    echo "STAGING FAILED: One or more parallel downloads failed."
     echo "===================================================="
     exit 1
 fi

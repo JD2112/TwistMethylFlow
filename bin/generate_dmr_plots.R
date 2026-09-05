@@ -120,6 +120,17 @@ sample_ids <- sapply(all_gr_list, function(x) x$info$id)
 sample_groups <- sapply(all_gr_list, function(x) x$info$group)
 names(sample_groups) <- sample_ids
 
+# Filter out samples that are completely NA in this genomic window to avoid Gviz groups length mismatch
+data_matrix <- as.matrix(mcols(all_sites))
+non_na_samples <- colnames(data_matrix)[colSums(!is.na(data_matrix)) > 0]
+if (length(non_na_samples) < length(sample_ids)) {
+    dropped <- setdiff(sample_ids, non_na_samples)
+    cat(paste("Warning: Dropping samples with no coverage in this window:", paste(dropped, collapse=", "), "\n"))
+    mcols(all_sites) <- mcols(all_sites)[, non_na_samples, drop=FALSE]
+    sample_groups <- sample_groups[non_na_samples]
+    sample_ids <- non_na_samples
+}
+
 # 4. Gviz Tracks Initialization
 axis_track <- GenomeAxisTrack()
 ideo_track <- tryCatch({
@@ -134,6 +145,25 @@ if (!is.null(opt$gtf) && file.exists(opt$gtf)) {
                      which=GRanges(target_chr, IRanges(view_start, view_end)))
     
     if (length(gtf_gr) > 0) {
+        # Filter for exons only to avoid plotting overlapping CDS/UTR/transcript features separately
+        if ("type" %in% colnames(mcols(gtf_gr))) {
+            gtf_gr <- gtf_gr[gtf_gr$type == "exon"]
+        }
+        
+        # Map standard GTF columns to Gviz-expected names
+        if ("gene_id" %in% colnames(mcols(gtf_gr))) {
+            gtf_gr$gene <- gtf_gr$gene_id
+        }
+        if ("transcript_id" %in% colnames(mcols(gtf_gr))) {
+            gtf_gr$transcript <- gtf_gr$transcript_id
+        }
+        if ("exon_id" %in% colnames(mcols(gtf_gr))) {
+            gtf_gr$exon <- gtf_gr$exon_id
+        }
+        if ("gene_name" %in% colnames(mcols(gtf_gr))) {
+            gtf_gr$symbol <- gtf_gr$gene_name
+        }
+
         # Select NM_ ids for labels
         if ("transcript_id" %in% colnames(mcols(gtf_gr))) {
             gtf_gr$id <- gtf_gr$transcript_id
@@ -141,7 +171,7 @@ if (!is.null(opt$gtf) && file.exists(opt$gtf)) {
         gene_track <- GeneRegionTrack(gtf_gr, genome = opt$genome, chromosome = target_chr, 
                                      name = "RefSeq Models",
                                      showId = TRUE, geneSymbol = TRUE,
-                                     collapseTranscripts = FALSE,
+                                     collapseTranscripts = "meta",
                                      shape = "arrow", fill = "#EAEAEA", col = "#444444",
                                      fontsize.group = 8)
     }
@@ -210,7 +240,7 @@ final_tracks <- final_tracks[!sapply(final_tracks, is.null)]
 if (!is.null(ideo_track)) displayPars(ideo_track)$size <- 0.6
 
 # 10. Plotting
-png(opt$output, width = 1400, height = 500 + 120 * length(groups_present), res = 150)
+png(opt$output, width = 1400, height = 1200 + 150 * length(groups_present), res = 150)
 
 plotTracks(final_tracks, 
            from = view_start, to = view_end, 

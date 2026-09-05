@@ -1,8 +1,8 @@
-site_name: MethylFlow
-site_description: A Nextflow-based DNA Methylation Data Analysis Pipeline for Twist NGS data
+site_name: milou
+site_description: "milou: Methylation Integrated Layer for Omics Unification"
 site_author: Jyotirmoy Das
-repo_url: https://github.com/JD2112/MethylFlow
-site_url: https://JD2112.github.io/MethylFlow/
+repo_url: https://github.com/JD2112/milou
+site_url: https://JD2112.github.io/milou/
 edit_uri: ""
 
 theme:
@@ -27,7 +27,7 @@ theme:
     - navigation.tabs
     - search.suggest
     - search.highlight
-    # - toc.integrate
+    #- toc.follow
     - content.action.edit
     - content.code.copy
     - versioning
@@ -39,11 +39,9 @@ plugins:
 
 nav:
   - Introduction: index.md
-  - Usage Guide: usage.md  
-  - Output: output.md
-  - Parameters: parameters.md
+  - User Manual: usage.md  
+  - Results: output.md
   - References: references.md
-  - Developer Guide: DEVELOPER_GUIDE.md
 
 markdown_extensions:
   - admonition
@@ -76,10 +74,11 @@ extra:
 
 extra_css:
   - styles/extra.css
+  - https://fonts.googleapis.com/css2?family=Fira+Code&family=Inter:wght@400;600&display=swap
 
 extra_javascript:
-  - https://fonts.googleapis.com/css2?family=Fira+Code&family=Inter:wght@400;600&display=swap
-  - https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-MML-AM_CHTML
+  - js/mathjax.js
+  - https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js
   - js/github-stats.js
 
 

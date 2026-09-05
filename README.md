@@ -1,171 +1,181 @@
-![](docs/images/methylflow_logo.png)
+![](docs/images/milou_logo.png)
 
-[![DOI](https://zenodo.org/badge/490592846.svg)](https://doi.org/10.5281/zenodo.14204261)
-[![GitBook Docs](https://img.shields.io/badge/docs-GitBook-blue?logo=gitbook)](https://jyotirmoys-organization.gitbook.io/MethylFlow)
-[![MethylFlow CI](https://github.com/JD2112/MethylFlow/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/JD2112/MethylFlow/actions/workflows/ci.yml)
-[![build-docs](https://github.com/JD2112/MethylFlow/actions/workflows/build-docs.yml/badge.svg?branch=main)](https://github.com/JD2112/MethylFlow/actions/workflows/build-docs.yml)
-[![GitHub Invite Collaborators](https://img.shields.io/badge/Invite-Collaborators-blue?style=for-the-badge&logo=github)](https://github.com/JD2112/MethylFlow/settings/access)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14204260.svg)](https://doi.org/10.5281/zenodo.14204260)
+[![GitBook Docs](https://img.shields.io/badge/docs-GitBook-blue?logo=gitbook)](https://jyotirmoys-organization.gitbook.io/milou)
+[![GitHub Invite Collaborators](https://img.shields.io/badge/Invite-Collaborators-blue?style=for-the-badge&logo=github)](https://github.com/JD2112/milou/settings/access)
 [![wakatime](https://wakatime.com/badge/user/fe95275f-909a-4147-a45d-624981173898/project/a44415f0-a274-4c3b-a59a-f8e1067c0fc1.svg)](https://wakatime.com/badge/user/fe95275f-909a-4147-a45d-624981173898/project/a44415f0-a274-4c3b-a59a-f8e1067c0fc1)
 
-## Overview
 
-**MethylFlow** is a high-performance Nextflow pipeline designed for end-to-end DNA methylation profiling. It features a versatile architecture that seamlessly handles diverse conversion chemistries—including **Enzymatic Methyl-seq (EM-seq)** and traditional **Bisulfite sequencing**—while offering a unique dual-track processing mode for both GPU-accelerated (NVIDIA Parabricks) and CPU-based analysis.
+## 1. Overview
 
-### 🧪 Technology Compatibility
-Although Bismark is traditionally associated with Bisulfite sequencing, MethylFlow fully supports **Enzymatic Methyl-seq (EM-seq)**. Since both methods result in a C→T conversion of unmethylated cytosines, the alignment and methylation extraction logic remains identical. MethylFlow leverages Bismark as a gold-standard, bisulfite-aware aligner to ensure high accuracy and full compatibility with legacy datasets.
+**milou** (**M**ethylation **I**ntegrated **L**ayer for **O**mics **U**nification) is a high-performance Nextflow DSL2 pipeline designed for end-to-end DNA methylation profiling. It features a versatile, dual-engine architecture that seamlessly handles diverse library preparations and conversion chemistries—including targeted hybrid capture (**Twist Human Methylome NGS panels**), **Enzymatic Methyl-seq (EM-seq)**, and traditional **Whole-Genome Bisulfite Sequencing (WGBS)**—while offering specialized dual-track processing modes for both GPU-accelerated (NVIDIA Clara Parabricks) and CPU-based (Bismark) execution.
+
+A core scientific breakthrough of milou is its **Multi-Method Differential Methylation Consensus Framework**, which statistically reconciles calls across three complementary methodologies (**DSS**, **edgeR**, and **methylKit**) using a multi-method composite $\pi$-value score alongside an automated, publication-ready **Quarto Reporting Engine** (interactive HTML + vector PDF).
 
 > [!NOTE]
 > For a deeper look at our design goals, competitive positioning, and scientific rationale, please see our [Project Philosophy](PHILOSOPHY.md) and our [Benchmarking Strategy](BENCHMARKING.md).
 
-## Features
 
-| Step | CPU (Bismark) | GPU (Parabricks) |
+
+## 2. Key Features
+
+- **Dual-Engine Execution (GPU + CPU)**: Flexible support for ultra-fast GPU-accelerated processing via NVIDIA Clara Parabricks (`fq2bam_meth` + `MethylDackel`) and standard CPU-based workflows (Bismark with parallel FastQ chunking), achieving bitwise concordance across platforms.
+- **Versatile Conversion Chemistry**: Native support for Enzymatic Methyl-seq (EM-seq), targeted hybrid capture (e.g., Twist Human Methylome), and standard WGBS bisulfite conversion.
+- **Multi-Method Consensus Layer ($\pi$-Value)**: Directly addresses the notorious caller discordance between beta-binomial models (DSS), negative binomial generalized linear models (edgeR), and logistic regression (methylKit) by ranking candidate genes via:
+  $$\pi_g = \overline{|\log_2(\text{FC})_g|} \times (-\log_{10}(P_{\min,g}))$$
+- **Automated Clinical & Research Quarto Reports**: Interactive HTML dashboards (with searchable `DT::datatable`, TSV/Excel exports, and locus zoom plots) and publication-ready vector PDFs produced automatically via Quarto.
+- **Genomic & Disease Annotation**: Direct integration with gnomAD population variant frequencies, OMIM morbid maps, and localized DisGeNET disease descriptors.
+- **Biological Pathway Integration**: Automated functional profiling including Gene Ontology (GO) and KEGG pathway mapping with automated Pathview overlay diagrams.
+- **Strict Clinical Governance & Determinism**: Cryptographic SHA256 input checksumming, HIPAA-compliant PHI sanitization, automated conversion efficiency QC (Lambda spike-in), and bitwise statistical determinism (`set.seed(42)`).
+- **FAIR Open Science Archive (Zenodo)**: Complete execution reports, timelines, MultiQC dashboards, and benchmark assets are permanently deposited on Zenodo at **DOI: [10.5281/zenodo.22326688](https://doi.org/10.5281/zenodo.22326688)**.
+
+
+
+## 3. Pipeline Architecture
+
+| Step | CPU Track (Bismark) | GPU Track (NVIDIA Parabricks) |
 | :--- | :--- | :--- |
-| Generate Genome Index | [Bismark](http://felixkrueger.github.io/Bismark/bismark/genome_preparation/) | [BWA-meth](https://github.com/brentp/bwa-meth) |
-| Raw data QC | [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) | [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) |
-| Adapter trimming | [Trim Galore](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/) | [Trim Galore](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/) |
-| Align Reads | [Bismark (bowtie2)](http://felixkrueger.github.io/Bismark/bismark/alignment/) (Split-Align support) | [Parabricks (fq2bam_meth)](https://www.nvidia.com/en-us/clara/genomics/) |
-| Deduplicate Alignments | [Bismark](http://felixkrueger.github.io/Bismark/bismark/deduplication/) | Included in `fq2bam_meth` |
-| Sort and indexing | [Samtools](http://www.htslib.org/) | [Samtools](http://www.htslib.org/) |
-| Methylation Extraction | [Bismark](http://felixkrueger.github.io/Bismark/bismark/methylation_extraction/) | [MethylDackel](https://github.com/dpryan79/MethylDackel) |
-| Alignment QC | [Qualimap](http://qualimap.conesalab.org/) | [Qualimap](http://qualimap.conesalab.org/) |
-| QC Reporting | [MultiQC](https://seqera.io/multiqc/) | [MultiQC](https://seqera.io/multiqc/) |
-| Diff Methylation | [EdgeR](https://bioconductor.org/packages/release/bioc/html/edgeR.html) / [MethylKit](https://www.bioconductor.org/packages/release/bioc/html/methylKit.html) | [EdgeR](https://bioconductor.org/packages/release/bioc/html/edgeR.html) / [MethylKit](https://www.bioconductor.org/packages/release/bioc/html/methylKit.html) |
-| Post processing | [ggplot2](https://ggplot2.tidyverse.org/) | [ggplot2](https://ggplot2.tidyverse.org/) |
-| Enrichment analysis | [GO](https://geneontology.org) / [KEGG](https://www.genome.jp/kegg/) | [GO](https://geneontology.org) / [KEGG](https://www.genome.jp/kegg/) |
-| Unified Reporting | [Quarto](https://quarto.org/) (Clinical Mode) | [Quarto](https://quarto.org/) (Clinical Mode) |
+| **Raw QC** | [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) | [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) |
+| **Adapter Trimming** | [Trim Galore](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/) | [Trim Galore](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/) |
+| **Alignment & Dedup** | [Bismark](http://felixkrueger.github.io/Bismark/) (Multi-core split/merge) | [Parabricks](https://www.nvidia.com/en-us/clara/genomics/) (`fq2bam_meth`) |
+| **Sorting & Indexing** | [Samtools](http://www.htslib.org/) | Included in Parabricks |
+| **Methylation Extraction** | [Bismark Methylation Extractor](http://felixkrueger.github.io/Bismark/) | [MethylDackel](https://github.com/dpryan79/MethylDackel) |
+| **Alignment & Target QC** | [Qualimap](http://qualimap.conesalab.org/) / [Picard HsMetrics](https://broadinstitute.github.io/picard/) | [Qualimap](http://qualimap.conesalab.org/) / [Picard HsMetrics](https://broadinstitute.github.io/picard/) |
+| **Multi-Method DMC/DMR** | [DSS](https://bioconductor.org/packages/DSS/) / [edgeR](https://bioconductor.org/packages/edgeR/) / [methylKit](https://bioconductor.org/packages/methylKit/) | [DSS](https://bioconductor.org/packages/DSS/) / [edgeR](https://bioconductor.org/packages/edgeR/) / [methylKit](https://bioconductor.org/packages/methylKit/) |
+| **Consensus Layer** | Multi-method $\pi$-value scoring + majority voting | Multi-method $\pi$-value scoring + majority voting |
+| **Functional Enrichment** | [clusterProfiler](https://bioconductor.org/packages/clusterProfiler/) (GO, KEGG, Pathview, DisGeNET) | [clusterProfiler](https://bioconductor.org/packages/clusterProfiler/) (GO, KEGG, Pathview, DisGeNET) |
+| **Clinical Quarto Report** | Integrated Quarto engine (HTML & vector PDF) | Integrated Quarto engine (HTML & vector PDF) |
 
-## Pipeline Schema
-![](docs/images/TMF.png)
 
-## Requirements
 
-- [Nextflow (>=21.10.3)](https://www.nextflow.io/docs/latest/install.html#install-nextflow)
-- [Docker](https://docs.docker.com/engine/install/) or [Singularity](https://singularity-tutorial.github.io/01-installation/) (for containerized execution)
-- Java (>=8)
-- **NVIDIA GPU** (required for `gpu` profile): CUDA-enabled GPU with at least 16GB VRAM (e.g., A10, A30, A100) recommended for large genomes like Human (hg38) or Mouse (mm10). Tested with 3 L40S GPUs with 48GiB VRAM each.
+## 4. Requirements & Installation
 
-## Usage
+- **Nextflow**: Version `>= 21.10.3` (DSL2 compliant)
+- **Container Engine**: [Docker](https://docs.docker.com/engine/install/) or [Singularity](https://singularity-tutorial.github.io/01-installation/) (all images pinned with immutable SHA256 digests)
+- **Java**: JRE `>= 11` (or OpenJDK 17)
+- **Hardware**:
+  - **CPU Track**: Minimum 16 CPU cores and 64 GB RAM recommended for targeted panels; $\ge$ 128 GB RAM recommended for human whole-genome sequencing (WGBS / EM-seq).
+  - **GPU Track**: NVIDIA CUDA-capable GPU with $\ge$ 16 GB VRAM (e.g., A10, A30, A100, L40S).
 
-### 1. High-Speed GPU Run (NVIDIA Parabricks)
-Recommended for large datasets. Requires NVIDIA GPUs and the `gpu` profile.
 
+
+## 5. Quick Start
+
+### A. Prepare Sample Sheet (`Sample_sheet.csv`)
+```csv
+sample_id,group,read1,read2
+SRR36563094,asthmatic,data/sample1_R1.fastq.gz,data/sample1_R2.fastq.gz
+SRR36563095,asthmatic,data/sample2_R1.fastq.gz,data/sample2_R2.fastq.gz
+SRR36563098,healthy,data/sample3_R1.fastq.gz,data/sample3_R2.fastq.gz
+SRR36563099,healthy,data/sample4_R1.fastq.gz,data/sample4_R2.fastq.gz
+```
+
+### B. High-Speed GPU Track (NVIDIA Parabricks)
 ```bash
-nextflow run JD2112/MethylFlow \
+nextflow run JD2112/milou \
     -profile singularity,gpu \
-    --sample_sheet Sample_sheet_twist.csv \
-    --genome_fasta path/to/genome.fa \
-    --diff_meth_method dss,edger \
-    --gtf_file /data/Homo_sapiens.GRCh38.104.gtf \
-    --refseq_file /data/hg38_RefSeq.bed.gz \
-    --outdir Results/MethylFlow_GPU
+    --sample_sheet Sample_sheet.csv \
+    --genome_fasta /data/genomes/GRCh38/Homo_sapiens.GRCh38.fa \
+    --gtf_file /data/genomes/GRCh38/Homo_sapiens.GRCh38.104.gtf \
+    --refseq_file /data/genomes/GRCh38/hg38_RefSeq.bed.gz \
+    --diff_meth_method all \
+    --mode clinical \
+    --outdir results_gpu
 ```
 
-### 2. Traditional CPU Run (Bismark) [default: profile]
-Standard workflow using Bismark for alignment and extraction on CPU-only systems.
-
+### C. Standard CPU Track (Bismark)
 ```bash
-nextflow run JD2112/MethylFlow \
+nextflow run JD2112/milou \
     -profile singularity \
-    --sample_sheet Sample_sheet_twist.csv \
-    --genome_fasta path/to/genome.fa \
-    --diff_meth_method dss,edger \
-    --gtf_file /data/Homo_sapiens.GRCh38.104.gtf \
-    --refseq_file /data/hg38_RefSeq.bed.gz \
-    --outdir Results/MethylFlow_CPU
+    --sample_sheet Sample_sheet.csv \
+    --genome_fasta /data/genomes/GRCh38/Homo_sapiens.GRCh38.fa \
+    --gtf_file /data/genomes/GRCh38/Homo_sapiens.GRCh38.104.gtf \
+    --refseq_file /data/genomes/GRCh38/hg38_RefSeq.bed.gz \
+    --diff_meth_method all \
+    --mode clinical \
+    --outdir results_cpu
 ```
 
-### 3. Execution & Analysis Modes
-Users can also choose to run the differential methylation analysis for specific methods:
-
-1. when using the reference genome indexing, use `--genome_fasta` and `--diff_meth_method all` for comprehensive differential analysis.
-2. if you already have the bisulfite genome index, `--bismark_index`, add `--bismark_index /data/reference_genome/hg38/` file PATH, the workflow will skip indexing and uses the provided index.
-3. If you want to run only **DSS** for differential methylation analysis, use `--diff_meth_method dss`. It is the **default** method.
-4. If you want to run only **EdgeR** for differential methylation analysis, use `--diff_meth_method edger`.
-5. If you want to run only **MethylKit** for differential methylation analysis, use `--diff_meth_method methylkit`.
-6. If you want to run the pipeline without differential methylation analysis, use `--skip_diff_meth`.
-7. If you want to run the pipeline with aligned BAM files instead of FASTQ files, use `--aligned_bams`.
-8. If you want to run the **Clinical Mode** with unified reporting and disease annotation, use `-profile clinical`.
-9. If you want to trigger the automatic PDF report generation, use `--run_clinical_report`.
-
-### 4. Applied Clinical Genomics (New in v1.1.0)
-The pipeline now features a high-fidelity **Clinical Mode** (`--mode clinical`) used for diagnostic-ready reporting:
-- **Unified Aggregation Layer**: Automatically synthesizes results from all differential methods into a standardized schema.
-- **Disease Mapping**: Mapped gene-level results to clinical descriptors using the [DisGeNET](https://www.disgenet.org/) database.
-- **Regional Context**: Automatic annotation of DMRs into **Promoter**, **Enhancer**, or **Intergenic** regions based on TSS distance.
-- **Outlier Detection**: Detection of sample-level cohort deviations using multi-dimensional Z-score PCA on QC metrics.
-- **Pathway Integration**: Combined GO and KEGG enrichment analysis with automated narrative generation.
-- **CPU Parallelization**: Automated FastQ splitting and BAM merging for ultra-fast Bismark alignment on HPC clusters.
 
 
-> [!TIP] "demo data check"
-> Demo data runs with `hg19` reference genome. Rememeber to update the GTF/Refseq file accordingly
+## 6. Pre-Configured Benchmark Profiles
 
-## Testing the Pipeline
-
-You can easily test the pipeline's execution locally using the configured test data profiles. The configurations are powered by NVIDIA Parabricks for fast alignment analysis.
+milou includes built-in test profiles for rapid execution, validation, and reproduction of published benchmarks:
 
 ```bash
-# Test the core mapping and QC steps (6 subset samples, runs fast)
-nextflow run main.nf -profile test_local,singularity,gpu
+# 1. Human EM-seq whole-genome benchmark (12 samples: asthmatic, atopic, healthy)
+nextflow run JD2112/milou -profile em_seq_cpu,singularity
+nextflow run JD2112/milou -profile em_seq_gpu,singularity,gpu
 
-# Test the core steps + all differential methylation methods (24 samples)
-nextflow run main.nf -profile test_full,singularity,gpu
+# 2. Human WGBS/Bisulfite benchmark (PRJNA476128)
+nextflow run JD2112/milou -profile bs_seq_cpu,singularity
+nextflow run JD2112/milou -profile bs_seq_gpu,singularity,gpu
+
+# 3. Targeted Hybrid-Capture replication cohort (24 samples)
+nextflow run JD2112/milou -profile twist_replicate_article_A_cpu,singularity
+nextflow run JD2112/milou -profile twist_replicate_article_A_gpu,singularity,gpu
+
+# 4. Minimal lightweight sanity test
+nextflow run JD2112/milou -profile test_local,singularity
 ```
 
-## Example usage
-## ⚙️ Parameters Reference
 
-| options | Description |
-|--------|-----------------------------------------------------------|
-| `--sample_sheet`       | Path to the sample sheet CSV file (**required**) |                                           
-| `--bismark_index`      | Path to the Bismark index directory (required unless `--genome` or `--aligned_bams` is provided) |
-| `--genome`             | Path to the reference genome FASTA file (required if `--bismark_index` not provided)| 
-| `--aligned_bams`       | Path to aligned BAM files (use this to start from aligned BAM files instead of FASTQ files) |
-| `--bismark_split_reads`| Number of reads per chunk for parallel Bismark alignment (default: 0 / disabled) |
-| `--refseq_file`        | Path to RefSeq file for annotation (**reuired** to run `both` or `methylkit`)  |
-| `--gtf_file`           | Path to GTF file for annotation (**reuired** to run `both` or `edger`)  |
-| `--outdir`             | Output directory (default: ./results) |
-| `--diff_meth_method`   | Differential methylation method to use: 'dss', 'edger', 'methylkit', or comma-separated list (default: dss) | 
-| `--skip_diff_meth`     | Skip differential methylation analysis (default: false)   | 
-| `--coverage_threshold` | Minimum read coverage to consider a CpG site (default: 3) |
-| `--logfc_cutoff`       | Differential methylation cut-off for Volcano or MA plot (default: 1.5)    |  
-| `--pvalue_cutoff`      | Differential methylation P-value cut-off for Volcano or MA plot (default: 0.05)      | 
-| `--hyper_color`        | Hypermethylation color for Volcano or MA plot (default: red) |
-| `--hypo_cutoff`        | Hypomethylation color for Volcano or MA plot (default: blue) |
-| `--nonsig_color`       | Non-significant color for Volcano or MA plot (default: black) |
-| `--compare_str`        | Comparison string for differential analysis (e.g. "Group1-Group2")  |
-| `--top_n_genes`        | Number of top differentially methylated genes to report for GOplot (default: 100) |
-| `--help`               | Show this help message and exit   | 
 
-## Pipeline HELP
+## 7. Key Parameter Reference
 
-```bash
-nextflow run JD2112/MethylFlow --help --outdir .
+| Parameter | Description | Default |
+| :--- | :--- | :---: |
+| `--sample_sheet` | Path to sample sheet CSV (**required**) | `null` |
+| `--genome_fasta` | Path to reference genome FASTA | `null` |
+| `--bismark_index` | Pre-built Bismark bisulfite index directory | `null` |
+| `--gtf_file` | Ensembl gene annotation GTF (for edgeR / feature overlap) | `null` |
+| `--refseq_file` | RefSeq gene coordinates BED (for methylKit / promoter overlap) | `null` |
+| `--diff_meth_method` | Differential callers to run: `all`, `dss`, `edger`, `methylkit` | `'dss'` |
+| `--smoothing` | Spline smoothing in DSS (`TRUE` / `FALSE`; use `FALSE` for WGBS memory scaling) | `TRUE` |
+| `--mode` | Operational mode: `research` (broad exploratory) or `clinical` (strict consensus voting) | `'research'` |
+| `--run_clinical_report` | Render automated Quarto HTML & PDF diagnostic reports | `false` |
+| `--coverage_threshold` | Minimum CpG read depth filter | `3` |
+| `--logfc_cutoff` | Effect size threshold for significance filter | `0.5` |
+| `--pvalue_cutoff` | P-value threshold for candidate significance filter | `0.05` |
+| `--outdir` | Output publication directory | `'./results'` |
+
+> For the exhaustive parameter specification, visit the [Online Documentation](https://jd2112.github.io/milou/parameters/).
+
+
+
+## 8. Output Directory Structure
+
+Each pipeline run organizes harmonized results into standard directories:
 ```
-Find the details on the [manual](https://jd2112.github.io/MethylFlow/)
+results/
+├── multiqc/                   # MultiQC aggregated quality control report
+├── pipeline_info/             # Nextflow execution report, timeline, trace, and DAG
+├── clinical_reporting/        # Quarto HTML & PDF diagnostic summary reports
+├── unified_layer/             # Cross-method consensus tables with calculated π-values
+│   ├── Unified_Candidate_Genes_Ranked.csv
+│   └── MultiMethod_Consensus_Voting_Matrix.csv
+├── dss/                       # DSS differential methylation results (CpGs & DMRs)
+├── edger/                     # edgeR dispersion-shrinkage differential results
+├── methylkit/                 # methylKit logistic regression results & annotations
+└── enrichment/                # clusterProfiler GO, KEGG Pathview, and DisGeNET outputs
+```
 
-## Credits
-- Main Author: 
-    - Jyotirmoy Das ([@JD2112](https://github.com/JD2112))
 
-- Collaborators:
-    - Debojyoti Das ([@BioDebojyoti](https://github.com/BioDebojyoti))    
 
-## Citation
+## 9. Citation & Reproducibility
 
-Das, J. (2025). MethylFlow (v1.1.0). Zenodo. [https://doi.org/10.5281/zenodo.14204261](https://doi.org/10.5281/zenodo.14204261)
+If you use milou in your research, please cite:
 
-## FAQ/Troubleshooting
+> **Das, J., et al. (2026).** *milou: An open-source, reproducible Nextflow framework for high-throughput DNA methylation profiling with multi-method consensus scoring and automated reporting.*   
+> **Software Pipeline Archive:** [https://doi.org/10.5281/zenodo.14204260](https://doi.org/10.5281/zenodo.14204260)  
+> **Benchmark Data Archive:** [https://doi.org/10.5281/zenodo.22326688](https://doi.org/10.5281/zenodo.22326688)
 
-Please check the [manual](https://jd2112.github.io/MethylFlow/) for details.
 
-Please create [issues](https://github.com/JD2112/MethylFlow/issues) on github.
 
-## License(s)
+## 10. License & Acknowledgements
 
-[GNU-3 public license](https://github.com/JD2112/MethylFlow/blob/v1.0.3/LICENSE).
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
-## Acknowledgement
+The authors would like to acknowledge Dr. Vesa Loitto, the Core Facility, Dept. of Biomedical and Clinical Sciences, Faculty of Medicine and Health Sciences at Linköping University, Sweden for his support on this application development. We would like to acknowledge the Core Facility, Faculty of Medicine and Health Sciences, Linköping University, Linköping, Sweden and Clinical Genomics Linköping, Science for Life Laboratory, Sweden for their support. We thank the PDC (Parallelldatorcentrum) Center for High-Performance Computing, KTH Royal Institute of Technology, Sweden, for providing access to the computing resources and storage used in this research. We thank ALF funding support from Region Östergötland (RÖ) and Genomic Medicine Sweden for the computational facility. Clinical Genomics Linköping receives funding from the Science for Life Laboratory.
 
-We would like to acknowledge the **Core Facility, Faculty of Medicine and Health Sciences, Linköping University, Linköping, Sweden** and **Clinical Genomics Linköping, Science for Life Laboratory, Sweden** for their support. We are grateful to **PDC (KTH, Sweden)** support for computational support to test and validate the pipeline on the *Dardel* HPC.
+

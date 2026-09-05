@@ -19,7 +19,7 @@ VERSION_FILES = {
     ],
     "subworkflows/qc_reporting.nf": [
         (r"Pipeline Version'\] = '([0-9.]+)'", "Pipeline Version'] = '{new_version}'"),
-        (r"MethylFlow v([0-9.]+)", "MethylFlow v{new_version}")
+        (r"milou v([0-9.]+)", "milou v{new_version}")
     ],
     "conf/containers.config": [
         (r'(jd21/methylflow[^:]*):([0-9.]+)', r'\1:{new_version}')
@@ -30,7 +30,7 @@ VERSION_FILES = {
     ],
     "README.md": [
         (r'v([0-9.]+)', 'v{new_version}'),
-        (r'MethylFlow \(([0-9.]+)\)', 'MethylFlow ({new_version})')
+        (r'milou \(([0-9.]+)\)', 'milou ({new_version})')
     ],
     "BENCHMARKING.md": [
         (r'v([0-9.]+)', 'v{new_version}')

@@ -49,8 +49,8 @@ process ENRICHMENT_ANALYSIS {
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         r-base: \$( R --version | head -n 1 | grep -oP '(?<=R version )[0-9.]+' )
-        r-goplot: \$(Rscript -e "library(GOplot); cat(as.character(packageVersion('GOplot')))" | xargs)
-        r-clusterprofiler: \$(Rscript -e "library(clusterProfiler); cat(as.character(packageVersion('clusterProfiler')))" | xargs)
+        r-goplot: \$(Rscript -e "if(requireNamespace('GOplot', quietly=TRUE)) { cat(as.character(packageVersion('GOplot'))) } else { cat('NA') }" | xargs)
+        r-clusterprofiler: \$(Rscript -e "if(requireNamespace('clusterProfiler', quietly=TRUE)) { cat(as.character(packageVersion('clusterProfiler'))) } else { cat('NA') }" | xargs)
     END_VERSIONS
     """
 }

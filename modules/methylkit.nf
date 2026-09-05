@@ -40,6 +40,10 @@ process METHYLKIT_ANALYSIS {
     echo "Min per group: ${min_per_group}" >> methylkit_log.txt
 
     # Force re-run for script updates
+    export OPENBLAS_NUM_THREADS=1
+    export OMP_NUM_THREADS=1
+    export MKL_NUM_THREADS=1
+
     Rscript ${projectDir}/bin/methylkit_analysis.R \\
         --coverage_files ${coverage_files_str} \\
         --design ${design_file} \\

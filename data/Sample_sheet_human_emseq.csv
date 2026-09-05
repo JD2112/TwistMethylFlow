@@ -1,0 +1,13 @@
+sample_id,group,read1,read2
+SRR36563094,asthmatic,https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR365/094/SRR36563094/SRR36563094_1.fastq.gz,https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR365/094/SRR36563094/SRR36563094_2.fastq.gz
+SRR36563095,asthmatic,https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR365/095/SRR36563095/SRR36563095_1.fastq.gz,https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR365/095/SRR36563095/SRR36563095_2.fastq.gz
+SRR36563096,asthmatic,https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR365/096/SRR36563096/SRR36563096_1.fastq.gz,https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR365/096/SRR36563096/SRR36563096_2.fastq.gz
+SRR36563097,asthmatic,https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR365/097/SRR36563097/SRR36563097_1.fastq.gz,https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR365/097/SRR36563097/SRR36563097_2.fastq.gz
+SRR36563098,atopic,https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR365/098/SRR36563098/SRR36563098_1.fastq.gz,https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR365/098/SRR36563098/SRR36563098_2.fastq.gz
+SRR36563099,atopic,https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR365/099/SRR36563099/SRR36563099_1.fastq.gz,https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR365/099/SRR36563099/SRR36563099_2.fastq.gz
+SRR36563100,atopic,https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR365/000/SRR36563100/SRR36563100_1.fastq.gz,https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR365/000/SRR36563100/SRR36563100_2.fastq.gz
+SRR36563101,atopic,https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR365/001/SRR36563101/SRR36563101_1.fastq.gz,https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR365/001/SRR36563101/SRR36563101_2.fastq.gz
+SRR36563102,healthy,https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR365/002/SRR36563102/SRR36563102_1.fastq.gz,https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR365/002/SRR36563102/SRR36563102_2.fastq.gz
+SRR36563103,healthy,https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR365/003/SRR36563103/SRR36563103_1.fastq.gz,https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR365/003/SRR36563103/SRR36563103_2.fastq.gz
+SRR36563104,healthy,https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR365/004/SRR36563104/SRR36563104_1.fastq.gz,https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR365/004/SRR36563104/SRR36563104_2.fastq.gz
+SRR36563105,healthy,https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR365/005/SRR36563105/SRR36563105_1.fastq.gz,https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR365/005/SRR36563105/SRR36563105_2.fastq.gz

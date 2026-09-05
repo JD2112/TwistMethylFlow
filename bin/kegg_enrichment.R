@@ -35,6 +35,21 @@ prefix <- tools::file_path_sans_ext(basename(opt$results))
 
 # Load and Filter
 df <- read.csv(opt$results)
+
+# Check if there are no sites or if the result file contains the "Status" column indicating no sites found
+is_empty_or_status <- FALSE
+if (dim(df)[1] == 0) {
+    is_empty_or_status <- TRUE
+} else if ("Status" %in% colnames(df)) {
+    is_empty_or_status <- TRUE
+}
+
+if (is_empty_or_status) {
+    write.csv(data.frame(Message="No differentially methylated sites found with current criteria"), 
+              file.path(opt$output, paste0(prefix, "_kegg_results.csv")), row.names=F)
+    cat("No significant sites to process for KEGG. Exiting gracefully.\n")
+    quit(save = "no", status = 0)
+}
 if (opt$method == "edger" || opt$method == "dss") {
     logfc_col <- ifelse("logFC" %in% colnames(df), "logFC", "diff")
     pval_col <- ifelse("PValue" %in% colnames(df), "PValue", "fdr")
@@ -56,31 +71,41 @@ genes <- genes[genes != "" & !is.na(genes)]
 
 if (has_enrich_pkgs) {
     # Map to Entrez for KEGG
-    gene_mapping <- bitr(genes, fromType = "SYMBOL", toType = "ENTREZID", OrgDb = org.Hs.eg.db)
-    entrez_genes <- unique(gene_mapping$ENTREZID)
+    gene_mapping <- tryCatch({
+        bitr(genes, fromType = "SYMBOL", toType = "ENTREZID", OrgDb = org.Hs.eg.db)
+    }, error = function(e) {
+        cat(sprintf("Warning in bitr: %s\n", e$message))
+        NULL
+    })
 
-    # KEGG Enrichment with liberal cutoffs
-    kegg <- tryCatch({
-        enrichKEGG(gene = entrez_genes, organism = 'hsa', pvalueCutoff = 1, qvalueCutoff = 1)
-    }, error = function(e) NULL)
+    if (!is.null(gene_mapping) && nrow(gene_mapping) > 0) {
+        entrez_genes <- unique(gene_mapping$ENTREZID)
 
-    if (!is.null(kegg)) {
-        # Convert Entrez IDs back to Symbols for readable KEGG
-        kegg <- tryCatch({ setReadable(kegg, OrgDb = org.Hs.eg.db, keyType = "ENTREZID") }, error = function(e) kegg)
-        
-        results <- as.data.frame(kegg)
-        # Apply actual significance filter
-        results <- results %>% filter(pvalue < opt$pvalue_cutoff)
-        
-        if (nrow(results) > 0) {
-            write.csv(results, file.path(opt$output, paste0(prefix, "_kegg_results.csv")), row.names=F)
-            ggsave(file.path(opt$output, paste0(prefix, "_kegg_barplot.png")), barplot(kegg, showCategory=15), width=10, height=8)
-            ggsave(file.path(opt$output, paste0(prefix, "_kegg_dotplot.png")), dotplot(kegg, showCategory=15), width=10, height=8)
+        # KEGG Enrichment with liberal cutoffs
+        kegg <- tryCatch({
+            enrichKEGG(gene = entrez_genes, organism = 'hsa', pvalueCutoff = 1, qvalueCutoff = 1)
+        }, error = function(e) NULL)
+
+        if (!is.null(kegg)) {
+            # Convert Entrez IDs back to Symbols for readable KEGG
+            kegg <- tryCatch({ setReadable(kegg, OrgDb = org.Hs.eg.db, keyType = "ENTREZID") }, error = function(e) kegg)
+            
+            results <- as.data.frame(kegg)
+            # Apply actual significance filter
+            results <- results %>% filter(pvalue < opt$pvalue_cutoff)
+            
+            if (nrow(results) > 0) {
+                write.csv(results, file.path(opt$output, paste0(prefix, "_kegg_results.csv")), row.names=F)
+                ggsave(file.path(opt$output, paste0(prefix, "_kegg_barplot.png")), barplot(kegg, showCategory=15), width=10, height=8)
+                ggsave(file.path(opt$output, paste0(prefix, "_kegg_dotplot.png")), dotplot(kegg, showCategory=15), width=10, height=8)
+            } else {
+                write.csv(data.frame(Message="No KEGG pathways found below cutoff"), file.path(opt$output, paste0(prefix, "_kegg_results.csv")), row.names=F)
+            }
         } else {
-            write.csv(data.frame(Message="No KEGG pathways found below cutoff"), file.path(opt$output, paste0(prefix, "_kegg_results.csv")), row.names=F)
+            write.csv(data.frame(Message="KEGG enrichment failed"), file.path(opt$output, paste0(prefix, "_kegg_results.csv")), row.names=F)
         }
     } else {
-        write.csv(data.frame(Message="KEGG enrichment failed"), file.path(opt$output, paste0(prefix, "_kegg_results.csv")), row.names=F)
+        write.csv(data.frame(Message="No valid SYMBOL keys for KEGG enrichment"), file.path(opt$output, paste0(prefix, "_kegg_results.csv")), row.names=F)
     }
 } else {
     write.csv(data.frame(Message="Packages missing. Skipping KEGG enrichment."), file.path(opt$output, paste0(prefix, "_kegg_results.csv")), row.names=F)

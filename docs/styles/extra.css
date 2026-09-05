@@ -1,12 +1,47 @@
 :root {
   --font-family-main: "Inter", "Helvetica Neue", Arial, sans-serif;
-  --font-size: 17px;
+  --font-size: 15px;
 }
 
 .md-typeset {
   font-family: var(--font-family-main);
   font-size: var(--font-size);
-  line-height: 1.7;
+  line-height: 1.6;
+}
+
+/* --- SECTION HEADINGS (H2) --- */
+.md-typeset h2:not(.side-panel h2) {
+  color: #1e40af; /* Deep royal indigo */
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  border-bottom: 1.5px solid rgba(30, 64, 175, 0.15);
+  padding-bottom: 0.35rem;
+  margin-top: 2.2rem;
+  margin-bottom: 0.8rem;
+}
+
+[data-md-color-scheme="slate"] .md-typeset h2:not(.side-panel h2) {
+  color: #93c5fd; /* Soft luminous sky blue in dark mode */
+  border-bottom: 1.5px solid rgba(147, 197, 253, 0.2);
+}
+
+/* --- COLLAPSIBLE RIGHT-SIDE TOC (ACCORDION) --- */
+/* Hide nested sub-headings (H3+) in the right TOC by default */
+.md-sidebar--secondary .md-nav--secondary .md-nav__item nav.md-nav {
+  display: none;
+}
+
+/* Auto-expand sub-headings when the parent section is active (scrolled into view via toc.follow) or hovered */
+.md-sidebar--secondary .md-nav--secondary .md-nav__item--active > nav.md-nav,
+.md-sidebar--secondary .md-nav--secondary .md-nav__item:focus-within > nav.md-nav,
+.md-sidebar--secondary .md-nav--secondary .md-nav__item:hover > nav.md-nav {
+  display: block;
+  animation: fadeIn 0.2s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* --- HERO SECTION --- */
@@ -159,9 +194,6 @@
 /* --- HEADING STYLES --- */
 .md-typeset h2 {
   font-size: 1.5em;
-  border-bottom: 1px solid var(--md-default-fg-color--lightest);
-  padding-bottom: 0.3em;
-  margin-top: 2em;
 }
 
 .md-typeset h3 {

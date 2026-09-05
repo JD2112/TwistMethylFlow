@@ -20,6 +20,7 @@ workflow CLINICAL_REPORTING {
     ch_sample_sheet
     ch_gtf
     genome
+    ch_disgenet
 
     main:
     ch_versions = Channel.empty()
@@ -32,8 +33,8 @@ workflow CLINICAL_REPORTING {
     KEGG_ENRICHMENT(ch_annotated_results, kegg_logfc_cutoff, kegg_pvalue_cutoff, top_n_genes)
     ch_versions = ch_versions.mix(KEGG_ENRICHMENT.out.versions)
 
-    // 3. Disease Enrichment
-    DISEASE_ENRICHMENT(ch_annotated_results, logfc_cutoff, pvalue_cutoff)
+    // 3. Disease Enrichment (Sovereign Localized DisGeNET)
+    DISEASE_ENRICHMENT(ch_annotated_results, logfc_cutoff, pvalue_cutoff, ch_disgenet)
     ch_versions = ch_versions.mix(DISEASE_ENRICHMENT.out.versions)
 
     // 4. Clinical Annotation (Region/Prioritization/OMIM)

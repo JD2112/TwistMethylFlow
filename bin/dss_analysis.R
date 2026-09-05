@@ -21,7 +21,7 @@ if (length(args) < 5) {
 
 # Simple argument parser
 parse_args <- function(args) {
-    params <- list(coverage_files = c(), p_threshold = 1.0, diff_threshold = 0.0)
+    params <- list(coverage_files = c(), p_threshold = 1.0, diff_threshold = 0.0, smoothing = TRUE)
     i <- 1
     while(i <= length(args)) {
         if(args[i] == "--design") {
@@ -36,6 +36,8 @@ parse_args <- function(args) {
             params$p_threshold <- as.numeric(args[i+1]); i <- i + 2
         } else if(args[i] == "--diff_threshold") {
             params$diff_threshold <- as.numeric(args[i+1]); i <- i + 2
+        } else if(args[i] == "--smoothing") {
+            params$smoothing <- as.logical(args[i+1]); i <- i + 2
         } else {
             if (startsWith(args[i], "--")) {
                 i <- i + 2 # Skip unknown flags
@@ -113,6 +115,10 @@ read_bismark_cov <- function(file) {
             N = df$V5 + df$V6, # total = methylated + unmethylated
             X = df$V5          # methylated
         )
+        # Apply coverage threshold filter if defined
+        if (!is.null(opt$threshold)) {
+            cov_data <- cov_data[cov_data$N >= opt$threshold, ]
+        }
         return(cov_data)
     }
     return(NULL)
@@ -127,6 +133,8 @@ for(i in seq_along(opt$coverage_files)) {
 
 cat("Creating BSseq object...\n")
 BSobj <- makeBSseqData(dat_list, as.character(targets[[id_col]]))
+rm(dat_list)
+gc()
 
 for(comp in comparisons) {
     group1 <- comp[1]
@@ -137,10 +145,12 @@ for(comp in comparisons) {
     tryCatch({
         # Run DML test
         # smoothing=TRUE is recommended for WGBS/EM-seq
+        # Set ncores = 1 to prevent forking across all 256 node cores on HPC
         dmlTest.obj <- DMLtest(BSobj, 
                                group1 = as.character(targets[[id_col]][targets$group == group1]), 
                                group2 = as.character(targets[[id_col]][targets$group == group2]), 
-                               smoothing = TRUE)
+                               smoothing = opt$smoothing,
+                               ncores = 1)
         
         # 1. Site-level analysis (DML)
         # DSS output columns: chr, pos, mu1, mu2, diff, diff.se, stat, phi1, phi2, pval, fdr
@@ -198,6 +208,7 @@ for(comp in comparisons) {
         }
     }, error = function(e) {
         cat("Error in DMLtest for", group1, "vs", group2, ":", e$message, "\n")
+        stop(e)
     })
 }
 

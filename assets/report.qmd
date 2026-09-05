@@ -4,6 +4,16 @@ date: " "
 bibliography: citations.bib
 nocite: "@*"
 format:
+  html:
+    toc: true
+    toc-depth: 3
+    toc-expand: 1
+    theme: flatly
+    embed-resources: true
+    page-layout: full
+    code-fold: true
+    number-sections: false
+    html-math-method: katex
   pdf:
     toc: false
     number-sections: false
@@ -22,6 +32,9 @@ format:
         \usepackage{sectsty}
         \usepackage[skins,breakable]{tcolorbox}
         \usepackage[scaled]{helvet}
+        \usepackage{url}
+        \usepackage{fvextra}
+        \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
         \renewcommand\familydefault{\sfdefault}
         \sectionfont{\color[rgb]{0,0.3,0.6}\huge\bfseries}
         \subsectionfont{\color[rgb]{0,0.3,0.6}\large\bfseries}
@@ -29,19 +42,19 @@ format:
         \fancyhf{}
         \renewcommand{\headrulewidth}{0.4pt}
         \renewcommand{\footrulewidth}{0.4pt}
-        \fancyhead[R]{\includegraphics[height=0.5cm]{methylflow_logo.png}}
-        \fancyhead[L]{\small\textit{Clinical Specimen Status}}
-        \fancyfoot[L]{\small TwistNext Clinical Report | Pipeline v1.1.0}
+        \fancyhead[R]{\includegraphics[height=0.5cm]{milou_logo.png}}
+        \fancyhead[L]{\small\textit{Specimen Status}}
+        \fancyfoot[L]{\small milou Analysis Report | Pipeline v1.2.0 | UUID: UUID_PLACEHOLDER}
         \fancyfoot[R]{\thepage}
         \fancypagestyle{plain}{
           \fancyhf{}
           \renewcommand{\headrulewidth}{0pt}
           \renewcommand{\footrulewidth}{0.4pt}
-          \fancyfoot[L]{\small TwistNext Clinical Report | Pipeline v1.1.0}
+          \fancyfoot[L]{\small milou Analysis Report | Pipeline v1.2.0 | UUID: UUID_PLACEHOLDER}
           \fancyfoot[R]{\thepage}
         }
-        % Clinical Note Box
-        \newtcolorbox{clinicalnote}{colback=blue!5!white,colframe=blue!75!black,title=Clinical Interpretation Note,fonttitle=\bfseries}
+        % Interpretation Note Box
+        \newtcolorbox{reportnote}{colback=blue!5!white,colframe=blue!75!black,title=Interpretation Note,fonttitle=\bfseries}
         \newtcolorbox{technicalwarning}{colback=red!5!white,colframe=red!75!black,title=Technical Data Warning,fonttitle=\bfseries}
 execute:
   echo: false
@@ -60,11 +73,28 @@ params:
 ---
 
 ```{r setup}
-library(tidyverse)
+# Using base R instead of tidyverse to ensure compatibility with all container environments
 library(glue)
 library(knitr)
 library(kableExtra)
 library(jsonlite)
+
+# Gracefully try to load or dynamically install DT if missing
+if (!requireNamespace("DT", quietly = TRUE)) {
+  tryCatch({
+    local_lib <- file.path(getwd(), "R_libs")
+    if (!dir.exists(local_lib)) dir.create(local_lib, recursive = TRUE)
+    .libPaths(c(local_lib, .libPaths()))
+    options(repos = c(CRAN = "https://packagemanager.posit.co/cran/__linux__/noble/2026-05-01"))
+    install.packages("DT", lib = local_lib, dependencies = FALSE, quiet = TRUE)
+  }, error = function(e) {
+    message("Failed to install DT; falling back to static tables.")
+  })
+}
+has_dt <- requireNamespace("DT", quietly = TRUE)
+if (has_dt) {
+  library(DT)
+}
 
 # Robust error handling for file reading
 read_tsv_safe <- function(file_path) {
@@ -79,11 +109,15 @@ read_tsv_safe <- function(file_path) {
   }
 }
 
-# Helper to find plots (since names have prefixes)
+# Helper to find plots (since names have prefixes) and copy them locally for pdf/latex safety
 find_plot <- function(dir_path, suffix) {
     if (!dir.exists(dir_path)) return(NULL)
     files <- list.files(dir_path, pattern = suffix, full.names = TRUE)
-    if (length(files) > 0) return(files[1])
+    if (length(files) > 0) {
+        local_name <- basename(files[1])
+        file.copy(files[1], local_name, overwrite = TRUE)
+        return(local_name)
+    }
     NULL
 }
 
@@ -108,29 +142,55 @@ if (file.exists(params$run_info)) {
 # Pull software versions into a separate variable for easier access in appendix
 software_versions <- if (!is.null(run_info$software_versions)) run_info$software_versions else list()
 
-# Helper for LaTeX-safe and beautiful tables
+# Helper for HTML/LaTeX-safe tables
 kable_report <- function(df, caption = "", font_size = 10) {
   if (nrow(df) == 0) return(cat("No data available.\n"))
   
-  # Sanitize column names: First remove dots R might have added, then clean spaces
-  colnames(df) <- gsub("\\.", " ", colnames(df))
-  colnames(df) <- gsub("_", " ", colnames(df))
-  
-  # Escape % for LaTeX ONLY in column names, then data
-  colnames(df) <- gsub("%", "\\\\%", colnames(df))
-  
-  # Sanitize character columns (escape underscores and % for LaTeX)
-  df <- df %>% mutate(across(where(is.character), ~gsub("_", "\\\\_", .))) %>%
-               mutate(across(where(is.character), ~gsub("%", "\\\\%", .)))
-  
-  kable(df, escape = FALSE, caption = caption, booktabs = TRUE) %>%
-    kable_styling(full_width = TRUE, 
+  if (knitr::is_html_output()) {
+    # Interactive HTML Table
+    colnames(df) <- gsub("\\.", " ", colnames(df))
+    colnames(df) <- gsub("_", " ", colnames(df))
+    if (exists("has_dt") && has_dt) {
+      return(DT::datatable(df, 
+                           caption = caption, 
+                           extensions = 'Buttons',
+                           options = list(
+                             dom = 'Bfrtip',
+                             buttons = c('csv', 'excel', 'copy'),
+                             pageLength = 10,
+                             scrollX = TRUE
+                           ),
+                           rownames = FALSE))
+    } else {
+      # Graceful fallback if DT is not available
+      kb <- kable(df, caption = caption)
+      return(kable_styling(kb, full_width = TRUE, 
+                           bootstrap_options = c("striped", "hover", "condensed")))
+    }
+  } else {
+    # Static PDF Table
+    colnames(df) <- gsub("\\.", " ", colnames(df))
+    colnames(df) <- gsub("_", " ", colnames(df))
+    colnames(df) <- gsub("%", "\\\\%", colnames(df))
+    
+    char_cols <- sapply(df, is.character)
+    if (any(char_cols)) {
+      df[char_cols] <- lapply(df[char_cols], function(x) {
+        x <- gsub("_", "\\\\_", x)
+        x <- gsub("%", "\\\\%", x)
+        x
+      })
+    }
+    
+    kb <- kable(df, escape = FALSE, caption = caption, booktabs = TRUE)
+    kable_styling(kb,
+                  full_width = FALSE, 
                   bootstrap_options = c("striped", "hover", "condensed"),
-                  latex_options = c("striped", "HOLD_position"),
+                  latex_options = c("striped", "HOLD_position", "scale_down"),
                   font_size = font_size)
+  }
 }
 
-is_clinical <- params$mode == "clinical"
 n_samples <- nrow(meta)
 n_dmrs <- nrow(dmr)
 ```
@@ -140,25 +200,35 @@ n_dmrs <- nrow(dmr)
 
 ```{r results='asis'}
 if(n_samples > 0) {
-    cat(glue("This report summarizes clinical-grade methylation analysis for **{n_samples} specimens**. All analytical metrics were screened against pipeline reference standards.\n\n"))
+    cat(glue("This report summarizes DNA methylation analysis for **{n_samples} specimens**. All analytical metrics were screened against pipeline reference standards.\n\n"))
 }
 
 if(n_dmrs > 0) {
-    cat(glue("A total of **{n_dmrs} differentially methylated regions (DMRs)** were identified. Each region has been cross-referenced with functional genomic annotations and clinical prior knowledge.\n\n"))
+    cat(glue("A total of **{n_dmrs} differentially methylated regions (DMRs)** were identified. Each region has been cross-referenced with functional genomic annotations and disease database associations.\n\n"))
 }
 
 if(nrow(disease) > 0 && !"Message" %in% colnames(disease)) {
-    cat(glue("Top clinical associations detected: **{paste(head(disease$Description, 5), collapse = ', ')}**.\n\n"))
+    cat(glue("Top disease associations detected: **{paste(head(disease$Description, 5), collapse = ', ')}**.\n\n"))
 }
 ```
 
 ```{r results='asis'}
-if(!is.null(run_info$clinical_narrative) && run_info$clinical_narrative != "") {
+narrative_field <- grep("narrative", names(run_info), value = TRUE)[1]
+narrative_text <- if(!is.na(narrative_field)) run_info[[narrative_field]] else NULL
+if(!is.null(narrative_text) && narrative_text != "") {
     cat("\n\n")
-    cat("## Clinical Interpretation\n\n")
-    cat("\\begin{clinicalnote}")
-    cat(run_info$clinical_narrative)
-    cat("\\end{clinicalnote}\n\n")
+    cat("## Biological Interpretation\n\n")
+    if (knitr::is_html_output()) {
+        cat(":::{.callout-note title='Interpretation Note'}\n")
+    } else {
+        cat("\\begin{reportnote}\n")
+    }
+    cat(narrative_text, "\n")
+    if (knitr::is_html_output()) {
+        cat(":::\n\n")
+    } else {
+        cat("\\end{reportnote}\n\n")
+    }
 }
 ```
 
@@ -178,35 +248,45 @@ if (nrow(qc) > 0) {
 
 # Differentially Methylated Regions (DMRs)
 
-Differentially Methylated Regions (DMRs) represent genomic areas where DNA methylation levels differ significantly between experimental groups. In a clinical context, these regions can serve as biomarkers for disease states, as epigenetic modifications often regulate gene expression without altering the underlying DNA sequence. We utilize the DSS (Dispersion Shrinkage for Sequencing) framework, which employs a beta-binomial model to account for biological variation and technical noise, providing high statistical power for detecting subtle methylation shifts.
+Differentially Methylated Regions (DMRs) represent genomic areas where DNA methylation levels differ significantly between experimental groups. In epigenetic research, these regions can serve as biomarkers for biological states, as epigenetic modifications often regulate gene expression without altering the underlying DNA sequence. We utilize the DSS (Dispersion Shrinkage for Sequencing) framework, which employs a beta-binomial model to account for biological variation and technical noise, providing high statistical power for detecting subtle methylation shifts.
 
 ```{r dmr-table, results='asis'}
 if(n_dmrs > 0) {
     cat("## Significant Methylation Deviations\n\n")
     cat("The following table lists the top 20 most significant differentially methylated regions detected across the analytical cohort.\n\n")
     
-    dmr_top <- head(dmr %>% arrange(Min_pvalue), 20)
+    if (nrow(dmr) > 0) {
+      dmr_top <- head(dmr[order(dmr$Min_pvalue), ], 20)
+    } else {
+      dmr_top <- dmr
+    }
     kable_report(dmr_top, caption = "Top 20 Differentially Methylated Regions")
 } else {
-    cat("No significant DMRs were detected under the current clinical cutoff thresholds.\n")
+    cat("No significant DMRs were detected under the current significance cutoff thresholds.\n")
 }
 ```
 
 
 
-# Clinical Gene Annotation & Prioritization
+# Functional Gene Annotation & Prioritization
 
-To prioritize finding with clinical relevance, detected DMRs are mapped to the nearest genomic features (Promoters, Enhancers, or Gene Bodies). We apply an aggregate Prioritization Score which factors in the statistical significance (p-value), the magnitude of the methylation difference (logFC), and the proximity to transcription start sites.
+To prioritize findings with biological relevance, detected DMRs are mapped to the nearest genomic features (Promoters, Enhancers, or Gene Bodies). We apply an aggregate Prioritization Score which factors in the statistical significance (p-value), the magnitude of the methylation difference (logFC), and the proximity to transcription start sites.
+
+The score is calculated mathematically as:
+$$ \text{Rank Score} = |\log_2(\text{FC})| \times -\log_{10}(\text{FDR} + 10^{-10}) $$
 
 ## Genomic Prioritization
 Ranked by aggregate prioritization score. Annotated with regional genomic context.
 
 ```{r genes-table, results='asis'}
 if (nrow(gene) > 0) {
-  top_genes <- gene %>% 
-    mutate(fdr = formatC(fdr, format = "e", digits = 2)) %>%
-    select(Symbol, Region, diff, fdr, Rank_Score) %>%
-    head(15)
+  top_genes <- gene
+  if ("fdr" %in% colnames(top_genes)) {
+      top_genes$fdr <- formatC(top_genes$fdr, format = "e", digits = 2)
+  }
+  cols_to_keep <- c("Symbol", "Region", "diff", "fdr", "Rank_Score", "Method")
+  cols_present <- intersect(cols_to_keep, colnames(top_genes))
+  top_genes <- head(top_genes[, cols_present, drop = FALSE], 15)
   
   kable_report(top_genes, caption = "Top 15 Genes Prioritized by Epigenetic Significance")
 } else {
@@ -223,7 +303,9 @@ Functional enrichment analysis identifies biological processes that are over-rep
 ```{r go-results, results='asis'}
 if(nrow(pathways) > 0 && !"Message" %in% colnames(pathways)) {
   cols <- intersect(colnames(pathways), c("ID", "Description", "pvalue", "p.adjust"))
-  top_pathways <- pathways %>% arrange(pvalue) %>% head(10) %>% select(all_of(cols))
+  cols_present <- intersect(cols, colnames(pathways))
+  top_pathways <- pathways[order(pathways$pvalue), ]
+  top_pathways <- head(top_pathways[, cols_present, drop = FALSE], 10)
   print(kable_report(top_pathways, caption = "Top 10 GO Biological Process Enrichment results"))
   
   # Try to add plot
@@ -241,13 +323,22 @@ if(nrow(pathways) > 0 && !"Message" %in% colnames(pathways)) {
 ```{r kegg-results, results='asis'}
 if(nrow(kegg) > 0 && !"Message" %in% colnames(kegg)) {
   cols <- intersect(colnames(kegg), c("ID", "Description", "pvalue", "p.adjust"))
-  top_kegg <- kegg %>% arrange(pvalue) %>% head(10) %>% select(all_of(cols))
+  cols_present <- intersect(cols, colnames(kegg))
+  top_kegg <- kegg[order(kegg$pvalue), ]
+  top_kegg <- head(top_kegg[, cols_present, drop = FALSE], 10)
   print(kable_report(top_kegg, caption = "Top 10 KEGG Pathway Enrichment results"))
   
   kegg_plot <- find_plot(res_dir, ".*_kegg_barplot\\.png$")
   if (!is.null(kegg_plot)) {
       cat("\n\n### Pathway Visualization (KEGG)\n")
       cat(glue("![KEGG Pathway Visualization]({kegg_plot}){{width=80% fig-pos='H'}}\n\n"))
+  }
+  
+  # Try to find and add Pathview molecular pathway map
+  pathview_plot <- find_plot(res_dir, ".*pathview\\.png$")
+  if (!is.null(pathview_plot)) {
+      cat("\n\n### Molecular Pathway Diagram (Pathview)\n")
+      cat(glue("![KEGG Molecular Pathway Map]({pathview_plot}){{width=95% fig-pos='H'}}\n\n"))
   }
 } else {
   cat("No significant KEGG pathway enrichment observed.\n")
@@ -260,7 +351,9 @@ if(nrow(kegg) > 0 && !"Message" %in% colnames(kegg)) {
 ```{r disease-results, results='asis'}
 if(nrow(disease) > 0 && !"Message" %in% colnames(disease)) {
   cols <- intersect(colnames(disease), c("ID", "Description", "pvalue", "p.adjust"))
-  top_disease <- disease %>% arrange(pvalue) %>% head(10) %>% select(all_of(cols))
+  cols_present <- intersect(cols, colnames(disease))
+  top_disease <- disease[order(disease$pvalue), ]
+  top_disease <- head(top_disease[, cols_present, drop = FALSE], 10)
   print(kable_report(top_disease, caption = "Significant Disease-Gene Associations"))
   
   dis_plot <- find_plot(res_dir, ".*_disease_barplot\\.png$")
@@ -284,36 +377,30 @@ if(nrow(disease) > 0 && !"Message" %in% colnames(disease)) {
 meth_description_data <- if (!is.null(run_info$methods_description)) run_info$methods_description else ""
 
 if (meth_description_data != "") {
-    # If rendering to PDF, perform a more robust transformation to Markdown
-    # to avoid monospace/verbatim artifacts and preserve typography
-    if (knitr::is_latex_output()) {
-        # Convert common HTML tags to Markdown equivalent for LaTeX processing
-        # This ensures the output uses document fonts rather than raw text
-        m_text <- meth_description_data
-        m_text <- gsub("<h4>", "\n### ", m_text)
-        m_text <- gsub("</h4>", "\n", m_text)
-        m_text <- gsub("<p>", "\n\n", m_text)
-        m_text <- gsub("</p>", "\n", m_text)
-        m_text <- gsub("<li>", "\n* ", m_text)
-        m_text <- gsub("</li>", "", m_text)
-        m_text <- gsub("<strong>|<b>", "**", m_text)
-        m_text <- gsub("</strong>|</b>", "**", m_text)
-        m_text <- gsub("<em>|<i>", "*", m_text)
-        m_text <- gsub("</em>|</i>", "*", m_text)
-        
-        # Strip any remaining HTML tags
-        m_text <- gsub("<[^>]*>", "", m_text)
-        
-        # Clean up whitespace: trim and ensure no leading spaces per line that trigger code blocks
-        m_text <- unlist(strsplit(m_text, "\n"))
-        m_text <- trimws(m_text)
-        meth_text <- paste(m_text, collapse = "\n")
-        
-        # Collapse multiple newlines
-        meth_text <- gsub("\n{3,}", "\n\n", meth_text)
-    } else {
-        meth_text <- meth_description_data
-    }
+    # Perform a robust transformation of HTML description to Markdown
+    # to avoid raw HTML rendering issues in both PDF and HTML formats
+    m_text <- meth_description_data
+    m_text <- gsub("<h4>", "\n### ", m_text)
+    m_text <- gsub("</h4>", "\n", m_text)
+    m_text <- gsub("<p>", "\n\n", m_text)
+    m_text <- gsub("</p>", "\n", m_text)
+    m_text <- gsub("<li>", "\n* ", m_text)
+    m_text <- gsub("</li>", "", m_text)
+    m_text <- gsub("<strong>|<b>", "**", m_text)
+    m_text <- gsub("</strong>|</b>", "**", m_text)
+    m_text <- gsub("<em>|<i>", "*", m_text)
+    m_text <- gsub("</em>|</i>", "*", m_text)
+    
+    # Strip any remaining HTML tags
+    m_text <- gsub("<[^>]*>", "", m_text)
+    
+    # Clean up whitespace: trim and ensure no leading spaces per line that trigger code blocks
+    m_text <- unlist(strsplit(m_text, "\n"))
+    m_text <- trimws(m_text)
+    meth_text <- paste(m_text, collapse = "\n")
+    
+    # Collapse multiple newlines
+    meth_text <- gsub("\n{3,}", "\n\n", meth_text)
     
     # Output as-is with a trailing newline for Pandoc safety
     cat(meth_text, "\n")
@@ -343,14 +430,14 @@ if (length(software_versions) > 0) {
     )
     kable_report(sv_df, caption = "Software Traceability")
 } else {
-    cat("*Software version data was not captured for this specific run. All tools are maintained within the pipeline's clinical-grade Singularity environment. Primary diagnostics are recorded in the MultiQC report.*\n\n")
+    cat("*Software version data was not captured for this specific run. All tools are maintained within the pipeline's reproducible containerized environment. Primary diagnostics are recorded in the MultiQC report.*\n\n")
 }
 ```
 
 ## Pipeline Run Information
 ```{r results='asis'}
 run_name <- if (!is.null(run_info$run_name)) run_info$run_name else "Unknown"
-run_version <- if (!is.null(run_info$version)) run_info$version else "1.1.0"
+run_version <- if (!is.null(run_info$version)) run_info$version else "1.2.0"
 run_time <- if (!is.null(run_info$timestamp)) run_info$timestamp else Sys.time()
 run_files <- if (!is.null(run_info$files_processed)) run_info$files_processed else 0
 run_commit <- if (!is.null(run_info$commit_hash)) run_info$commit_hash else "Not available"
@@ -360,6 +447,7 @@ run_ce <- if (!is.null(run_info$container_engine)) run_info$container_engine els
 run_genome <- if (!is.null(run_info$genome_build)) run_info$genome_build else "Custom/Unspecified"
 
 cat(glue("- **Run Name:** {run_name}\n\n"))
+cat(glue("- **Execution UUID:** UUID_PLACEHOLDER\n\n"))
 cat(glue("- **Pipeline Version:** {run_version}\n\n"))
 cat(glue("- **Nextflow Engine:** {run_nf}\n\n"))
 cat(glue("- **Container Engine:** {run_ce}\n\n"))
@@ -411,7 +499,11 @@ if (!is.null(run_info$resolved_params) && length(run_info$resolved_params) > 0) 
 cat("Verification of input result paths used for this report generation.\n\n")
 audit_data <- function(name, df, path) {
     status <- if(nrow(df) > 0) "SUCCESS" else "NO DATA"
-    cat(glue("- **{name}**: {status} ({nrow(df)} records) \n    *(Source: {path})*\n"))
+    if (knitr::is_html_output()) {
+        cat(glue("- **{name}**: {status} ({nrow(df)} records) \n    *(Source: {path})*\n"))
+    } else {
+        cat(glue("- **{name}**: {status} ({nrow(df)} records) \n    *(Source: \\path{{{path}}})*\n"))
+    }
 }
 
 audit_data("Samples", meta, params$sample_metadata)
@@ -428,6 +520,6 @@ audit_data("Disease Enrichment", disease, params$disease_summary)
 \hrule
 \vspace{2mm}
 \begin{center}
-\small \textit{Report generated automatically for clinical decision support. Analytical values should be correlated with primary laboratory findings and validated within the MultiQC audit environment.}
+\small \textit{Report generated automatically for research purposes only. Analytical values should be validated with primary experimental findings and the MultiQC quality report.}
 \end{center}
 

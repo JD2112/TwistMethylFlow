@@ -36,6 +36,39 @@ results <- read.csv(opt$results)
 print(paste("Dimensions of results:", dim(results)[1], "rows,", dim(results)[2], "columns"))
 print(str(results))
 
+# Derive prefix from results filename
+results_prefix <- tools::file_path_sans_ext(basename(opt$results))
+
+# Check if there are no sites or if the result file contains the "Status" column indicating no sites found
+is_empty_or_status <- FALSE
+if (dim(results)[1] == 0) {
+    is_empty_or_status <- TRUE
+} else if ("Status" %in% colnames(results)) {
+    is_empty_or_status <- TRUE
+}
+
+if (is_empty_or_status) {
+    # Generate empty summary stats
+    summary_stats <- data.frame(
+        total_dmrs = 0,
+        hypermethylated = 0,
+        hypomethylated = 0,
+        significant_dmrs = 0
+    )
+    write.csv(summary_stats, file.path(opt$output, paste0(results_prefix, "_summary_stats.csv")), row.names = FALSE)
+    
+    # Generate placeholder plots
+    p_placeholder <- ggplot() + 
+        annotate("text", x = 0.5, y = 0.5, label = "No differentially methylated sites found\nwith current criteria", size = 6, hjust = 0.5) +
+        theme_void()
+        
+    ggsave(file.path(opt$output, paste0(results_prefix, "_volcano_plot.png")), plot = p_placeholder, width = 10, height = 8)
+    ggsave(file.path(opt$output, paste0(results_prefix, "_ma_or_scatter_plot.png")), plot = p_placeholder, width = 10, height = 8)
+    
+    cat("No significant sites to process. Created placeholders and exiting gracefully.\n")
+    quit(save = "no", status = 0)
+}
+
 # Add a column for significance based on user-defined cutoffs and the analysis method
 if (opt$method == "edger") {
     results$significance <- case_when(
@@ -65,8 +98,6 @@ if (opt$method == "edger") {
     stop("Unknown method. Use 'edger', 'methylkit', or 'dss'.")
 }
 
-# Derive prefix from results filename
-results_prefix <- tools::file_path_sans_ext(basename(opt$results))
 
 print(table(results$significance))
 

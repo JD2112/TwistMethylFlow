@@ -1,6 +1,6 @@
-# MethylFlow Pipeline Architecture (Supplemental / Full Version)
+# milou Pipeline Architecture (Supplemental / Full Version)
 
-This document contains the high-detail architecture diagram for the **MethylFlow** pipeline, suitable for Supplemental Information or technical posters.
+This document contains the high-detail architecture diagram for the **milou** pipeline, suitable for Supplemental Information or technical posters.
 
 ## Detailed Clinical Architecture (Mermaid)
 

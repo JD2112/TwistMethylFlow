@@ -96,7 +96,7 @@ process SAMTOOLS_MERGE {
 
     script:
     """
-    samtools merge -@ $task.cpus ${meta.id}.merged.bam $bams
+    samtools cat -o ${meta.id}.merged.bam $bams
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

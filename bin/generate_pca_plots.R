@@ -150,13 +150,30 @@ pca_df <- left_join(pca_df, samplesheet %>% select(sample_id, group), by=c("Samp
 
 var_exp <- round(100 * pca_res$sdev^2 / sum(pca_res$sdev^2), 1)
 
+# 5. PERMANOVA Batch Effect Auditing
+permanova_text <- "PERMANOVA: Not performed (requires 'vegan' package)"
+if (requireNamespace("vegan", quietly = TRUE)) {
+    tryCatch({
+        dist_matrix <- dist(t(meth_final))
+        permanova_res <- vegan::adonis2(dist_matrix ~ group, data=pca_df, permutations=999)
+        p_val <- permanova_res$`Pr(>F)`[1]
+        r_sq <- permanova_res$R2[1]
+        permanova_text <- sprintf("PERMANOVA (Group): R² = %.3f, p = %.3f", r_sq, p_val)
+        cat("PERMANOVA test completed:", permanova_text, "\n")
+    }, error = function(e) {
+        cat("PERMANOVA test failed:", conditionMessage(e), "\n")
+    })
+}
+
+subtitle_text <- paste0("Analysis of the ", nrow(meth_final), " most variant significant regions\n", permanova_text)
+
 p <- ggplot(pca_df, aes(x=PC1, y=PC2, color=group, label=Sample)) +
     geom_point(size=4, alpha=0.8) +
     geom_text(vjust=-1, size=3) +
     theme_minimal() +
     scale_color_brewer(palette="Set1") +
     labs(title="Principal Component Analysis (PCA) of Significant Regions",
-         subtitle=paste("Analysis of the", nrow(meth_final), "most variant significant regions"),
+         subtitle=subtitle_text,
          x=paste0("PC1 (", var_exp[1], "%)"),
          y=paste0("PC2 (", var_exp[2], "%)"),
          color="Group",
