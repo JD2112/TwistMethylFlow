@@ -156,7 +156,7 @@ SN10,Disease,SN10_R1_001.fastq.gz,SN10_R2_001.fastq.gz
 
 **Full Example Samplesheet**
 
-[Check out benchmarked Sample_sheet.csv](github.com/JD2112/milou)
+[Check out benchmarked Sample_sheet.csv](https://github.com/JD2112/milou)
 
 ??? info "Sample sheet Information"
 

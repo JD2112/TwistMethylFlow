@@ -23,7 +23,7 @@ The pipeline features a dual-mode operational design supporting both rapid explo
 
     This pipeline is intended for **Research Use Only (RUO)**. It has not been clinically validated and is not approved for diagnostic use. The generated reports are designed to support data interpretation and hypothesis generation, and must not be used for medical decision-making.
 
-![milou overview](images/TMF.png)
+![milou overview](images/milou.png)
 
 ## 1. Key Features
 
