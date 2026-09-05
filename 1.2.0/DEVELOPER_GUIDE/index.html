@@ -1,0 +1,912 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="milou: Methylation Integrated Layer for Omics Unification">
+      
+      
+        <meta name="author" content="Jyotirmoy Das">
+      
+      
+        <link rel="canonical" href="https://JD2112.github.io/milou/1.2.0/DEVELOPER_GUIDE/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>milou Developer Guide & Technical History - milou</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CFira+Code:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"Fira Code"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../styles/extra.css">
+    
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code&family=Inter:wght@400;600&display=swap">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#milou-developer-guide-technical-history" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="milou" class="md-header__button md-logo" aria-label="milou" data-md-component="logo">
+      
+
+<a href="https://github.com/JD2112" target="_blank" style="display:flex; align-items:center; text-decoration:none;">
+  <img src="../images/JD_logo.png" alt="Logo" style="height:24px; margin-right:8px;">
+</a>
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            milou
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              milou Developer Guide &amp; Technical History
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/JD2112/milou" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Introduction
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../usage/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  User Manual
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../output/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Results
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../references/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  References
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="milou" class="md-nav__button md-logo" aria-label="milou" data-md-component="logo">
+      
+
+<a href="https://github.com/JD2112" target="_blank" style="display:flex; align-items:center; text-decoration:none;">
+  <img src="../images/JD_logo.png" alt="Logo" style="height:24px; margin-right:8px;">
+</a>
+    </a>
+    milou
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/JD2112/milou" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+  
+  <li class="md-nav__item">
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+    
+  </li>
+
+  
+  <li class="md-nav__item">
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../usage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Manual
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+    
+  </li>
+
+  
+  <li class="md-nav__item">
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../output/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Results
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+    
+  </li>
+
+  
+  <li class="md-nav__item">
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+    
+  </li>
+
+
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-maintenance-workflow-how-to-update" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Maintenance Workflow (How to Update)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Maintenance Workflow (How to Update)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-a-update-the-conda-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step A: Update the Conda Environment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-b-sync-and-build" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step B: Sync and Build
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-c-update-pipeline-config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step C: Update Pipeline Config
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-technical-change-log-v110-refinement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Technical Change Log (v1.1.0 Refinement)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Technical Change Log (v1.1.0 Refinement)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-scientific-innovations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A. Scientific Innovations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-clinical-hardening" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B. Clinical Hardening
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-publication-narrative-the-story" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Publication Narrative (The "Story")
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Publication Narrative (The &#34;Story&#34;)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pillar-1-the-translational-gap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pillar 1: The Translational Gap
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pillar-2-mathematical-rigor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pillar 2: Mathematical Rigor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pillar-3-clinical-readiness" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pillar 3: Clinical Readiness
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-benchmarking-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Benchmarking Strategy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-version-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Version Management
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Version Management">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-release-automation-script-scriptspublishpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Release Automation Script: scripts/publish.py
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The Release Automation Script: scripts/publish.py">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-the-script-does" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the script does:
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-to-bump" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When to bump:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+<h1 id="milou-developer-guide-technical-history">milou Developer Guide &amp; Technical History<a class="headerlink" href="#milou-developer-guide-technical-history" title="Permanent link">&para;</a></h1>
+<p>This document serves as a "brain dump" and maintenance manual for the <strong>milou</strong> pipeline. It tracks the major architectural shifts made during the v1.1.0 update to address reviewer feedback and clinical requirements.</p>
+<hr />
+<h2 id="1-maintenance-workflow-how-to-update">1. Maintenance Workflow (How to Update)<a class="headerlink" href="#1-maintenance-workflow-how-to-update" title="Permanent link">&para;</a></h2>
+<p>To maintain clinical reproducibility, follow this exact sequence when updating tools or dependencies:</p>
+<h3 id="step-a-update-the-conda-environment">Step A: Update the Conda Environment<a class="headerlink" href="#step-a-update-the-conda-environment" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Modify the source <code>.yml</code> files in <code>containers/conda/</code> (e.g., <code>environment_main.yml</code>).</li>
+<li><strong>Always pin the version</strong> (e.g., <code>samtools=1.19</code> instead of just <code>samtools</code>).</li>
+<li>If adding an R package, consider if it needs to be in the Conda env or the <code>rocker</code>-based Dockerfiles.</li>
+</ol>
+<h3 id="step-b-sync-and-build">Step B: Sync and Build<a class="headerlink" href="#step-b-sync-and-build" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Sync</strong>: Copy the updated <code>.yml</code> to <code>containers/docker/</code> to keep the build context current:
+    <div class="highlight"><pre><span></span><code>cp<span class="w"> </span>containers/conda/environment_main.yml<span class="w"> </span>containers/docker/
+</code></pre></div></li>
+<li><strong>Build</strong>: Build the new image with an incremented version tag:
+    <div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>containers/docker
+docker<span class="w"> </span>build<span class="w"> </span>-f<span class="w"> </span>Dockerfile_main<span class="w"> </span>-t<span class="w"> </span>jd21/methylflow:1.1.1<span class="w"> </span>.
+</code></pre></div></li>
+<li><strong>Verify</strong>: Run <code>docker inspect &lt;ID&gt;</code> to ensure the <code>HEALTHCHECK</code> passes.</li>
+</ol>
+<h3 id="step-c-update-pipeline-config">Step C: Update Pipeline Config<a class="headerlink" href="#step-c-update-pipeline-config" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Open <code>conf/containers.config</code>.</li>
+<li>Update the version tag for the relevant process or the global <code>container</code> variable.</li>
+<li>Update the <code>nextflow_schema.json</code> or <code>params.config</code> if new parameters were added.</li>
+</ol>
+<hr />
+<h2 id="2-technical-change-log-v110-refinement">2. Technical Change Log (v1.1.0 Refinement)<a class="headerlink" href="#2-technical-change-log-v110-refinement" title="Permanent link">&para;</a></h2>
+<h3 id="a-scientific-innovations"><strong>A. Scientific Innovations</strong><a class="headerlink" href="#a-scientific-innovations" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Multi-Resolution Analysis</strong>: Integrated <code>callDMR</code> into the DSS module. The pipeline now calls both <strong>DMCs</strong> (Sites) and <strong>DMRs</strong> (Regions) simultaneously.</li>
+<li><strong>The π-Value Unified Score</strong>: Implemented a consensus layer that merges results from DSS, edgeR, and MethylKit using the π-value formula: <span class="arithmatex">\(\pi = | \overline{\log_2(FC)} | \times (-\log_{10}(P_{min}))\)</span>.</li>
+<li><strong>Gene-Centric Bridging</strong>: Added logic to map regional (DMR) coordinates to the nearest TSS, allowing site-level and region-level data to be aggregated at the gene level for clinical interpretation.</li>
+</ul>
+<h3 id="b-clinical-hardening"><strong>B. Clinical Hardening</strong><a class="headerlink" href="#b-clinical-hardening" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Clinical Gates</strong>: Added <code>min_30x_pc</code> parameter to <code>params.config</code>. The pipeline now formally warns (or fails) if a sample doesn't meet the clinical gold-standard of 80% targets at &gt;30x coverage.</li>
+<li><strong>Integrity Checks</strong>: Implemented SHA256 checksumming for all results and metadata to ensure data provenance during clinical audits.</li>
+<li><strong>Security Patching</strong>: <ul>
+<li>Migrated all containers to <strong>non-root users</strong> (<code>appuser</code>).</li>
+<li>Added <strong>HEALTHCHECKs</strong> to every image.</li>
+<li>Pinned base images to verified releases (<code>miniconda3:26.1.1</code>, <code>rocker/r-ver:4.3.3</code>, <code>rocker/tidyverse:4.3.3</code>).</li>
+<li>Kept <code>apt-get upgrade</code> intentionally to patch system-level CVEs (documented in each Dockerfile).</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h2 id="3-publication-narrative-the-story">3. Publication Narrative (The "Story")<a class="headerlink" href="#3-publication-narrative-the-story" title="Permanent link">&para;</a></h2>
+<p>When writing the manuscript or responding to reviewers, emphasize these three pillars:</p>
+<h3 id="pillar-1-the-translational-gap"><strong>Pillar 1: The Translational Gap</strong><a class="headerlink" href="#pillar-1-the-translational-gap" title="Permanent link">&para;</a></h3>
+<p>Standard pipelines (like <code>nf-core/methylseq</code>) stop at the <code>bedGraph</code> level. <strong>milou</strong> bridges the gap between raw methylation math and clinical pathology by providing automated gene-disease enrichment (DisGeNET) and a Unified Consensus Score.</p>
+<h3 id="pillar-2-mathematical-rigor"><strong>Pillar 2: Mathematical Rigor</strong><a class="headerlink" href="#pillar-2-mathematical-rigor" title="Permanent link">&para;</a></h3>
+<p>Address "lack of innovation" comments by highlighting the <strong>π-value consensus</strong>. Instead of relying on a single tool's p-value, we use a validated mathematical framework to find the "biological truth" where multiple tools agree.</p>
+<h3 id="pillar-3-clinical-readiness"><strong>Pillar 3: Clinical Readiness</strong><a class="headerlink" href="#pillar-3-clinical-readiness" title="Permanent link">&para;</a></h3>
+<p>milou is designed for regulated environments. The inclusion of <strong>30x coverage gates</strong>, <strong>checksumming</strong>, and <strong>security-hardened containers</strong> makes it a "turnkey" solution for diagnostic labs, not just a research script.</p>
+<hr />
+<h2 id="4-benchmarking-strategy">4. Benchmarking Strategy<a class="headerlink" href="#4-benchmarking-strategy" title="Permanent link">&para;</a></h2>
+<p>To prove performance, the current strategy is a head-to-head run against <code>nf-core/methylseq</code> using the <strong>NEB EM-seq</strong> public dataset. 
+*   <strong>Metric 1</strong>: Concordance of methylation calls (should be &gt;99%).
+*   <strong>Metric 2</strong>: Time-to-Insight (milou provides the Quarto report automatically; nf-core requires manual downstream work).</p>
+<hr />
+<h2 id="5-version-management">5. Version Management<a class="headerlink" href="#5-version-management" title="Permanent link">&para;</a></h2>
+<p>All versioning across the pipeline is managed by a centralized release automation script that enforces <strong>Semantic Versioning (SemVer)</strong> across every file in the repository.</p>
+<h3 id="the-release-automation-script-scriptspublishpy">The Release Automation Script: <code>scripts/publish.py</code><a class="headerlink" href="#the-release-automation-script-scriptspublishpy" title="Permanent link">&para;</a></h3>
+<p>When you are ready to release a new version (e.g., after benchmarking is complete), run this command from the project root:</p>
+<div class="highlight"><pre><span></span><code>python3<span class="w"> </span>scripts/publish.py
+</code></pre></div>
+<h4 id="what-the-script-does">What the script does:<a class="headerlink" href="#what-the-script-does" title="Permanent link">&para;</a></h4>
+<ol>
+<li><strong>Version Calculation</strong>: Reads the current version from <code>conf/base.config</code> and asks if you want to bump a <strong>Patch</strong> (1.1.1), <strong>Minor</strong> (1.2.0), or <strong>Major</strong> (2.0.0) version.</li>
+<li><strong>Global Update</strong>: Automatically scans and updates the version tags in:<ul>
+<li><strong>Nextflow Configs</strong>: <code>nextflow.config</code> (Manifest) and <code>conf/base.config</code>.</li>
+<li><strong>Containers</strong>: Every <code>Dockerfile_*</code> in <code>containers/docker/</code> and the tags in <code>conf/containers.config</code>.</li>
+<li><strong>Reports</strong>: The Quarto template (<code>assets/report.qmd</code>) and the workflow summary.</li>
+<li><strong>Documentation</strong>: <code>README.md</code>, <code>BENCHMARKING.md</code>, and all files in <code>docs/</code>.</li>
+<li><strong>Binaries</strong>: The version default in <code>bin/build_unified_results.py</code>.</li>
+</ul>
+</li>
+<li><strong>Git Automation</strong>:<ul>
+<li>Stages all changes (<code>git add .</code>).</li>
+<li>Creates a commit: <code>Release vX.Y.Z</code>.</li>
+<li>Creates an <strong>Annotated Git Tag</strong> (e.g., <code>v1.1.1</code>).</li>
+</ul>
+</li>
+<li><strong>GitHub Deployment</strong>: Prompts to push the code and tags to <code>origin main</code>.</li>
+</ol>
+<h4 id="when-to-bump">When to bump:<a class="headerlink" href="#when-to-bump" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Change Type</th>
+<th>Bump</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bug fix, typo, dep patch</td>
+<td><strong>Patch</strong></td>
+<td><code>1.1.0</code> → <code>1.1.1</code></td>
+</tr>
+<tr>
+<td>New feature, new module</td>
+<td><strong>Minor</strong></td>
+<td><code>1.1.0</code> → <code>1.2.0</code></td>
+</tr>
+<tr>
+<td>Breaking config/API change</td>
+<td><strong>Major</strong></td>
+<td><code>1.1.0</code> → <code>2.0.0</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><em>Last Updated: April 29, 2026</em></p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+  <div style="
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    font-size: 1.5em;
+    padding: 1em 2em;
+    border-top: 1px solid #000000;
+    color: #ffffff;
+    text-align: center;
+    background-color: #000000;
+  ">
+    <div style="flex: 1; text-align: left;">
+        © Jyotirmoy Das 2026 
+    </div>
+    <div style="flex: 1; text-align: center;">
+      <code style="font-size: 0.8em;">
+        3D1F C87F 8D52 BFD4 5A1D <br> 3C86 63F2 2E14 6A0A 6B98
+      </code>
+    </div>
+    <div style="flex: 1; text-align: right;">
+      Made with <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" style="color: #ffffff;">MkDocs</a>
+    </div>
+  </div>
+
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.instant.prefetch", "navigation.instant.progress", "navigation.tracking", "navigation.expand", "navigation.sections", "navigation.top", "content.code.annotate", "content.tabs.link", "navigation.tabs", "search.suggest", "search.highlight", "content.action.edit", "content.code.copy", "versioning", "icons"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../js/mathjax.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js"></script>
+      
+        <script src="../js/github-stats.js"></script>
+      
+    
+  </body>
+</html>

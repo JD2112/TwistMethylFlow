@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{# ---------------------- Sidebar block ---------------------- #}
+{% block sidebar %}
+  {{ super() }}
+
+  <!-- Sidebar GitHub links per page, pushed to bottom -->
+  <div class="md-sidebar-footer md-sidebar-footer--custom">
+    {% include "partials/sidebar-github.html" %}
+  </div>
+{% endblock %}
+
+{# ---------------------- Footer block ---------------------- #}
+{% block footer %}
+  <div style="
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    font-size: 1.5em;
+    padding: 1em 2em;
+    border-top: 1px solid #000000;
+    color: #ffffff;
+    text-align: center;
+    background-color: #000000;
+  ">
+    <div style="flex: 1; text-align: left;">
+        © {{ config.site_author }} {{ config.extra.current_year }} 
+    </div>
+    <div style="flex: 1; text-align: center;">
+      <code style="font-size: 0.8em;">
+        3D1F C87F 8D52 BFD4 5A1D <br> 3C86 63F2 2E14 6A0A 6B98
+      </code>
+    </div>
+    <div style="flex: 1; text-align: right;">
+      Made with <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" style="color: #ffffff;">MkDocs</a>
+    </div>
+  </div>
+{% endblock %}

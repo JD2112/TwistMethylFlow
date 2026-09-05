@@ -1,0 +1,1826 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="milou: Methylation Integrated Layer for Omics Unification">
+      
+      
+        <meta name="author" content="Jyotirmoy Das">
+      
+      
+        <link rel="canonical" href="https://JD2112.github.io/milou/1.2.0/references/">
+      
+      
+        <link rel="prev" href="../output/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>References - milou</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CFira+Code:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"Fira Code"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../styles/extra.css">
+    
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code&family=Inter:wght@400;600&display=swap">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#milou-technical-references-governance-developer-manual" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="milou" class="md-header__button md-logo" aria-label="milou" data-md-component="logo">
+      
+
+<a href="https://github.com/JD2112" target="_blank" style="display:flex; align-items:center; text-decoration:none;">
+  <img src="../images/JD_logo.png" alt="Logo" style="height:24px; margin-right:8px;">
+</a>
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            milou
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              References
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/JD2112/milou" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Introduction
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../usage/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  User Manual
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../output/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Results
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  References
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="milou" class="md-nav__button md-logo" aria-label="milou" data-md-component="logo">
+      
+
+<a href="https://github.com/JD2112" target="_blank" style="display:flex; align-items:center; text-decoration:none;">
+  <img src="../images/JD_logo.png" alt="Logo" style="height:24px; margin-right:8px;">
+</a>
+    </a>
+    milou
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/JD2112/milou" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+  
+  <li class="md-nav__item">
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+    
+  </li>
+
+  
+  <li class="md-nav__item">
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../usage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Manual
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+    
+  </li>
+
+  
+  <li class="md-nav__item">
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../output/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Results
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+    
+  </li>
+
+  
+  <li class="md-nav__item">
+    
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-academic-attribution-software-citations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Academic Attribution &amp; Software Citations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Academic Attribution &amp; Software Citations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-primary-pipeline-citation-repository-archive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 Primary Pipeline Citation &amp; Repository Archive
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-upstream-quality-control-alignment-engines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 Upstream Quality Control &amp; Alignment Engines
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1.2 Upstream Quality Control &amp; Alignment Engines">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#121-fastqc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2.1 FastQC
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#122-trim-galore" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2.2 Trim Galore!
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#123-bismark" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2.3 Bismark
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#124-samtools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2.4 Samtools
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#125-qualimap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2.5 QualiMap
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#126-multiqc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2.6 MultiQC
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-statistical-differential-functional-interpretation-engines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3 Statistical Differential &amp; Functional Interpretation Engines
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1.3 Statistical Differential &amp; Functional Interpretation Engines">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#131-edger" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3.1 edgeR
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#132-methylkit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3.2 methylKit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#133-dss-dispersion-shrinkage-for-sequencing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3.3 DSS (Dispersion Shrinkage for Sequencing)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#134-clusterprofiler-goplot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3.4 clusterProfiler &amp; GOplot
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#135-ggplot2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3.5 ggplot2
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14-packaging-container-infrastructure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.4 Packaging &amp; Container Infrastructure
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1.4 Packaging &amp; Container Infrastructure">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#141-nextflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.4.1 Nextflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#142-docker-biocontainers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.4.2 Docker &amp; BioContainers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#143-singularity-apptainer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.4.3 Singularity / Apptainer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#144-bioconda-anaconda" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.4.4 Bioconda &amp; Anaconda
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#145-r-bioconductor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.4.5 R &amp; Bioconductor
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-container-security-governance-quindecagon" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Container Security &amp; Governance (Quindecagon)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Container Security &amp; Governance (Quindecagon)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-zero-trust-container-auditing-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Zero-Trust Container Auditing &amp; Verification
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-frequently-asked-questions-faqs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Frequently Asked Questions (FAQs)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Frequently Asked Questions (FAQs)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-common-methodological-operational-questions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Common Methodological &amp; Operational Questions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-license-institutional-acknowledgements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. License &amp; Institutional Acknowledgements
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. License &amp; Institutional Acknowledgements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-open-source-mit-license" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Open-Source MIT License
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-research-institutions-hpc-facilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 Research Institutions &amp; HPC Facilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-community-acknowledgements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Community Acknowledgements
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-developer-guide-technical-history" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Developer Guide &amp; Technical History
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Developer Guide &amp; Technical History">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-maintenance-release-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Maintenance &amp; Release Workflow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.1 Maintenance &amp; Release Workflow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#511-step-a-update-the-conda-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1.1 Step A: Update the Conda Environment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#512-step-b-sync-and-build-container-images" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1.2 Step B: Sync and Build Container Images
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#513-step-c-update-pipeline-configurations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1.3 Step C: Update Pipeline Configurations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#514-centralized-release-automation-scriptspublishpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1.4 Centralized Release Automation (scripts/publish.py)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-technical-architecture-change-log" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Technical Architecture &amp; Change Log
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.2 Technical Architecture &amp; Change Log">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#521-scientific-innovations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2.1 Scientific Innovations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#522-clinical-hardening-security-compliance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2.2 Clinical Hardening &amp; Security Compliance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#523-publication-pillars-the-core-narrative" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2.3 Publication Pillars (The Core Narrative)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+    
+    
+    
+  </li>
+
+
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-academic-attribution-software-citations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Academic Attribution &amp; Software Citations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Academic Attribution &amp; Software Citations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-primary-pipeline-citation-repository-archive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 Primary Pipeline Citation &amp; Repository Archive
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-upstream-quality-control-alignment-engines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 Upstream Quality Control &amp; Alignment Engines
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1.2 Upstream Quality Control &amp; Alignment Engines">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#121-fastqc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2.1 FastQC
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#122-trim-galore" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2.2 Trim Galore!
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#123-bismark" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2.3 Bismark
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#124-samtools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2.4 Samtools
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#125-qualimap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2.5 QualiMap
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#126-multiqc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2.6 MultiQC
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-statistical-differential-functional-interpretation-engines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3 Statistical Differential &amp; Functional Interpretation Engines
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1.3 Statistical Differential &amp; Functional Interpretation Engines">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#131-edger" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3.1 edgeR
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#132-methylkit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3.2 methylKit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#133-dss-dispersion-shrinkage-for-sequencing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3.3 DSS (Dispersion Shrinkage for Sequencing)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#134-clusterprofiler-goplot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3.4 clusterProfiler &amp; GOplot
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#135-ggplot2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3.5 ggplot2
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14-packaging-container-infrastructure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.4 Packaging &amp; Container Infrastructure
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1.4 Packaging &amp; Container Infrastructure">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#141-nextflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.4.1 Nextflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#142-docker-biocontainers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.4.2 Docker &amp; BioContainers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#143-singularity-apptainer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.4.3 Singularity / Apptainer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#144-bioconda-anaconda" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.4.4 Bioconda &amp; Anaconda
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#145-r-bioconductor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.4.5 R &amp; Bioconductor
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-container-security-governance-quindecagon" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Container Security &amp; Governance (Quindecagon)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Container Security &amp; Governance (Quindecagon)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-zero-trust-container-auditing-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Zero-Trust Container Auditing &amp; Verification
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-frequently-asked-questions-faqs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Frequently Asked Questions (FAQs)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Frequently Asked Questions (FAQs)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-common-methodological-operational-questions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Common Methodological &amp; Operational Questions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-license-institutional-acknowledgements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. License &amp; Institutional Acknowledgements
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. License &amp; Institutional Acknowledgements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-open-source-mit-license" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Open-Source MIT License
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-research-institutions-hpc-facilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 Research Institutions &amp; HPC Facilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-community-acknowledgements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Community Acknowledgements
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-developer-guide-technical-history" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Developer Guide &amp; Technical History
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Developer Guide &amp; Technical History">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-maintenance-release-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Maintenance &amp; Release Workflow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.1 Maintenance &amp; Release Workflow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#511-step-a-update-the-conda-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1.1 Step A: Update the Conda Environment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#512-step-b-sync-and-build-container-images" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1.2 Step B: Sync and Build Container Images
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#513-step-c-update-pipeline-configurations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1.3 Step C: Update Pipeline Configurations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#514-centralized-release-automation-scriptspublishpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1.4 Centralized Release Automation (scripts/publish.py)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-technical-architecture-change-log" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Technical Architecture &amp; Change Log
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.2 Technical Architecture &amp; Change Log">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#521-scientific-innovations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2.1 Scientific Innovations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#522-clinical-hardening-security-compliance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2.2 Clinical Hardening &amp; Security Compliance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#523-publication-pillars-the-core-narrative" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2.3 Publication Pillars (The Core Narrative)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+<h1 id="milou-technical-references-governance-developer-manual">milou Technical References, Governance &amp; Developer Manual<a class="headerlink" href="#milou-technical-references-governance-developer-manual" title="Permanent link">&para;</a></h1>
+<p>This document consolidates pipeline citations, security governance, operational FAQs, and architectural guidelines for <strong>milou</strong>.</p>
+<h2 id="1-academic-attribution-software-citations">1. Academic Attribution &amp; Software Citations<a class="headerlink" href="#1-academic-attribution-software-citations" title="Permanent link">&para;</a></h2>
+<h3 id="11-primary-pipeline-citation-repository-archive">1.1 Primary Pipeline Citation &amp; Repository Archive<a class="headerlink" href="#11-primary-pipeline-citation-repository-archive" title="Permanent link">&para;</a></h3>
+<p>If you use <strong>milou</strong> in your research, please cite the primary publication and Zenodo repository:</p>
+<blockquote>
+<p><strong>Das, J., et al. (2026).</strong> <em>milou: An End-to-End Nextflow Pipeline for Translational DNA Methylation Profiling with Multi-Method Consensus Scoring</em>. <br />
+<strong>Software Pipeline Archive:</strong> <a href="https://doi.org/10.5281/zenodo.14204260">https://doi.org/10.5281/zenodo.14204260</a><br />
+<strong>Benchmark Data Archive:</strong> <a href="https://doi.org/10.5281/zenodo.22326688">https://doi.org/10.5281/zenodo.22326688</a></p>
+</blockquote>
+<h3 id="12-upstream-quality-control-alignment-engines">1.2 Upstream Quality Control &amp; Alignment Engines<a class="headerlink" href="#12-upstream-quality-control-alignment-engines" title="Permanent link">&para;</a></h3>
+<h4 id="121-fastqc">1.2.1 FastQC<a class="headerlink" href="#121-fastqc" title="Permanent link">&para;</a></h4>
+<blockquote>
+<p>Andrews, S. (2010). FastQC: A Quality Control Tool for High Throughput Sequence Data [Online]. <a href="https://www.bioinformatics.babraham.ac.uk/projects/fastqc/">https://www.bioinformatics.babraham.ac.uk/projects/fastqc/</a></p>
+</blockquote>
+<h4 id="122-trim-galore">1.2.2 Trim Galore!<a class="headerlink" href="#122-trim-galore" title="Permanent link">&para;</a></h4>
+<blockquote>
+<p>Krueger, F., James, F., Ewels, P., et al. (2023). FelixKrueger/TrimGalore: v0.6.10. Zenodo. <a href="https://doi.org/10.5281/zenodo.7598955">https://doi.org/10.5281/zenodo.7598955</a></p>
+</blockquote>
+<h4 id="123-bismark">1.2.3 Bismark<a class="headerlink" href="#123-bismark" title="Permanent link">&para;</a></h4>
+<blockquote>
+<p>Krueger, F., &amp; Andrews, S. R. (2011). Bismark: a flexible aligner and methylation caller for Bisulfite-Seq applications. <em>Bioinformatics</em>, 27(11), 1571-1572. <a href="https://doi.org/10.1093/bioinformatics/btr167">https://doi.org/10.1093/bioinformatics/btr167</a></p>
+</blockquote>
+<h4 id="124-samtools">1.2.4 Samtools<a class="headerlink" href="#124-samtools" title="Permanent link">&para;</a></h4>
+<blockquote>
+<p>Danecek, P., Bonfield, J. K., Liddle, J., et al. (2021). Twelve years of SAMtools and BCFtools. <em>GigaScience</em>, 10(2), giab008. <a href="https://doi.org/10.1093/gigascience/giab008">https://doi.org/10.1093/gigascience/giab008</a></p>
+</blockquote>
+<h4 id="125-qualimap">1.2.5 QualiMap<a class="headerlink" href="#125-qualimap" title="Permanent link">&para;</a></h4>
+<blockquote>
+<p>Okonechnikov, K., Conesa, A., &amp; García-Alcalde, F. (2016). Qualimap 2: advanced multi-sample quality control for high-throughput sequencing data. <em>Bioinformatics</em>, 32(2), 292–294. <a href="https://doi.org/10.1093/bioinformatics/btv566">https://doi.org/10.1093/bioinformatics/btv566</a></p>
+</blockquote>
+<h4 id="126-multiqc">1.2.6 MultiQC<a class="headerlink" href="#126-multiqc" title="Permanent link">&para;</a></h4>
+<blockquote>
+<p>Ewels, P., Magnusson, M., Lundin, S., &amp; Käller, M. (2016). MultiQC: summarize analysis results for multiple tools and samples in a single report. <em>Bioinformatics</em>, 32(19), 3047-3048. <a href="https://doi.org/10.1093/bioinformatics/btw354">https://doi.org/10.1093/bioinformatics/btw354</a></p>
+</blockquote>
+<h3 id="13-statistical-differential-functional-interpretation-engines">1.3 Statistical Differential &amp; Functional Interpretation Engines<a class="headerlink" href="#13-statistical-differential-functional-interpretation-engines" title="Permanent link">&para;</a></h3>
+<h4 id="131-edger">1.3.1 edgeR<a class="headerlink" href="#131-edger" title="Permanent link">&para;</a></h4>
+<blockquote>
+<p>Chen, Y., Chen, L., Lun, A. T. L., Baldoni, P., &amp; Smyth, G. K. (2025). edgeR v4: powerful differential analysis of sequencing data with expanded functionality and improved support for small counts and larger datasets. <em>Nucleic Acids Research</em>, 53(2), gkaf018. <a href="https://doi.org/10.1093/nar/gkaf018">https://doi.org/10.1093/nar/gkaf018</a></p>
+</blockquote>
+<h4 id="132-methylkit">1.3.2 methylKit<a class="headerlink" href="#132-methylkit" title="Permanent link">&para;</a></h4>
+<blockquote>
+<p>Akalin, A., Kormaksson, M., Li, S., et al. (2012). methylKit: a comprehensive R package for the analysis of genome-wide DNA methylation profiles. <em>Genome Biology</em>, 13(10), R87. <a href="https://doi.org/10.1186/gb-2012-13-10-r87">https://doi.org/10.1186/gb-2012-13-10-r87</a></p>
+</blockquote>
+<h4 id="133-dss-dispersion-shrinkage-for-sequencing">1.3.3 DSS (Dispersion Shrinkage for Sequencing)<a class="headerlink" href="#133-dss-dispersion-shrinkage-for-sequencing" title="Permanent link">&para;</a></h4>
+<blockquote>
+<p>Feng, H., Conneely, K. N., &amp; Wu, H. (2014). A Bayesian hierarchical model to detect differentially methylated loci from single nucleotide resolution sequencing data. <em>Nucleic Acids Research</em>, 42(8), e69. <a href="https://doi.org/10.1093/nar/gku154">https://doi.org/10.1093/nar/gku154</a></p>
+</blockquote>
+<h4 id="134-clusterprofiler-goplot">1.3.4 clusterProfiler &amp; GOplot<a class="headerlink" href="#134-clusterprofiler-goplot" title="Permanent link">&para;</a></h4>
+<blockquote>
+<p>Xu, S., Hu, E., Cai, Y., et al. (2024). Using clusterProfiler to characterize multiomics data. <em>Nature Protocols</em>, 19(11), 3292-3320. <a href="https://doi.org/10.1038/s41596-024-01020-z">https://doi.org/10.1038/s41596-024-01020-z</a><br />
+Walter, W., Sánchez-Cabo, F., &amp; Ricote, M. (2015). GOplot: an R package for visually combining expression data with functional analysis. <em>Bioinformatics</em>, 31(17), 2912-2914.</p>
+</blockquote>
+<h4 id="135-ggplot2">1.3.5 ggplot2<a class="headerlink" href="#135-ggplot2" title="Permanent link">&para;</a></h4>
+<blockquote>
+<p>Wickham, H. (2016). <em>ggplot2: Elegant Graphics for Data Analysis</em>. Springer-Verlag New York. ISBN 978-3-319-24277-4. <a href="https://ggplot2.tidyverse.org">https://ggplot2.tidyverse.org</a></p>
+</blockquote>
+<h3 id="14-packaging-container-infrastructure">1.4 Packaging &amp; Container Infrastructure<a class="headerlink" href="#14-packaging-container-infrastructure" title="Permanent link">&para;</a></h3>
+<h4 id="141-nextflow">1.4.1 Nextflow<a class="headerlink" href="#141-nextflow" title="Permanent link">&para;</a></h4>
+<blockquote>
+<p>Di Tommaso, P., Chatzou, M., Floden, E. W., et al. (2017). Nextflow enables reproducible computational workflows. <em>Nature Biotechnology</em>, 35(4), 316-319. <a href="https://doi.org/10.1038/nbt.3820">https://doi.org/10.1038/nbt.3820</a></p>
+</blockquote>
+<h4 id="142-docker-biocontainers">1.4.2 Docker &amp; BioContainers<a class="headerlink" href="#142-docker-biocontainers" title="Permanent link">&para;</a></h4>
+<blockquote>
+<p>Merkel, D. (2014). Docker: lightweight linux containers for consistent development and deployment. <em>Linux Journal</em>, 2014(239), 2.<br />
+da Veiga Leprevost, F., Grüning, B., Aflitos, S. A., et al. (2017). BioContainers: an open-source and community-driven framework for software standardization. <em>Bioinformatics</em>, 33(16), 2580-2582.</p>
+</blockquote>
+<h4 id="143-singularity-apptainer">1.4.3 Singularity / Apptainer<a class="headerlink" href="#143-singularity-apptainer" title="Permanent link">&para;</a></h4>
+<blockquote>
+<p>Kurtzer, G. M., Sochat, V., &amp; Bauer, M. W. (2017). Singularity: Scientific containers for mobility of compute. <em>PLoS ONE</em>, 12(5), e0177459. <a href="https://doi.org/10.1371/journal.pone.0177459">https://doi.org/10.1371/journal.pone.0177459</a></p>
+</blockquote>
+<h4 id="144-bioconda-anaconda">1.4.4 Bioconda &amp; Anaconda<a class="headerlink" href="#144-bioconda-anaconda" title="Permanent link">&para;</a></h4>
+<blockquote>
+<p>Grüning, B., Dale, R., Sjödin, A., et al. (2018). Bioconda: sustainable and comprehensive software distribution for the life sciences. <em>Nature Methods</em>, 15(7), 475-476. <a href="https://doi.org/10.1038/s41592-018-0046-7">https://doi.org/10.1038/s41592-018-0046-7</a></p>
+</blockquote>
+<h4 id="145-r-bioconductor">1.4.5 R &amp; Bioconductor<a class="headerlink" href="#145-r-bioconductor" title="Permanent link">&para;</a></h4>
+<blockquote>
+<p>Huber, W., Carey, V. J., Gentleman, R., et al. (2015). Orchestrating high-throughput genomic analysis with Bioconductor. <em>Nature Methods</em>, 12(2), 115–121. <a href="https://doi.org/10.1038/nmeth.3252">https://doi.org/10.1038/nmeth.3252</a></p>
+</blockquote>
+<h2 id="2-container-security-governance-quindecagon">2. Container Security &amp; Governance (Quindecagon)<a class="headerlink" href="#2-container-security-governance-quindecagon" title="Permanent link">&para;</a></h2>
+<h3 id="21-zero-trust-container-auditing-verification">2.1 Zero-Trust Container Auditing &amp; Verification<a class="headerlink" href="#21-zero-trust-container-auditing-verification" title="Permanent link">&para;</a></h3>
+<p>milou satisfies regulated and institutional zero-trust security standards. All container images utilized in the pipeline are continuously scanned and validated via <a href="https://github.com/JD2112/quindecagon"><strong>quindecagon</strong></a>:</p>
+<ul>
+<li><strong>Static Security Auditing</strong>: Code and DSL2 modules are vetted using Semgrep and SonarQube for static analysis.</li>
+<li><strong>Vulnerability Scanning</strong>: Every container undergoes automated CVE and OCI vulnerability scanning with <strong>Trivy</strong> and <strong>Grype</strong>, with all critical/high OS-level vulnerabilities patched.</li>
+<li><strong>Software Bill of Materials (SBOM)</strong>: Cryptographic SBOMs are generated for each image via <strong>Syft</strong> and archived for complete software supply chain transparency.</li>
+<li><strong>Cryptographic Signing</strong>: Container digests are pinned by SHA256 hashes and signed using <strong>Sigstore / Cosign</strong>.</li>
+<li><strong>Non-Root Execution</strong>: Container environments operate under unprivileged user contexts (<code>appuser</code>) to ensure safe execution on shared HPC environments.</li>
+</ul>
+<h2 id="3-frequently-asked-questions-faqs">3. Frequently Asked Questions (FAQs)<a class="headerlink" href="#3-frequently-asked-questions-faqs" title="Permanent link">&para;</a></h2>
+<h3 id="31-common-methodological-operational-questions">3.1 Common Methodological &amp; Operational Questions<a class="headerlink" href="#31-common-methodological-operational-questions" title="Permanent link">&para;</a></h3>
+<details class="question">
+<summary>How does the GPU alignment track compare to the CPU track?</summary>
+<p>milou implements a dual execution engine:</p>
+<ul>
+<li><strong>GPU Track</strong>: NVIDIA Parabricks (<code>fq2bam_meth</code>) accelerates BWA-meth alignment and PCR deduplication by <strong>18× to 24×</strong> per sample, while MethylDackel extracts CpG calls in minutes.</li>
+<li><strong>Concordance</strong>: Evaluated across gold-standard human benchmarks, the GPU track achieves <strong>99.5% coordinate agreement</strong> and a Spearman rank correlation of <strong><span class="arithmatex">\(r_s = 0.97 - 0.99\)</span></strong> against CPU Bismark calls. Downstream differential testing (DSS, edgeR, methylKit) runs identically in both tracks.</li>
+</ul>
+</details>
+<details class="question">
+<summary>How do I prevent memory spikes when running Whole-Genome (WGBS) DSS analysis?</summary>
+<p>Human WGBS cohorts span all ~28–30 million CpG sites. By default, DSS calculates 2D moving-average spline smoothing across adjacent genomic loci, which can cause memory to spike beyond 250 GB RAM. Setting <code>--smoothing FALSE</code> bypasses moving-average spline fitting while preserving empirical Bayes dispersion shrinkage and contiguous DMR detection via <code>callDMR()</code>, keeping peak resident memory under <strong>50 GB RAM</strong>.</p>
+</details>
+<details class="question">
+<summary>What is the multi-method consensus score (π-value)?</summary>
+<p>To provide a deterministic clinical ranking, milou merges results from DSS, edgeR, and methylKit into a unified significance score adapted from the <span class="arithmatex">\(\pi\)</span>-value framework:
+$<span class="arithmatex">\(\pi_{g} = \overline{\left| \log_{2}{(FC)}_{g} \right|} \times \left( - \log_{10}(P_{\min,g}) \right)\)</span>$
+Where <span class="arithmatex">\(\overline{\left| \log_{2}{(FC)}_{g} \right|}\)</span> is the mean log2 fold change across all callers that identified gene <em>g</em> as differentially methylated, and <span class="arithmatex">\(P_{\min,g}\)</span> is the minimum observed <em>p</em>-value. This elevates genes that possess both robust statistical significance and large biological effect sizes.</p>
+</details>
+<details class="question">
+<summary>Can milou automatically download benchmark datasets?</summary>
+<p><strong>Yes.</strong> When running built-in test profiles or passing <code>--pre_stage_test_data true</code>, milou automatically downloads and checksum-verifies raw sequencing runs from public SRA/ENA archives. You can also place direct HTTP, FTP, or S3 URLs directly inside the <code>read1</code> and <code>read2</code> columns of your own <code>samplesheet.csv</code>.</p>
+</details>
+<details class="question">
+<summary>What makes milou clinical-grade?</summary>
+<p>milou enforces strict data governance:</p>
+<ol>
+<li><strong>Input Integrity</strong>: Automated cryptographic SHA256 checksumming of every input FASTQ.</li>
+<li><strong>PHI De-identification</strong>: Automated masking and pseudo-ID assignment (<code>MILOU-SPEC-001</code>) preventing patient identifiers in results.</li>
+<li><strong>Conversion Efficiency Gating</strong>: Active monitoring of unmethylated spike-in controls (lambda phage) with automatic diagnostic failure flags if non-conversion exceeds 1%.</li>
+<li><strong>Air-gapped Execution</strong>: Sovereign local disease databases (<code>--disgenet_db</code>) allow fully offline clinical operation via <code>--profile clinical_offline</code>.</li>
+</ol>
+</details>
+<h2 id="4-license-institutional-acknowledgements">4. License &amp; Institutional Acknowledgements<a class="headerlink" href="#4-license-institutional-acknowledgements" title="Permanent link">&para;</a></h2>
+<h3 id="41-open-source-mit-license">4.1 Open-Source MIT License<a class="headerlink" href="#41-open-source-mit-license" title="Permanent link">&para;</a></h3>
+<p>milou is distributed under the open-source <strong>MIT License</strong>:</p>
+<div class="highlight"><pre><span></span><code>MIT License
+Copyright (c) 2026 Jyotirmoy Das
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the &quot;Software&quot;), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+</code></pre></div>
+<h3 id="42-research-institutions-hpc-facilities">4.2 Research Institutions &amp; HPC Facilities<a class="headerlink" href="#42-research-institutions-hpc-facilities" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Core Facility, Faculty of Medicine and Health Sciences, Linköping University</strong><br />
+<a href="https://liu.se/en/organisation/liu/medfak/coref">Linköping University Core Facility</a></li>
+<li><strong>Clinical Genomics Linköping, Science for Life Laboratory, Sweden</strong><br />
+<a href="https://www.scilifelab.se/units/clinical-genomics-linkoping/">Clinical Genomics Linköping</a></li>
+<li><strong>National Academic Infrastructure for Supercomputing in Sweden (NAISS)</strong>  <blockquote>
+<p>The computations and storage were enabled by resources provided by NAISS, partially funded by the Swedish Research Council through grant agreement no. 2022-06725.</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="43-community-acknowledgements">4.3 Community Acknowledgements<a class="headerlink" href="#43-community-acknowledgements" title="Permanent link">&para;</a></h3>
+<p>Special thanks to the developers and contributors of Nextflow, Bismark, methylKit, edgeR, and the broader open-source bioinformatics community.</p>
+<h2 id="5-developer-guide-technical-history">5. Developer Guide &amp; Technical History<a class="headerlink" href="#5-developer-guide-technical-history" title="Permanent link">&para;</a></h2>
+<p>This section serves as a technical architecture reference and maintenance manual for the <strong>milou</strong> pipeline.</p>
+<h3 id="51-maintenance-release-workflow">5.1 Maintenance &amp; Release Workflow<a class="headerlink" href="#51-maintenance-release-workflow" title="Permanent link">&para;</a></h3>
+<p>To maintain clinical reproducibility, follow this exact sequence when updating tools or dependencies:</p>
+<h4 id="511-step-a-update-the-conda-environment">5.1.1 Step A: Update the Conda Environment<a class="headerlink" href="#511-step-a-update-the-conda-environment" title="Permanent link">&para;</a></h4>
+<ol>
+<li>Modify the source <code>.yml</code> files in <code>containers/conda/</code> (e.g., <code>environment_main.yml</code>).</li>
+<li><strong>Always pin the version</strong> (e.g., <code>samtools=1.19</code> instead of just <code>samtools</code>).</li>
+<li>If adding an R package, decide whether it belongs in the Conda env or the <code>rocker</code>-based Dockerfiles.</li>
+</ol>
+<h4 id="512-step-b-sync-and-build-container-images">5.1.2 Step B: Sync and Build Container Images<a class="headerlink" href="#512-step-b-sync-and-build-container-images" title="Permanent link">&para;</a></h4>
+<ol>
+<li><strong>Sync</strong>: Copy the updated <code>.yml</code> to <code>containers/docker/</code> to keep build contexts current:
+   <div class="highlight"><pre><span></span><code>cp<span class="w"> </span>containers/conda/environment_main.yml<span class="w"> </span>containers/docker/
+</code></pre></div></li>
+<li><strong>Build</strong>: Build the new image with an incremented version tag:
+   <div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>containers/docker
+docker<span class="w"> </span>build<span class="w"> </span>-f<span class="w"> </span>Dockerfile_main<span class="w"> </span>-t<span class="w"> </span>jd2112/milou:1.2.0<span class="w"> </span>.
+</code></pre></div></li>
+<li><strong>Verify</strong>: Run <code>docker inspect &lt;ID&gt;</code> to verify the health check passes.</li>
+</ol>
+<h4 id="513-step-c-update-pipeline-configurations">5.1.3 Step C: Update Pipeline Configurations<a class="headerlink" href="#513-step-c-update-pipeline-configurations" title="Permanent link">&para;</a></h4>
+<ol>
+<li>Open <code>conf/containers.config</code>.</li>
+<li>Update the version tag for the relevant process or the global <code>container</code> variable.</li>
+<li>Update <code>nextflow_schema.json</code> and <code>conf/params.config</code> if new parameters were introduced.</li>
+</ol>
+<h4 id="514-centralized-release-automation-scriptspublishpy">5.1.4 Centralized Release Automation (<code>scripts/publish.py</code>)<a class="headerlink" href="#514-centralized-release-automation-scriptspublishpy" title="Permanent link">&para;</a></h4>
+<p>When ready to release a new version, run the automated release utility from the project root:</p>
+<div class="highlight"><pre><span></span><code>python3<span class="w"> </span>scripts/publish.py
+</code></pre></div>
+<p>The script manages:
+1. <strong>Version Bumping</strong>: Calculates Patch, Minor, or Major increments following Semantic Versioning (SemVer).
+2. <strong>Global Sync</strong>: Scans and updates version tags across manifests, container definitions, Quarto report templates, and documentation.
+3. <strong>Git Release</strong>: Stages changes, commits, and creates an annotated Git tag matching the release version.</p>
+<h3 id="52-technical-architecture-change-log">5.2 Technical Architecture &amp; Change Log<a class="headerlink" href="#52-technical-architecture-change-log" title="Permanent link">&para;</a></h3>
+<h4 id="521-scientific-innovations">5.2.1 Scientific Innovations<a class="headerlink" href="#521-scientific-innovations" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Multi-Resolution Analysis</strong>: Integrated <code>callDMR</code> into the DSS module to detect both DMCs (Sites) and DMRs (Regions) simultaneously.</li>
+<li><strong>The π-Value Consensus Score</strong>: Implemented cross-method consensus merging results from DSS, edgeR, and methylKit using: <span class="arithmatex">\(\pi = \overline{|\log_2(FC)|} \times (-\log_{10}(P_{\min}))\)</span>.</li>
+<li><strong>Gene-Centric Bridging</strong>: Maps regional DMR coordinates to the nearest TSS, aggregating locus- and region-level metrics at the gene level for clinical interpretation.</li>
+</ul>
+<h4 id="522-clinical-hardening-security-compliance">5.2.2 Clinical Hardening &amp; Security Compliance<a class="headerlink" href="#522-clinical-hardening-security-compliance" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Clinical Gating</strong>: The <code>min_30x_pc</code> parameter formally evaluates cohorts against the clinical gold-standard (default: 80% targets at &gt;30x coverage).</li>
+<li><strong>Integrity Audit</strong>: Cryptographic SHA256 hashes generated across input FASTQs and output tables.</li>
+<li><strong>Security Hardening</strong>: Non-root container execution (<code>appuser</code>), pinned base images, and continuous CVE scanning via quindecagon.</li>
+</ul>
+<h4 id="523-publication-pillars-the-core-narrative">5.2.3 Publication Pillars (The Core Narrative)<a class="headerlink" href="#523-publication-pillars-the-core-narrative" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Pillar 1: The Translational Gap</strong>: Standard pipelines stop at bedGraph/BAM files. <em>milou</em> bridges the gap by delivering automated gene-disease enrichment (DisGeNET) and a multi-caller consensus score in an executive Quarto report.</li>
+<li><strong>Pillar 2: Mathematical Rigor</strong>: Highlights the π-value consensus framework, establishing reproducible biological truth where orthogonal statistical distributions agree.</li>
+<li><strong>Pillar 3: Clinical Readiness</strong>: Built for regulated environments with coverage gating, checksumming, and security-hardened containers.</li>
+</ul>
+<hr />
+<p><em>Last Updated: September 04, 2026</em></p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+  <div style="
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    font-size: 1.5em;
+    padding: 1em 2em;
+    border-top: 1px solid #000000;
+    color: #ffffff;
+    text-align: center;
+    background-color: #000000;
+  ">
+    <div style="flex: 1; text-align: left;">
+        © Jyotirmoy Das 2026 
+    </div>
+    <div style="flex: 1; text-align: center;">
+      <code style="font-size: 0.8em;">
+        3D1F C87F 8D52 BFD4 5A1D <br> 3C86 63F2 2E14 6A0A 6B98
+      </code>
+    </div>
+    <div style="flex: 1; text-align: right;">
+      Made with <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" style="color: #ffffff;">MkDocs</a>
+    </div>
+  </div>
+
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.instant.prefetch", "navigation.instant.progress", "navigation.tracking", "navigation.expand", "navigation.sections", "navigation.top", "content.code.annotate", "content.tabs.link", "navigation.tabs", "search.suggest", "search.highlight", "content.action.edit", "content.code.copy", "versioning", "icons"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../js/mathjax.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js"></script>
+      
+        <script src="../js/github-stats.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,45 @@
+{#-
+  This file was automatically generated - do not edit
+-#}
+{% import "partials/nav-item.html" as item with context %}
+{% set class = "md-nav md-nav--primary" %}
+{% if "navigation.tabs" in features %}
+  {% set class = class ~ " md-nav--lifted" %}
+{% endif %}
+{% if "toc.integrate" in features %}
+  {% set class = class ~ " md-nav--integrated" %}
+{% endif %}
+<nav class="{{ class }}" aria-label="{{ lang.t('nav') }}" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="{{ config.extra.homepage | d(nav.homepage.url, true) | url }}" title="{{ config.site_name | e }}" class="md-nav__button md-logo" aria-label="{{ config.site_name }}" data-md-component="logo">
+      {% include "partials/logo.html" %}
+    </a>
+    {{ config.site_name }}
+  </label>
+  {% if config.repo_url %}
+    <div class="md-nav__source">
+      {% include "partials/source.html" %}
+    </div>
+  {% endif %}
+  <ul class="md-nav__list" data-md-scrollfix>
+    {% for nav_item in nav %}
+  {% set path = "__nav_" ~ loop.index %}
+  <li class="md-nav__item">
+    {{ item.render(nav_item, path, 1) }}
+    
+    {# Only add GitHub icon for actual pages #}
+    {% if nav_item.__class__.__name__ == "Page" and nav_item.file.src_path.endswith("tutorials.md") %}
+      <a href="{% if 'methylr/tutorials.md' in nav_item.file.src_path %}https://github.com/JD2112/methylr
+                 {% elif 'olinkwrapper/tutorials.md' in nav_item.file.src_path %}https://github.com/JD2112/ShinyOlink
+                 {% elif 'shinyWGCNA/tutorials.md' in nav_item.file.src_path %}https://github.com/JD2112/Shiny-WGCNA
+                 {% endif %}"
+         target="_blank" class="md-nav__repo-icon" style="margin-left:5px; vertical-align:middle;">
+        <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="16" height="16" alt="GitHub">
+      </a>
+    {% endif %}
+    
+  </li>
+{% endfor %}
+
+  </ul>
+</nav>

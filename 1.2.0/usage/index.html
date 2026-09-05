@@ -1,0 +1,2819 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="milou: Methylation Integrated Layer for Omics Unification">
+      
+      
+        <meta name="author" content="Jyotirmoy Das">
+      
+      
+        <link rel="canonical" href="https://JD2112.github.io/milou/1.2.0/usage/">
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../output/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>User Manual - milou</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CFira+Code:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"Fira Code"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../styles/extra.css">
+    
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code&family=Inter:wght@400;600&display=swap">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#milou-user-manual" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="milou" class="md-header__button md-logo" aria-label="milou" data-md-component="logo">
+      
+
+<a href="https://github.com/JD2112" target="_blank" style="display:flex; align-items:center; text-decoration:none;">
+  <img src="../images/JD_logo.png" alt="Logo" style="height:24px; margin-right:8px;">
+</a>
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            milou
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              User Manual
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/JD2112/milou" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Introduction
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  User Manual
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../output/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Results
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../references/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  References
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="milou" class="md-nav__button md-logo" aria-label="milou" data-md-component="logo">
+      
+
+<a href="https://github.com/JD2112" target="_blank" style="display:flex; align-items:center; text-decoration:none;">
+  <img src="../images/JD_logo.png" alt="Logo" style="height:24px; margin-right:8px;">
+</a>
+    </a>
+    milou
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/JD2112/milou" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+  
+  <li class="md-nav__item">
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+    
+  </li>
+
+  
+  <li class="md-nav__item">
+    
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Manual
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Manual
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-prerequisites-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Prerequisites &amp; Environment
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-quick-start-execution-profiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Quick Start &amp; Execution Profiles
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Quick Start &amp; Execution Profiles">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-basic-execution-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Basic Execution Syntax
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-cohort-execution-archetypes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Cohort Execution Archetypes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-sample-sheet-reference-specifications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Sample Sheet &amp; Reference Specifications
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Sample Sheet &amp; Reference Specifications">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-sample-sheet-format-samplesheetcsv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Sample Sheet Format (samplesheet.csv)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.1 Sample Sheet Format (samplesheet.csv)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#311-required-column-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1.1 Required Column Schema
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#312-minimal-benchmark-cohort-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1.2 Minimal &amp; Benchmark Cohort Examples
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-reference-files-genome-builds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Reference Files &amp; Genome Builds
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-pipeline-architecture-subworkflows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Pipeline Architecture &amp; Subworkflows
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Pipeline Architecture &amp; Subworkflows">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-quality-control-adapter-trimming" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Quality Control &amp; Adapter Trimming
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-read-alignment-bam-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 Read Alignment &amp; BAM Processing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.2 Read Alignment &amp; BAM Processing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#421-bismark-alignment-cpu-track" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2.1 Bismark Alignment (CPU Track)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#422-bwa-meth-clara-parabricks-gpu-track" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2.2 BWA-meth / Clara Parabricks (GPU Track)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-methylation-calling-extraction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Methylation Calling &amp; Extraction
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.3 Methylation Calling &amp; Extraction">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#431-bismark-methylation-extractor-cpu-track" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3.1 Bismark Methylation Extractor (CPU Track)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#432-methyldackel-extraction-gpu-track" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3.2 MethylDackel Extraction (GPU Track)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-downstream-statistical-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Downstream Statistical Analysis
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Downstream Statistical Analysis">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-coverage-filtering-group-comparisons" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Coverage Filtering &amp; Group Comparisons
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-multi-method-consensus-scoring-framework-value" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Multi-Method Consensus Scoring Framework (π-Value)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.2 Multi-Method Consensus Scoring Framework (π-Value)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#521-the-epigenetic-challenge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2.1 The Epigenetic Challenge
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#522-mathematical-formulation-of-the-value" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2.2 Mathematical Formulation of the π-Value
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#523-biological-prioritization-vs-classical-meta-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2.3 Biological Prioritization vs. Classical Meta-Analysis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#524-consensus-modes-output-artifacts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2.4 Consensus Modes &amp; Output Artifacts
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-post-processing-functional-enrichment-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 Post-Processing &amp; Functional Enrichment Analysis
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.3 Post-Processing &amp; Functional Enrichment Analysis">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#531-functional-enrichment-go-kegg-disgenet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3.1 Functional Enrichment (GO, KEGG, DisGeNET)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#532-key-parameters-visualization-controls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3.2 Key Parameters &amp; Visualization Controls
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-performance-reproducibility-data-governance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Performance, Reproducibility &amp; Data Governance
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Performance, Reproducibility &amp; Data Governance">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-runtime-estimates-hardware-benchmarks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Runtime Estimates &amp; Hardware Benchmarks
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-bitwise-reproducibility-statistical-determinism" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Bitwise Reproducibility &amp; Statistical Determinism
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-clinical-data-governance-input-integrity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 Clinical Data Governance &amp; Input Integrity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#64-core-nextflow-arguments-jvm-memory-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.4 Core Nextflow Arguments &amp; JVM Memory Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-complete-parameter-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Complete Parameter Reference
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Complete Parameter Reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-inputoutput-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 Input/Output Options
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-qc-alignment-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 QC &amp; Alignment Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-methylation-calling-extraction-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3 Methylation Calling &amp; Extraction Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#74-differential-methylation-analysis-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.4 Differential Methylation Analysis Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#75-functional-annotation-enrichment-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.5 Functional Annotation &amp; Enrichment Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#76-clinical-reporting-layer-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.6 Clinical Reporting Layer Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#77-logging-resource-management-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.7 Logging &amp; Resource Management Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#78-generic-pipeline-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.8 Generic Pipeline Options
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-operational-troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Operational Troubleshooting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Operational Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-memory-scaling-in-whole-genome-sequencing-wgbs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 Memory Scaling in Whole-Genome Sequencing (WGBS)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-singularity-apptainer-user-namespace-collisions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 Singularity / Apptainer User Namespace Collisions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83-resuming-interrupted-workflows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3 Resuming Interrupted Workflows
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+    
+    
+    
+  </li>
+
+  
+  <li class="md-nav__item">
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../output/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Results
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+    
+  </li>
+
+  
+  <li class="md-nav__item">
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+    
+  </li>
+
+
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-prerequisites-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Prerequisites &amp; Environment
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-quick-start-execution-profiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Quick Start &amp; Execution Profiles
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Quick Start &amp; Execution Profiles">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-basic-execution-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Basic Execution Syntax
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-cohort-execution-archetypes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Cohort Execution Archetypes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-sample-sheet-reference-specifications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Sample Sheet &amp; Reference Specifications
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Sample Sheet &amp; Reference Specifications">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-sample-sheet-format-samplesheetcsv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Sample Sheet Format (samplesheet.csv)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.1 Sample Sheet Format (samplesheet.csv)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#311-required-column-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1.1 Required Column Schema
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#312-minimal-benchmark-cohort-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1.2 Minimal &amp; Benchmark Cohort Examples
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-reference-files-genome-builds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Reference Files &amp; Genome Builds
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-pipeline-architecture-subworkflows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Pipeline Architecture &amp; Subworkflows
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Pipeline Architecture &amp; Subworkflows">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-quality-control-adapter-trimming" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Quality Control &amp; Adapter Trimming
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-read-alignment-bam-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 Read Alignment &amp; BAM Processing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.2 Read Alignment &amp; BAM Processing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#421-bismark-alignment-cpu-track" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2.1 Bismark Alignment (CPU Track)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#422-bwa-meth-clara-parabricks-gpu-track" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2.2 BWA-meth / Clara Parabricks (GPU Track)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-methylation-calling-extraction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Methylation Calling &amp; Extraction
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.3 Methylation Calling &amp; Extraction">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#431-bismark-methylation-extractor-cpu-track" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3.1 Bismark Methylation Extractor (CPU Track)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#432-methyldackel-extraction-gpu-track" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3.2 MethylDackel Extraction (GPU Track)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-downstream-statistical-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Downstream Statistical Analysis
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Downstream Statistical Analysis">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-coverage-filtering-group-comparisons" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Coverage Filtering &amp; Group Comparisons
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-multi-method-consensus-scoring-framework-value" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Multi-Method Consensus Scoring Framework (π-Value)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.2 Multi-Method Consensus Scoring Framework (π-Value)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#521-the-epigenetic-challenge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2.1 The Epigenetic Challenge
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#522-mathematical-formulation-of-the-value" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2.2 Mathematical Formulation of the π-Value
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#523-biological-prioritization-vs-classical-meta-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2.3 Biological Prioritization vs. Classical Meta-Analysis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#524-consensus-modes-output-artifacts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2.4 Consensus Modes &amp; Output Artifacts
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-post-processing-functional-enrichment-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 Post-Processing &amp; Functional Enrichment Analysis
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.3 Post-Processing &amp; Functional Enrichment Analysis">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#531-functional-enrichment-go-kegg-disgenet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3.1 Functional Enrichment (GO, KEGG, DisGeNET)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#532-key-parameters-visualization-controls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3.2 Key Parameters &amp; Visualization Controls
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-performance-reproducibility-data-governance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Performance, Reproducibility &amp; Data Governance
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Performance, Reproducibility &amp; Data Governance">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-runtime-estimates-hardware-benchmarks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Runtime Estimates &amp; Hardware Benchmarks
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-bitwise-reproducibility-statistical-determinism" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Bitwise Reproducibility &amp; Statistical Determinism
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-clinical-data-governance-input-integrity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 Clinical Data Governance &amp; Input Integrity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#64-core-nextflow-arguments-jvm-memory-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.4 Core Nextflow Arguments &amp; JVM Memory Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-complete-parameter-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Complete Parameter Reference
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Complete Parameter Reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-inputoutput-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 Input/Output Options
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-qc-alignment-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 QC &amp; Alignment Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-methylation-calling-extraction-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3 Methylation Calling &amp; Extraction Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#74-differential-methylation-analysis-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.4 Differential Methylation Analysis Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#75-functional-annotation-enrichment-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.5 Functional Annotation &amp; Enrichment Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#76-clinical-reporting-layer-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.6 Clinical Reporting Layer Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#77-logging-resource-management-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.7 Logging &amp; Resource Management Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#78-generic-pipeline-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.8 Generic Pipeline Options
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-operational-troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Operational Troubleshooting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Operational Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-memory-scaling-in-whole-genome-sequencing-wgbs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 Memory Scaling in Whole-Genome Sequencing (WGBS)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-singularity-apptainer-user-namespace-collisions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 Singularity / Apptainer User Namespace Collisions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83-resuming-interrupted-workflows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3 Resuming Interrupted Workflows
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+<h1 id="milou-user-manual">milou User Manual<a class="headerlink" href="#milou-user-manual" title="Permanent link">&para;</a></h1>
+<h2 id="1-prerequisites-environment">1. Prerequisites &amp; Environment<a class="headerlink" href="#1-prerequisites-environment" title="Permanent link">&para;</a></h2>
+<p>milou requires a POSIX-compliant environment (Linux/macOS) with the following minimum software foundations:</p>
+<ol>
+<li><strong>Nextflow</strong>: Version <code>&gt;= 24.04.2</code> (tested up through <code>25.10.x</code>).</li>
+<li><strong>Container Engine</strong>: <strong>Singularity / Apptainer</strong> (<code>&gt;= 3.8.0</code>, recommended for HPC) or <strong>Docker</strong> (<code>&gt;= 20.10</code>).</li>
+<li><strong>NVIDIA CUDA Driver &amp; Toolkit</strong> (<code>&gt;= 12.0</code>): Required <em>only</em> when executing the high-throughput GPU alignment track.</li>
+</ol>
+<details class="note" open="open">
+<summary>Nextflow JVM Memory Configuration</summary>
+<p>For large cohorts, ensure Nextflow has sufficient Java heap memory allocated in your shell environment (<code>~/.bashrc</code> or <code>~/.zshrc</code>):
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">NXF_OPTS</span><span class="o">=</span><span class="s2">&quot;-Xms4g -Xmx16g&quot;</span>
+</code></pre></div></p>
+</details>
+<details class="danger" open="open">
+<summary>Important Information</summary>
+<p>Almost all tools in milou run with Conda, but for GPU runs, it is recommended to use Singularity or Docker. </p>
+<p><strong>Conda implementation for GPU runs is not recommended.</strong></p>
+</details>
+<h2 id="2-quick-start-execution-profiles">2. Quick Start &amp; Execution Profiles<a class="headerlink" href="#2-quick-start-execution-profiles" title="Permanent link">&para;</a></h2>
+<h3 id="21-basic-execution-syntax">2.1 Basic Execution Syntax<a class="headerlink" href="#21-basic-execution-syntax" title="Permanent link">&para;</a></h3>
+<p>Run the pipeline using the base syntax:</p>
+<div class="highlight"><pre><span></span><code>nextflow<span class="w"> </span>run<span class="w"> </span>JD2112/milou<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-r<span class="w"> </span><span class="m">1</span>.2.0<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-profile<span class="w"> </span>singularity,clinical<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--sample_sheet<span class="w"> </span>samplesheet.csv<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--genome_fasta<span class="w"> </span>/data/genomes/GRCh38.fa<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--diff_meth_method<span class="w"> </span>dss,edger<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--outdir<span class="w"> </span>results/milou_clinical
+</code></pre></div>
+<details class="note" open="open">
+<summary>Run Information</summary>
+<p><strong>Key Arguments:</strong></p>
+<ul>
+<li>
+<p><strong><code>-r</code></strong>: Specifies the version or branch of the pipeline (e.g., <code>-r main</code> or <code>-r 1.2.0</code>).</p>
+</li>
+<li>
+<p><strong><code>-profile</code></strong>: Defines the execution environment and mode. You can combine multiple profiles using commas (e.g., <code>singularity,gpu,clinical</code>).</p>
+<ul>
+<li><code>singularity</code>: Recommended for HPC environments.</li>
+<li><code>docker</code>: Executes pipeline using Docker containers.</li>
+<li><code>conda</code>: Executes pipeline using Conda environments (requires <code>environment_main.yml</code>).</li>
+<li><code>clinical</code>: Enables clinical-style reporting mode.</li>
+<li><code>clinical_offline</code>: Enables strict air-gapped clinical mode, disabling all external internet egress.</li>
+<li><code>research</code>: Enables research mode (default).</li>
+<li><code>test_local</code>: Executes pipeline with a minimal test dataset (6 samples).</li>
+<li><code>test_full</code>: Executes pipeline with a test dataset mapping full differential methylation steps.</li>
+<li><code>gpu</code>: Enables NVIDIA Parabricks acceleration.</li>
+</ul>
+</li>
+</ul>
+</details>
+<details class="info" open="open">
+<summary>Test the Pipeline</summary>
+<p>It is highly recommended to run the test profile on your system to ensure everything is configured properly before processing your own full datasets. The test runs require a GPU (from Parabricks) for maximum throughput and test real human genome data over varying sub-samples:</p>
+<p><strong>Local Test</strong> (runs quickly, uses small subset of data):</p>
+<div class="highlight"><pre><span></span><code>nextflow<span class="w"> </span>run<span class="w"> </span>main.nf<span class="w"> </span>-profile<span class="w"> </span>test_local,singularity,gpu,clinical
+</code></pre></div>
+<p><strong>Full Pipeline Test</strong> (multi-group evaluation across 24 samples):</p>
+<div class="highlight"><pre><span></span><code>nextflow<span class="w"> </span>run<span class="w"> </span>main.nf<span class="w"> </span>-profile<span class="w"> </span>test_full,singularity,gpu
+</code></pre></div>
+<p>Running the test command will generate standard pipeline files in your working directory:</p>
+<div class="highlight"><pre><span></span><code>work/                               # Nextflow intermediate task executions
+.nextflow.log                       # Detailed execution log
+results/milou_gpu/                  # Published outputs, QC dashboards, and Quarto reports
+</code></pre></div>
+</details>
+<h3 id="22-cohort-execution-archetypes">2.2 Cohort Execution Archetypes<a class="headerlink" href="#22-cohort-execution-archetypes" title="Permanent link">&para;</a></h3>
+<div class="tabbed-set" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><label for="__tabbed_1_1">Whole-Genome Bisulfite (WGBS) - GPU</label><div class="tabbed-content">
+<p><div class="highlight"><pre><span></span><code>nextflow<span class="w"> </span>run<span class="w"> </span>JD2112/milou<span class="w"> </span>-r<span class="w"> </span><span class="m">1</span>.2.0<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-profile<span class="w"> </span>gpu,singularity,clinical<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--sample_sheet<span class="w"> </span>samplesheet_wgbs.csv<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--genome_fasta<span class="w"> </span>GRCh38.primary_assembly.fa<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--diff_meth_method<span class="w"> </span>all<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--smoothing<span class="w"> </span>FALSE<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--outdir<span class="w"> </span>results/wgbs_cohort
+</code></pre></div>
+<em>(Note: <code>--smoothing FALSE</code> is recommended for whole-genome cohorts to contain DSS memory under 50 GB RAM across all 28M human CpGs).</em></p>
+</div>
+<input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><label for="__tabbed_1_2">Enzymatic Methyl-Seq (EM-seq) - CPU</label><div class="tabbed-content">
+<div class="highlight"><pre><span></span><code>nextflow<span class="w"> </span>run<span class="w"> </span>JD2112/milou<span class="w"> </span>-r<span class="w"> </span><span class="m">1</span>.2.0<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-profile<span class="w"> </span>singularity,clinical<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--sample_sheet<span class="w"> </span>samplesheet_emseq.csv<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--genome_fasta<span class="w"> </span>GRCh38.fa<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--assay_type<span class="w"> </span>emseq<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--diff_meth_method<span class="w"> </span>dss,edger<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--outdir<span class="w"> </span>results/emseq_cohort
+</code></pre></div>
+</div>
+<input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><label for="__tabbed_1_3">Targeted Hybridization Capture (Twist Panel)</label><div class="tabbed-content">
+<div class="highlight"><pre><span></span><code>nextflow<span class="w"> </span>run<span class="w"> </span>JD2112/milou<span class="w"> </span>-r<span class="w"> </span><span class="m">1</span>.2.0<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-profile<span class="w"> </span>gpu,singularity,clinical<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--sample_sheet<span class="w"> </span>samplesheet_twist.csv<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--genome_fasta<span class="w"> </span>GRCh38.fa<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--assay_type<span class="w"> </span>twist<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--diff_meth_method<span class="w"> </span>all<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--outdir<span class="w"> </span>results/twist_cohort
+</code></pre></div>
+</div>
+</div>
+<details class="info" open="open">
+<summary>Running JD2112/milou with your data</summary>
+<p>Running the pipeline with your own data is as simple as running the base command with your:</p>
+<ol>
+<li>Prepare a samplesheet,</li>
+<li>Prepare reference files (Genome FASTA file, RefSeq BED file, and GTF file for annotation). If you are using <strong>Twist Target Region BED file</strong>, download it <a href="https://www.twistbioscience.com/resources/data-files/twist-human-methylome-panel-target-bed-file">here</a>.</li>
+<li>Select workflows to run (select one or more methods).</li>
+<li>Select a profile to run the pipeline (singularity, docker, conda, gpu, clinical, research).</li>
+<li>Run the pipeline with the base command.</li>
+</ol>
+</details>
+<h2 id="3-sample-sheet-reference-specifications">3. Sample Sheet &amp; Reference Specifications<a class="headerlink" href="#3-sample-sheet-reference-specifications" title="Permanent link">&para;</a></h2>
+<h3 id="31-sample-sheet-format-samplesheetcsv">3.1 Sample Sheet Format (<code>samplesheet.csv</code>)<a class="headerlink" href="#31-sample-sheet-format-samplesheetcsv" title="Permanent link">&para;</a></h3>
+<p>The pipeline requires a CSV samplesheet with a header row. This file maps your raw sequencing data to specific groups for comparison.</p>
+<h4 id="311-required-column-schema">3.1.1 Required Column Schema<a class="headerlink" href="#311-required-column-schema" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Column Header</th>
+<th style="text-align: center;">Requirement</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>sample_id</code></td>
+<td style="text-align: center;">Required</td>
+<td style="text-align: left;">Unique alphanumeric sample identifier (<code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>-</code>, <code>_</code>).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>group</code></td>
+<td style="text-align: center;">Required</td>
+<td style="text-align: left;">Experimental group or clinical condition (e.g., <code>Control</code>, <code>Treated</code>). Minimum 3 replicates per group required for differential methylation.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>read1</code></td>
+<td style="text-align: center;">Required</td>
+<td style="text-align: left;">Local filepath or remote URL to the forward paired-end FASTQ (<code>.fastq.gz</code>).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>read2</code></td>
+<td style="text-align: center;">Required</td>
+<td style="text-align: left;">Local filepath or remote URL to the reverse paired-end FASTQ (<code>.fastq.gz</code>).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>assay_type</code></td>
+<td style="text-align: center;">Optional</td>
+<td style="text-align: left;">Per-sample assay override: <code>wgbs</code>, <code>emseq</code>, or <code>twist</code>.</td>
+</tr>
+</tbody>
+</table>
+<details class="danger" open="open">
+<summary>HIPAA Compliance &amp; PII</summary>
+<p>The <code>sample_id</code> field is strictly validated via JSON schema to prevent the accidental inclusion of Patient Identifiable Information (PII). <strong>Spaces and special characters are forbidden.</strong> This ensures that patient names or medical record numbers are not leaked into filenames, logs, or clinical reports.</p>
+</details>
+<h4 id="312-minimal-benchmark-cohort-examples">3.1.2 Minimal &amp; Benchmark Cohort Examples<a class="headerlink" href="#312-minimal-benchmark-cohort-examples" title="Permanent link">&para;</a></h4>
+<p><strong>Minimal Example Samplesheet (DONOT RUN)</strong></p>
+<div class="highlight"><pre><span></span><code>sample_id,group,read1,read2
+SN09,Healthy,SN09_R1_001.fastq.gz,SN09_R2_001.fastq.gz
+SN10,Disease,SN10_R1_001.fastq.gz,SN10_R2_001.fastq.gz
+</code></pre></div>
+<p><strong>Full Example Samplesheet</strong></p>
+<p><a href="https://github.com/JD2112/milou">Check out benchmarked Sample_sheet.csv</a></p>
+<details class="info">
+<summary>Sample sheet Information</summary>
+<p>The following data was downloaded from <a href="https://www.ebi.ac.uk/ena/browser/view/ERP146869">ENA webserver</a> and the original data was published in <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10835804">Krumpolec et al (2024)</a></p>
+<div class="highlight"><pre><span></span><code>sample_id,group,read1,read2
+ERR11284501,CS,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR112/001/ERR11284501/ERR11284501_1.fastq.gz,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR112/001/ERR11284501/ERR11284501_2.fastq.gz
+ERR11435646,VD,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/046/ERR11435646/ERR11435646_1.fastq.gz,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/046/ERR11435646/ERR11435646_2.fastq.gz
+ERR11435647,CS,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/047/ERR11435647/ERR11435647_1.fastq.gz,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/047/ERR11435647/ERR11435647_2.fastq.gz
+ERR11435651,VD,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/051/ERR11435651/ERR11435651_1.fastq.gz,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/051/ERR11435651/ERR11435651_2.fastq.gz
+ERR11435652,CS,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/052/ERR11435652/ERR11435652_1.fastq.gz,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/052/ERR11435652/ERR11435652_2.fastq.gz
+ERR11435654,VD,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/054/ERR11435654/ERR11435654_1.fastq.gz,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/054/ERR11435654/ERR11435654_2.fastq.gz
+ERR11435659,CS,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/059/ERR11435659/ERR11435659_1.fastq.gz,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/059/ERR11435659/ERR11435659_2.fastq.gz
+ERR11435661,VD,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/061/ERR11435661/ERR11435661_1.fastq.gz,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/061/ERR11435661/ERR11435661_2.fastq.gz
+ERR11435663,CS,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/063/ERR11435663/ERR11435663_1.fastq.gz,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/063/ERR11435663/ERR11435663_2.fastq.gz
+ERR11435640,VD,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/040/ERR11435640/ERR11435640_1.fastq.gz,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/040/ERR11435640/ERR11435640_2.fastq.gz
+ERR11435643,CS,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/043/ERR11435643/ERR11435643_1.fastq.gz,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/043/ERR11435643/ERR11435643_2.fastq.gz
+ERR11435644,VD,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/044/ERR11435644/ERR11435644_1.fastq.gz,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/044/ERR11435644/ERR11435644_2.fastq.gz
+ERR11435645,CS,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/045/ERR11435645/ERR11435645_1.fastq.gz,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/045/ERR11435645/ERR11435645_2.fastq.gz
+ERR11435649,VD,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/049/ERR11435649/ERR11435649_1.fastq.gz,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/049/ERR11435649/ERR11435649_2.fastq.gz
+ERR11435650,CS,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/050/ERR11435650/ERR11435650_1.fastq.gz,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/050/ERR11435650/ERR11435650_2.fastq.gz
+ERR11435653,VD,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/053/ERR11435653/ERR11435653_1.fastq.gz,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/053/ERR11435653/ERR11435653_2.fastq.gz
+ERR11435655,CS,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/055/ERR11435655/ERR11435655_1.fastq.gz,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/055/ERR11435655/ERR11435655_2.fastq.gz
+ERR11435657,VD,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/057/ERR11435657/ERR11435657_1.fastq.gz,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/057/ERR11435657/ERR11435657_2.fastq.gz
+ERR11435641,CS,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/041/ERR11435641/ERR11435641_1.fastq.gz,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/041/ERR11435641/ERR11435641_2.fastq.gz
+ERR11435642,VD,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/042/ERR11435642/ERR11435642_1.fastq.gz,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/042/ERR11435642/ERR11435642_2.fastq.gz
+ERR11435648,CS,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/048/ERR11435648/ERR11435648_1.fastq.gz,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/048/ERR11435648/ERR11435648_2.fastq.gz
+ERR11435656,VD,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/056/ERR11435656/ERR11435656_1.fastq.gz,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/056/ERR11435656/ERR11435656_2.fastq.gz
+ERR11435658,CS,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/058/ERR11435658/ERR11435658_1.fastq.gz,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/058/ERR11435658/ERR11435658_2.fastq.gz
+ERR11435660,VD,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/060/ERR11435660/ERR11435660_1.fastq.gz,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/060/ERR11435660/ERR11435660_2.fastq.gz
+ERR11435662,CS,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/062/ERR11435662/ERR11435662_1.fastq.gz,https://ftp.sra.ebi.ac.uk/vol1/fastq/ERR114/062/ERR11435662/ERR11435662_2.fastq.gz
+</code></pre></div>
+</details>
+<details class="warning" open="open">
+<summary>Differential Methylation Analysis Requirements</summary>
+<p>You must have <strong>minimum 3 samples per group</strong> to perform a statistically valid differential methylation analysis.</p>
+</details>
+<details class="note" open="open">
+<summary>Replicating the analysis in the publication (Krumpolec et al 2024)</summary>
+<ol>
+<li>Download the fastq.gz files from <a href="https://www.ebi.ac.uk/ena/browser/view/ERP146869">https://www.ebi.ac.uk/ena/browser/view/ERP146869</a></li>
+<li>Download TSV file with "sample_alias" (<code>examples/filereport_read_run_ERP146869.tsv</code>)</li>
+<li>Run <code>bin/map_era_samples.py</code> to get the final csv file (<code>examples/Sample_sheet_replicate.csv</code>). Note- provide exact file path.</li>
+<li>
+<p>Run nextflow <code>nextflow run main.nf -profile replicate_article,singularity,gpu</code></p>
+<p>a. provide <code>hg19.fasta</code> file. <a href="https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_000001405.13/">https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_000001405.13/</a></p>
+<p>b. provide <code>covered_targets_Twist_Methylome_hg19_annotated_collapsed_final.bed.zip</code> file <a href="https://www.twistbioscience.com/resources/data-files/twist-human-methylome-panel-target-bed-file">https://www.twistbioscience.com/resources/data-files/twist-human-methylome-panel-target-bed-file</a></p>
+</li>
+</ol>
+</details>
+<h3 id="32-reference-files-genome-builds">3.2 Reference Files &amp; Genome Builds<a class="headerlink" href="#32-reference-files-genome-builds" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Genome FASTA (<code>--genome_fasta</code>)</strong>: Uncompressed or <code>.gz</code> FASTA containing primary assembly chromosomes.</li>
+<li><strong>GTF Annotation (<code>--gtf_file</code>)</strong>: Ensembl/GENCODE GTF for genomic feature mapping (promoters, exons, introns).</li>
+<li><strong>RefSeq BED (<code>--refseq_file</code>)</strong>: Gene model coordinates for Gviz locus visualizations.</li>
+<li><strong>Target BED (<code>--methylkit.bed_file</code>)</strong>: Required for targeted hybrid-capture panels (e.g. Twist Human Methylome).</li>
+</ul>
+<details class="warning">
+<summary>Reference Files</summary>
+<p>The reference files should matched with the parameters configuration file in the pipeline. Check the <a href="../parameters/">parameters configuration file</a> for more information.</p>
+<p><strong>Example: For human genome assembly GRCh38</strong></p>
+<ol>
+<li>
+<p>Download the <a href="https://ftp.ensembl.org/pub/release-104/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.toplevel.fa.gz">Genome Fasta file</a>.</p>
+</li>
+<li>
+<p>Download the <a href="https://sourceforge.net/projects/rseqc/files/BED/Human_Homo_sapiens/hg38_RefSeq.bed.gz/download">RefSeq bed file</a>.</p>
+</li>
+<li>
+<p>Download the <a href="https://ftp.ensembl.org/pub/release-104/gtf/homo_sapiens/Homo_sapiens.GRCh38.104.gtf.gz">GTF file</a>.</p>
+</li>
+<li>
+<p>Download the <a href="https://www.twistbioscience.com/resources/data-files/twist-human-methylome-panel-target-bed-file">Twist Target Region BED file</a>.</p>
+</li>
+</ol>
+</details>
+<h2 id="4-pipeline-architecture-subworkflows">4. Pipeline Architecture &amp; Subworkflows<a class="headerlink" href="#4-pipeline-architecture-subworkflows" title="Permanent link">&para;</a></h2>
+<p>As mentioned above, milou has several subworkflows, each with its own set of parameters and outputs:</p>
+<ol>
+<li>Running the pipeline with default CPU track (<code>bismark</code>) or GPU track (<code>parabricks</code>). To run with the GPU track, the user need to set the <code>--profile gpu</code>. By default, the pipeline will run with the CPU track.</li>
+<li>User can choose to run the pipeline with directly with reference genome fasta file <code>--genome_fasta [path/to/fasta]</code> or bismark indexed file <code>--bismark_index [path/to/index]</code>. Default is <code>--genome_fasta [path/to/fasta]</code>.</li>
+<li>User also has the option to run the pipeline with aligned BAM files <code>--aligned_bams [path/to/bams]</code>. Default is <code>false</code>.</li>
+<li>For the differential methylation analysis, the user can choose to run the pipeline with one or more methods: <code>--diff_meth_method dss</code>, <code>--diff_meth_method edger</code> or <code>--diff_meth_method methylkit</code>. Default is <code>dss</code>. If the user wants to run multiple methods, the user can provide a comma-separated list, e.g. <code>--diff_meth_method dss,edger</code>. They can also choose to skip the differential methylation analysis by setting the <code>--skip_diff_meth true</code>.</li>
+</ol>
+<h3 id="41-quality-control-adapter-trimming">4.1 Quality Control &amp; Adapter Trimming<a class="headerlink" href="#41-quality-control-adapter-trimming" title="Permanent link">&para;</a></h3>
+<p>Before alignment, the pipeline ensures your data is clean and high-quality. The pipeline uses <code>fastqc</code> to assess the raw sequencing quality and <code>trim_galore</code> to remove adapter sequences and clip low-quality base calls from the ends of reads. These are default parameters and user can adjust the <code>--fastqc</code> and <code>--trim_galore</code> arguments using <code>--args</code> to change the default parameters.</p>
+<p>The pipelines also generates a post-alignments quality control report using <code>qualimap</code> and a multiqc report using <code>multiqc</code>. User can adjust the <code>multiqc_config</code> and <code>multiqc_title</code> arguments to change the default parameters. For qualimap extra arguments, check the <a href="https://qualimap.bioinfo.cipf.es/doc/qualimap.html">Qualimap arguments</a>. For multiqc extra arguments, check the <a href="https://multiqc.info/docs/">MultiQC arguments</a>.</p>
+<details class="note" open="open">
+<summary>FastQC arguments</summary>
+<p>Check this page for more information: <a href="https://www.bioinformatics.babraham.ac.uk/projects/fastqc/">FastQC</a>. For fastqc extra arguments, check the <a href="https://home.cc.umanitoba.ca/~psgendb/doc/fastqc.help">FastQC arguments</a>.</p>
+</details>
+<details class="note" open="open">
+<summary>Trim Galore! arguments</summary>
+<p>Check this page for more information: <a href="https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/">Trim Galore!</a>. For trim_galore extra arguments, check the <a href="https://github.com/FelixKrueger/TrimGalore/blob/master/Docs/Trim_Galore_User_Guide.md">Trim Galore! arguments</a>.</p>
+</details>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameters</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>--multiqc_config</code></td>
+<td style="text-align: left;">multiqc config file. Default is <code>null</code>. <code>--multiqc_config [path/to/config]</code> to use multiqc config file.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--multiqc_title</code></td>
+<td style="text-align: left;">multiqc title. Default is <code>null</code>. <code>--multiqc_title [title]</code> to use multiqc title.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--qualimap_args</code></td>
+<td style="text-align: left;">qualimap arguments. Default is <code>null</code>. <code>--qualimap_args [args]</code> to use qualimap arguments.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="42-read-alignment-bam-processing">4.2 Read Alignment &amp; BAM Processing<a class="headerlink" href="#42-read-alignment-bam-processing" title="Permanent link">&para;</a></h3>
+<p>Aligment is the default track used in the pipeline if not the <code>--aligned_bams true</code> is specified. The standard CPU track uses the Bismark suite for comprehensive bisulfite analysis.</p>
+<h4 id="421-bismark-alignment-cpu-track">4.2.1 Bismark Alignment (CPU Track)<a class="headerlink" href="#421-bismark-alignment-cpu-track" title="Permanent link">&para;</a></h4>
+<p>Prepares the reference genome for bisulfite alignment by converting it <em>in silico</em> (<strong>C-&gt;T</strong> and <strong>G-&gt;A</strong>). The default parameter is <code>--genome_fasta [path/to/fasta]</code>. User can also use <code>--bismark_index [path/to/index]</code> to skip this step if they already have a pre-built index. Maps trimmed reads to the converted reference using Bowtie2. The default parameter is <code>--aligner bismark</code>. Removes PCR duplicates based on mapping position. The default process is <code>BISMARK_DEDUPLICATE</code>. It is essential for accurate methylation estimation, as duplicates can bias the counts. <code>samtools</code> is used to convert the Bismark output into sorted/indexed BAM files for downstream compatibility.</p>
+<h4 id="422-bwa-meth-clara-parabricks-gpu-track">4.2.2 BWA-meth / Clara Parabricks (GPU Track)<a class="headerlink" href="#422-bwa-meth-clara-parabricks-gpu-track" title="Permanent link">&para;</a></h4>
+<p>Since <code>bismark</code> is quite slow and runs only on CPU, we recommend using the GPU track for larger datasets. User can modify the GPU runs by changing the <code>conf/gpu.config</code> file.</p>
+<p>When the GPU profile is active, the pipeline automatically builds a <strong>BWA-meth index</strong>, which is required by NVIDIA Parabricks. Use <code>--aligner bwameth</code> to use the GPU track. A highly optimized, GPU-accelerated version of the alignment and deduplication process. The default parameter is <code>--use_parabricks true</code> and <code>-profile gpu</code>. User can also use <code>--aligner bwameth</code> to use the GPU track.</p>
+<h3 id="43-methylation-calling-extraction">4.3 Methylation Calling &amp; Extraction<a class="headerlink" href="#43-methylation-calling-extraction" title="Permanent link">&para;</a></h3>
+<p>This stage converts aligned BAM files into site-specific methylation counts.</p>
+<h4 id="431-bismark-methylation-extractor-cpu-track">4.3.1 Bismark Methylation Extractor (CPU Track)<a class="headerlink" href="#431-bismark-methylation-extractor-cpu-track" title="Permanent link">&para;</a></h4>
+<p>The pipeline extracts CpG, CHG, and CHH methylation calls using the <code>BISMARK_METHYLATION_EXTRACTOR</code> process and generates <code>.cov.gz</code> files containing methylation percentages and coverage.</p>
+<h4 id="432-methyldackel-extraction-gpu-track">4.3.2 MethylDackel Extraction (GPU Track)<a class="headerlink" href="#432-methyldackel-extraction-gpu-track" title="Permanent link">&para;</a></h4>
+<p>Used in the GPU track for rapid extraction of methylation metrics directly from Parabricks BAMs. The pipeline extracts CpG, CHG, and CHH methylation calls using the <code>METHYLDACKEL_EXTRACT</code> process and generates <code>.cov.gz</code> files containing methylation percentages and coverage.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameters</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>--profile</code></td>
+<td style="text-align: left;">use cpu or gpu track. Default is <code>cpu</code>. <code>--profile gpu</code> to use GPU track.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--aligner</code></td>
+<td style="text-align: left;">aligner to use. Default is <code>bismark</code>. Change to <code>bwameth</code> to use BWA-meth.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--use_parabricks</code></td>
+<td style="text-align: left;">use NVIDIA Parabricks. Default is <code>false</code>. <code>--use_parabricks true</code> to use NVIDIA Parabricks.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--genome_fasta</code></td>
+<td style="text-align: left;">genome fasta file. Default is <code>false</code>. <code>--genome_fasta [path/to/fasta]</code> to use genome fasta file.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--bismark_index</code></td>
+<td style="text-align: left;">bismark index file. Default is <code>false</code>. <code>--bismark_index [path/to/index]</code> to use bismark index file.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--aligned_bams</code></td>
+<td style="text-align: left;">aligned bams file. Default is <code>false</code>. <code>--aligned_bams [path/to/bams]</code> to use aligned bams file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="5-downstream-statistical-analysis">5. Downstream Statistical Analysis<a class="headerlink" href="#5-downstream-statistical-analysis" title="Permanent link">&para;</a></h2>
+<p>Once methylation calls are extracted, the pipeline performs statistical analysis to identify differentially methylated regions and genes, if not skipped by the user using <code>--skip_diff_meth true</code>. By default, the pipeline will run the differential methylation analysis using <code>diff_meth_method</code> parameter. The default parameter is <code>--diff_meth_method dss</code>. User can also use <code>--diff_meth_method edger</code> or <code>--diff_meth_method methylkit</code> to run the differential methylation analysis using EdgeR or MethylKit. If the user wants to run all methods, the user can set the <code>--diff_meth_method all</code>.</p>
+<h3 id="51-coverage-filtering-group-comparisons">5.1 Coverage Filtering &amp; Group Comparisons<a class="headerlink" href="#51-coverage-filtering-group-comparisons" title="Permanent link">&para;</a></h3>
+<p>Before the differential methylation analysis, CpG sites with low read depth are filtered out to ensure statistical power using <code>--coverage_threshold</code> (Default: <code>3</code>). It also checks for the presence of samplesheet using <code>--compare_str</code> parameter. By default, the <code>--compare_str all</code> to ensure comparing different groups in the samplesheet.</p>
+<p>For example:</p>
+<ol>
+<li>If the user has a samplesheet with <strong>two groups</strong>, "<em>control</em>" and "<em>treatment</em>", the user can set the <code>--compare_str "control,treatment"</code> to compare the two groups. The output will be a CSV file with the differentially methylated regions and genes.</li>
+<li>If the user has a design file with <strong>three groups</strong>, "<em>control</em>", "<em>treatment1</em>", and "<em>treatment2</em>", the user can set the <code>--compare_str "control,treatment1,treatment2"</code> to compare the three groups. The output will be a CSV file with the differentially methylated regions and genes.</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameters</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>--coverage_threshold</code></td>
+<td style="text-align: left;">Minimum coverage threshold for filtering CpG sites. Default is <code>3</code>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--compare_str</code></td>
+<td style="text-align: left;">String of groups to compare (e.g., <code>control,disease</code>). Default is <code>all</code> to compare all groups in the samplesheet.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--diff_meth_method</code></td>
+<td style="text-align: left;">Method to use for differential methylation analysis. Default is <code>dss</code>. Provide comma-separated list for multiple methods.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--skip_diff_meth</code></td>
+<td style="text-align: left;">Skip differential methylation analysis. Default is <code>false</code>. <code>--skip_diff_meth true</code> to skip differential methylation analysis.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="52-multi-method-consensus-scoring-framework-value">5.2 Multi-Method Consensus Scoring Framework (π-Value)<a class="headerlink" href="#52-multi-method-consensus-scoring-framework-value" title="Permanent link">&para;</a></h3>
+<p>A central innovation of <em>milou</em> is its multi-method consensus scoring framework, designed to overcome the divergence between disparate differential methylation algorithms.</p>
+<h4 id="521-the-epigenetic-challenge">5.2.1 The Epigenetic Challenge<a class="headerlink" href="#521-the-epigenetic-challenge" title="Permanent link">&para;</a></h4>
+<p>Distinct differential methylation callers rely on fundamentally different mathematical and statistical distributions:</p>
+<ul>
+<li><strong>DSS</strong>: Employs a Bayesian hierarchical β-binomial distribution with spatial smoothing across adjacent CpGs and empirical Bayes dispersion shrinkage.</li>
+<li><strong>edgeR</strong>: Models count data via generalized linear models (GLMs) with negative binomial quasi-likelihood <em>F</em>-tests.</li>
+<li><strong>methylKit</strong>: Fits logistic regression models with overdispersion correction.</li>
+</ul>
+<p>Because each engine operates under distinct distributional assumptions, candidate gene lists from single tools frequently diverge, especially in cohorts with modest sequencing coverage or high biological variability.</p>
+<h4 id="522-mathematical-formulation-of-the-value">5.2.2 Mathematical Formulation of the π-Value<a class="headerlink" href="#522-mathematical-formulation-of-the-value" title="Permanent link">&para;</a></h4>
+<p>To synthesize these orthogonal outputs into a deterministic, clinically actionable ranking, <em>milou</em> adapts the <span class="arithmatex">\(\pi\)</span>-value framework (Xiao et al., 2014) for DNA methylation data:</p>
+<div class="arithmatex">\[\pi_{g} = \overline{\left| \log_{2}{(FC)}_{g} \right|} \times \left( - \log_{10}(P_{\min,g}) \right)\]</div>
+<p>Where:</p>
+<ul>
+<li><span class="arithmatex">\(\overline{\left| \log_{2}{(FC)}_{g} \right|}\)</span> is the mean absolute effect size (<span class="arithmatex">\(\log_2 \text{FC}\)</span> or <span class="arithmatex">\(|\Delta\beta|\)</span>) across all statistical engines that detected gene <span class="arithmatex">\(g\)</span> as differentially methylated.</li>
+<li><span class="arithmatex">\(P_{\min,g}\)</span> is the most significant (minimum) <span class="arithmatex">\(p\)</span>-value observed across the callers for that gene.</li>
+</ul>
+<h4 id="523-biological-prioritization-vs-classical-meta-analysis">5.2.3 Biological Prioritization vs. Classical Meta-Analysis<a class="headerlink" href="#523-biological-prioritization-vs-classical-meta-analysis" title="Permanent link">&para;</a></h4>
+<p>Standard meta-analytic methods, such as Fisher's Combined Probability Test:</p>
+<div class="arithmatex">\[\chi^{2} = - 2\sum_{i=1}^{k}{\ln(p_{i})}\]</div>
+<p>rank candidate genes purely on cumulative statistical significance. In high-depth NGS cohorts, this often leads to a major clinical pitfall: <strong>biologically trivial methylation shifts</strong> (e.g., <span class="arithmatex">\(|\Delta\beta| &lt; 0.05\)</span>) can achieve extreme <span class="arithmatex">\(p\)</span>-values simply due to large sample numbers or high read counts.</p>
+<p>In contrast, the <span class="arithmatex">\(\pi\)</span>-value:</p>
+<ol>
+<li><strong>Balances Statistical Rigor and Biological Magnitude</strong>: It directly weights biological effect size (<span class="arithmatex">\(|\Delta\beta|\)</span>), ensuring that top-ranked biomarkers exhibit substantial epigenetic perturbation.</li>
+<li><strong>Suppresses Analytical Noise</strong>: Features detected by only a single engine with marginal significance are de-prioritized.</li>
+<li><strong>Strong Empirical Concordance</strong>: As demonstrated in our whole-genome Alzheimer's benchmark (Fetahu et al. cohort), <span class="arithmatex">\(\pi\)</span>-value ranking correlates strongly with Fisher's test (<span class="arithmatex">\(r_s = 0.9269, p &lt; 2.2 \times 10^{-16}\)</span>) while correctly reprioritizing biologically critical targets (e.g., <em>ABCA13</em>, <em>IMPG1</em>) over candidates with negligible effect sizes.</li>
+</ol>
+<h4 id="524-consensus-modes-output-artifacts">5.2.4 Consensus Modes &amp; Output Artifacts<a class="headerlink" href="#524-consensus-modes-output-artifacts" title="Permanent link">&para;</a></h4>
+<ul>
+<li><code>--mode research</code> (<em>default</em>): Retains all detected features while calculating cross-engine <span class="arithmatex">\(\pi\)</span>-values and rank orders.</li>
+<li><code>--mode clinical</code>: Enforces strict <strong>majority consensus voting</strong> (requires a feature to be independently called by at least 2 out of 3 differential callers), filtering out single-caller artifacts before clinical reporting.</li>
+</ul>
+<p>The resulting prioritized tables are output to:
+* <code>results/unified_layer/consensus_pi_value_ranking.tsv</code>
+* <code>results/unified_layer/unified_consensus_ranking.csv</code>
+* The interactive candidate tables and volcano plots in <code>results/clinical_reporting/milou_clinical_report.html</code> (and <code>.pdf</code>).</p>
+<h3 id="53-post-processing-functional-enrichment-analysis">5.3 Post-Processing &amp; Functional Enrichment Analysis<a class="headerlink" href="#53-post-processing-functional-enrichment-analysis" title="Permanent link">&para;</a></h3>
+<p>The pipeline performs post-processing and functional enrichment analysis on the differentially methylated regions and genes. For edgeR, it requires annotation with a GTF file (<code>--gtf_file</code>). For methylKit and DSS, it uses RefSeq data (<code>--refseq_file</code>). The post-processing steps produce a unified results layer that integrates statistical summaries of CpGs, DMRs, and genes.</p>
+<h4 id="531-functional-enrichment-go-kegg-disgenet">5.3.1 Functional Enrichment (GO, KEGG, DisGeNET)<a class="headerlink" href="#531-functional-enrichment-go-kegg-disgenet" title="Permanent link">&para;</a></h4>
+<p>The pipeline performs advanced enrichment analysis using the <strong>clusterProfiler</strong> package:</p>
+<ul>
+<li><strong>GO Enrichment</strong>: Molecular Function, Cellular Component, and Biological Process.</li>
+<li><strong>KEGG Pathway Enrichment</strong>: Identification of significantly enriched biological pathways.</li>
+<li><strong>Disease Annotation</strong>: Automated disease association analysis using the <strong>DisGeNET</strong> database.</li>
+</ul>
+<p>The pipeline also generates a <strong>Chord Diagram</strong> (using <code>GOChord</code>) and Dot Plots to visualize the relationship between genes and their associated pathways.</p>
+<h4 id="532-key-parameters-visualization-controls">5.3.2 Key Parameters &amp; Visualization Controls<a class="headerlink" href="#532-key-parameters-visualization-controls" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameters</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>--top_n_genes</code></td>
+<td style="text-align: left;">Number of top genes to use for enrichment analysis. Default is <code>100</code>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--mode</code></td>
+<td style="text-align: left;">Pipeline mode: <code>research</code> (default) or <code>clinical</code> (unified reporting enabled)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--run_clinical_report</code></td>
+<td style="text-align: left;">Force generation of Quarto clinical PDF report (default: false)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--promoter_dist</code></td>
+<td style="text-align: left;">Distance from TSS to define a Promoter region (default: 2000)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--enhancer_dist</code></td>
+<td style="text-align: left;">Distance from TSS to define an Enhancer/Distal region (default: 10000)</td>
+</tr>
+</tbody>
+</table>
+<p>The post-processing also generates volcano plots for all comparisons. You can adjust the plotting aesthetics in <code>conf/params.config</code>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameters</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>--logfc_cutoff</code></td>
+<td style="text-align: left;">Log fold change cutoff for significance. Default <code>0.5</code>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--pvalue_cutoff</code></td>
+<td style="text-align: left;">P-value cutoff for significance. Default <code>0.05</code>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--hyper_color</code></td>
+<td style="text-align: left;">Color for hypermethylated regions. Default <code>red</code>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--hypo_color</code></td>
+<td style="text-align: left;">Color for hypomethylated regions. Default <code>blue</code>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--nonsig_color</code></td>
+<td style="text-align: left;">Color for non-significant regions. Default <code>black</code>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="6-performance-reproducibility-data-governance">6. Performance, Reproducibility &amp; Data Governance<a class="headerlink" href="#6-performance-reproducibility-data-governance" title="Permanent link">&para;</a></h2>
+<h3 id="61-runtime-estimates-hardware-benchmarks">6.1 Runtime Estimates &amp; Hardware Benchmarks<a class="headerlink" href="#61-runtime-estimates-hardware-benchmarks" title="Permanent link">&para;</a></h3>
+<p>Runtime varies based on dataset size and computational resources.</p>
+<p>With the <strong><em>CPU track</em></strong>, processing can take several hours to days depending on the number of samples on a single node (dual Intel(R) Xeon(R) Platinum 8592+ CPU @3.90GHz). The most time-consuming step is the <em>bismark alignment</em> step, requiring approximately ~14–15 hours per sample. The bismark methylation calling step takes ~2–3 hours per sample.</p>
+<p>On the <strong><em>GPU track</em></strong> (with 3 x NVIDIA L40S GPUs, 48GB VRAM), alignment takes only 15–20 minutes per sample, and a similar duration for methylation extraction. Memory ranges from &lt;1 GB to 40 GB depending on the step.</p>
+<p>Storage footprint is approximately 2 TB for a 24 paired-end sample cohort, including intermediate work files and final results.</p>
+<details class="info" open="open">
+<summary>Runtime Benchmarks Overview</summary>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Feature</th>
+<th style="text-align: left;">CPU Track (Standard)</th>
+<th style="text-align: left;">GPU Track (Parabricks)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Time/sample</td>
+<td style="text-align: left;">16-18 hours</td>
+<td style="text-align: left;">15-20 minutes</td>
+</tr>
+<tr>
+<td style="text-align: left;">Hardware</td>
+<td style="text-align: left;">12+ CPU Cores</td>
+<td style="text-align: left;">NVIDIA GPU (16GB+ VRAM)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Memory</td>
+<td style="text-align: left;">~10 GB</td>
+<td style="text-align: left;">~40 GB</td>
+</tr>
+<tr>
+<td style="text-align: left;">Storage</td>
+<td style="text-align: left;">~2 TB</td>
+<td style="text-align: left;">~2 TB</td>
+</tr>
+</tbody>
+</table>
+</details>
+<h3 id="62-bitwise-reproducibility-statistical-determinism">6.2 Bitwise Reproducibility &amp; Statistical Determinism<a class="headerlink" href="#62-bitwise-reproducibility-statistical-determinism" title="Permanent link">&para;</a></h3>
+<p>milou is designed for <strong>Bitwise Reproducibility</strong>. Using the version tag, users can execute the pipeline with the identical codebase across any compute cluster (<code>-r 1.2.0</code>).</p>
+<p>Furthermore, the pipeline enforces <strong>Statistical Determinism</strong> by injecting fixed random seeds (<code>set.seed(42)</code>) into all R-based modules (edgeR, methylKit, DSS, Enrichment). This guarantees that algorithms relying on stochastic sampling produce identical P-values and results across different compute environments.</p>
+<h3 id="63-clinical-data-governance-input-integrity">6.3 Clinical Data Governance &amp; Input Integrity<a class="headerlink" href="#63-clinical-data-governance-input-integrity" title="Permanent link">&para;</a></h3>
+<p>To meet rigorous IVDR Class C standards, the pipeline implements automated data governance:</p>
+<ol>
+<li><strong>Input Integrity (SHA256)</strong>: The pipeline automatically calculates cryptographic SHA256 checksums for every input FASTQ file. Hashes are recorded in the results and printed in the Clinical Report, providing a verifiable audit trail against transfer corruption.</li>
+<li><strong>Output Sanity Checks</strong>: The reporting layer performs automated Pass/Fail validation, evaluating sample coverage thresholds and mapping quality. Failures are flagged prominently in the final report.</li>
+<li><strong>PHI Segregation</strong>: The pipeline intercepts patient identifiers right at the data ingress layer, dynamically stripping them and assigning secured pseudo-IDs (e.g., <code>MILOU-SPEC-001</code>).</li>
+<li><strong>Conversion Efficiency Gating</strong>: For bisulfite and enzymatic sequencing, the pipeline actively probes lambda phage spike-in controls. If non-conversion exceeds 1%, downstream statistical analysis halts and a diagnostic failure is flagged.</li>
+<li><strong>Offline Determinism</strong>: The <code>clinical_offline</code> profile locks the pipeline into zero-trust air-gapped execution. All disease ontologies, such as sovereign DisGeNET annotations, run entirely locally without external network calls.</li>
+<li><strong>Full Audit Trail</strong>: The Clinical Report embeds a complete snapshot of all <strong>resolved Nextflow parameters</strong> in JSON format alongside the execution cryptographic <code>UUID</code>.</li>
+</ol>
+<h3 id="64-core-nextflow-arguments-jvm-memory-configuration">6.4 Core Nextflow Arguments &amp; JVM Memory Configuration<a class="headerlink" href="#64-core-nextflow-arguments-jvm-memory-configuration" title="Permanent link">&para;</a></h3>
+<details class="info" open="open">
+<summary>Core Nextflow Command-Line Arguments</summary>
+<p>These options are passed directly to Nextflow using a <em>single</em> hyphen.</p>
+<p><code>-profile</code></p>
+<p>Selects execution profiles (<code>singularity</code>, <code>docker</code>, <code>conda</code>, <code>gpu</code>, <code>clinical</code>, <code>clinical_offline</code>). Profiles can be combined with commas, e.g. <code>-profile singularity,gpu,clinical</code>.</p>
+<p><code>-resume</code></p>
+<p>Restarts the pipeline using cached results for any tasks whose inputs and code have not changed.</p>
+<p><code>-c</code></p>
+<p>Specifies a custom configuration file to override or extend pipeline settings.</p>
+<p><code>-name</code></p>
+<p>Assigns a custom execution name to the run for easy tracking in Nextflow Tower and local logs.</p>
+</details>
+<p>Nextflow Java virtual machines can request a large amount of memory for high-throughput cohorts. Set the following in your shell configuration (<code>~/.bashrc</code> or <code>~/.zshrc</code>):</p>
+<div class="highlight"><pre><span></span><code><span class="nv">NXF_OPTS</span><span class="o">=</span><span class="s2">&quot;-Xms4g -Xmx16g&quot;</span>
+</code></pre></div>
+<p>For a full list of flags, see the <a href="./#7-complete-parameter-reference">Parameters Reference</a>.</p>
+<h2 id="7-complete-parameter-reference">7. Complete Parameter Reference<a class="headerlink" href="#7-complete-parameter-reference" title="Permanent link">&para;</a></h2>
+<p>This section provides a complete reference for all command-line parameters available in <strong>milou</strong>. Default values are appropriately showcased. </p>
+<p>To modify or adjust any parameters, please edit:</p>
+<ol>
+<li><code>conf/params.config</code>,  </li>
+<li><code>conf/resources.config</code> for resource allocation, and </li>
+<li><code>conf/gpu.config</code> for GPU configuration.</li>
+<li><code>conf/test_local.config</code> for minimal test data run</li>
+<li><code>conf/test_full.config</code> for full test data run</li>
+<li><code>conf/benchmark.config</code> for performance tracking and resource usage benchmarking</li>
+<li><code>conf/replicate_article.config</code> for replicate article run</li>
+</ol>
+<p>DAG rendering options can also be adjusted in <code>conf/dag.config</code>.</p>
+<h3 id="71-inputoutput-options">7.1 Input/Output Options<a class="headerlink" href="#71-inputoutput-options" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Description</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: center;">Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>--sample_sheet</code></td>
+<td style="text-align: left;">Path to Samplesheet.csv with following headers: <code>sample_id, group, read1, read2, assay_type</code> (optional).</td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;"><code>null</code></td>
+<td style="text-align: center;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--genome_fasta</code></td>
+<td style="text-align: left;">Path to the reference genome FASTA file.</td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;"><code>null</code></td>
+<td style="text-align: center;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--assay_type</code></td>
+<td style="text-align: left;">Global chemistry override for clipping offsets (<code>'wgbs'</code>, <code>'emseq'</code>, <code>'twist'</code>).</td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;"><code>'wgbs'</code></td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--save_reference</code></td>
+<td style="text-align: left;">If <code>true</code>, the Bismark/BWA-meth index is saved to a persistent storeDir for reuse.</td>
+<td style="text-align: left;"><code>boolean</code></td>
+<td style="text-align: left;"><code>false</code></td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--bismark_index</code></td>
+<td style="text-align: left;">Path to a pre-built Bismark index directory.</td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;"><code>false</code></td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--aligned_bams</code></td>
+<td style="text-align: left;">Start the pipeline from previously aligned BAM files instead of fastQ.</td>
+<td style="text-align: left;"><code>boolean</code></td>
+<td style="text-align: left;"><code>false</code></td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--outdir</code></td>
+<td style="text-align: left;">Output directory where results will be stored.</td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;"><code>'results'</code></td>
+<td style="text-align: center;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--design_file</code></td>
+<td style="text-align: left;">Path to a custom design matrix for specialized comparisons.</td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;"><code>null</code></td>
+<td style="text-align: center;">No</td>
+</tr>
+</tbody>
+</table>
+<h3 id="72-qc-alignment-parameters">7.2 QC &amp; Alignment Parameters<a class="headerlink" href="#72-qc-alignment-parameters" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Description</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: center;">Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>--aligner</code></td>
+<td style="text-align: left;">Aligner to use: <code>'bismark'</code> or <code>'bwameth'</code>.</td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;"><code>'bismark'</code></td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--use_parabricks</code></td>
+<td style="text-align: left;">Set to <code>true</code> to use NVIDIA Parabricks for alignment.</td>
+<td style="text-align: left;"><code>boolean</code></td>
+<td style="text-align: left;"><code>false</code></td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--qualimap_args</code></td>
+<td style="text-align: left;">Additional arguments to pass to Qualimap.</td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;"><code>""</code></td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--multiqc_config</code></td>
+<td style="text-align: left;">multiqc config file. Default is <code>null</code>. <code>--multiqc_config [path/to/config]</code> to use multiqc config file.</td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;"><code>null</code></td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--multiqc_title</code></td>
+<td style="text-align: left;">multiqc title. Default is <code>null</code>. <code>--multiqc_title [title]</code> to use multiqc title.</td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;"><code>null</code></td>
+<td style="text-align: center;">No</td>
+</tr>
+</tbody>
+</table>
+<h3 id="73-methylation-calling-extraction-parameters">7.3 Methylation Calling &amp; Extraction Parameters<a class="headerlink" href="#73-methylation-calling-extraction-parameters" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Description</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: center;">Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>--coverage_threshold</code></td>
+<td style="text-align: left;">Minimum read coverage for analysis <strong>AND</strong> the threshold for automated Clinical Report Pass/Fail validation.</td>
+<td style="text-align: left;"><code>integer</code></td>
+<td style="text-align: left;"><code>3</code></td>
+<td style="text-align: center;">Yes</td>
+</tr>
+</tbody>
+</table>
+<h3 id="74-differential-methylation-analysis-parameters">7.4 Differential Methylation Analysis Parameters<a class="headerlink" href="#74-differential-methylation-analysis-parameters" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Description</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: center;">Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>--diff_meth_method</code></td>
+<td style="text-align: left;">Differential method(s) to use: <code>'dss'</code>, <code>'edger'</code>, <code>'methylkit'</code>, or a comma-separated list.</td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;"><code>'dss'</code></td>
+<td style="text-align: center;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--compare_str</code></td>
+<td style="text-align: left;">The group comparison string limit (e.g., <code>'Healthy-Tumor'</code>).</td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;"><code>'all'</code></td>
+<td style="text-align: center;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--smoothing</code></td>
+<td style="text-align: left;">Enable or disable moving-average spline smoothing in DSS. Set to <code>false</code> (<code>--smoothing FALSE</code>) for whole-genome WGBS cohorts (~28M CpGs) to reduce peak RAM from &gt;250 GB to &lt;50 GB.</td>
+<td style="text-align: left;"><code>boolean</code></td>
+<td style="text-align: left;"><code>true</code></td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--skip_diff_meth</code></td>
+<td style="text-align: left;">Skip the differential methylation stage completely.</td>
+<td style="text-align: left;"><code>boolean</code></td>
+<td style="text-align: left;"><code>false</code></td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--methylkit.assembly</code></td>
+<td style="text-align: left;">Assembly name for MethylKit context.</td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;"><code>'hg38'</code></td>
+<td style="text-align: center;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--methylkit.diff</code></td>
+<td style="text-align: left;">Minimum methylation difference percentage for Methylkit.</td>
+<td style="text-align: left;"><code>number</code></td>
+<td style="text-align: left;"><code>0.05</code></td>
+<td style="text-align: center;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--methylkit.qvalue</code></td>
+<td style="text-align: left;">Maximum Q-value threshold for Methylkit.</td>
+<td style="text-align: left;"><code>number</code></td>
+<td style="text-align: left;"><code>1</code></td>
+<td style="text-align: center;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--methylkit.mc_cores</code></td>
+<td style="text-align: left;">Number of cores to use for MethylKit.</td>
+<td style="text-align: left;"><code>integer</code></td>
+<td style="text-align: left;"><code>16</code></td>
+<td style="text-align: center;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--methylkit.bed_file</code></td>
+<td style="text-align: left;">Path to the Twist Target region BED file for MethylKit context.</td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;"><code>null</code></td>
+<td style="text-align: center;">No</td>
+</tr>
+</tbody>
+</table>
+<h3 id="75-functional-annotation-enrichment-parameters">7.5 Functional Annotation &amp; Enrichment Parameters<a class="headerlink" href="#75-functional-annotation-enrichment-parameters" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Description</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: center;">Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>--gtf_file</code></td>
+<td style="text-align: left;">Path to a GTF annotation file (e.g., Gencode/Ensembl) for gene mapping.</td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;"><code>null</code></td>
+<td style="text-align: center;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--refseq_file</code></td>
+<td style="text-align: left;">Path to a RefSeq BED file for annotation.</td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;"><code>null</code></td>
+<td style="text-align: center;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--disgenet_db</code></td>
+<td style="text-align: left;">Path to a sovereign, local DisGeNET TSV release for clinical offline mapping.</td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;"><code>null</code></td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--post_processing</code></td>
+<td style="text-align: left;">Enable post-processing summaries and visualization.</td>
+<td style="text-align: left;"><code>boolean</code></td>
+<td style="text-align: left;"><code>true</code></td>
+<td style="text-align: center;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--logfc_cutoff</code></td>
+<td style="text-align: left;">Log2 Fold Change threshold for significance.</td>
+<td style="text-align: left;"><code>number</code></td>
+<td style="text-align: left;"><code>0.5</code></td>
+<td style="text-align: center;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--pvalue_cutoff</code></td>
+<td style="text-align: left;">P-value threshold for statistical significance.</td>
+<td style="text-align: left;"><code>number</code></td>
+<td style="text-align: left;"><code>0.05</code></td>
+<td style="text-align: center;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--top_n_genes</code></td>
+<td style="text-align: left;">Number of top genes to include in GO/KEGG enrichment analysis.</td>
+<td style="text-align: left;"><code>integer</code></td>
+<td style="text-align: left;"><code>100</code></td>
+<td style="text-align: center;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--hyper_color</code></td>
+<td style="text-align: left;">Color for hyper-methylated points in graphs.</td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;"><code>'red'</code></td>
+<td style="text-align: center;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--hypo_color</code></td>
+<td style="text-align: left;">Color for hypo-methylated points in graphs.</td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;"><code>'blue'</code></td>
+<td style="text-align: center;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--nonsig_color</code></td>
+<td style="text-align: left;">Color for non-significant points in graphs.</td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;"><code>'black'</code></td>
+<td style="text-align: center;">Yes</td>
+</tr>
+</tbody>
+</table>
+<h3 id="76-clinical-reporting-layer-parameters">7.6 Clinical Reporting Layer Parameters<a class="headerlink" href="#76-clinical-reporting-layer-parameters" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Description</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: center;">Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>--mode</code></td>
+<td style="text-align: left;">Pipeline mode: <code>'research'</code> (standard) or <code>'clinical'</code> (enforces 2-out-of-3 consensus voting).</td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;"><code>'research'</code></td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--offline</code></td>
+<td style="text-align: left;">Disables internet access and API queries. Enforced automatically in <code>clinical_offline</code> profile.</td>
+<td style="text-align: left;"><code>boolean</code></td>
+<td style="text-align: left;"><code>false</code></td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--run_clinical_report</code></td>
+<td style="text-align: left;">Force generation of automated Quarto clinical PDF/HTML report.</td>
+<td style="text-align: left;"><code>boolean</code></td>
+<td style="text-align: left;"><code>false</code></td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--promoter_dist</code></td>
+<td style="text-align: left;">Distance from TSS (upstream) to define a Promoter region.</td>
+<td style="text-align: left;"><code>integer</code></td>
+<td style="text-align: left;"><code>2000</code></td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--enhancer_dist</code></td>
+<td style="text-align: left;">Distance from TSS to define an Enhancer/Distal region.</td>
+<td style="text-align: left;"><code>integer</code></td>
+<td style="text-align: left;"><code>10000</code></td>
+<td style="text-align: center;">No</td>
+</tr>
+</tbody>
+</table>
+<h3 id="77-logging-resource-management-parameters">7.7 Logging &amp; Resource Management Parameters<a class="headerlink" href="#77-logging-resource-management-parameters" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Description</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: center;">Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>--max_memory</code></td>
+<td style="text-align: left;">Maximum amount of RAM available for any single task.</td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;"><code>'128.GB'</code></td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--max_cpus</code></td>
+<td style="text-align: left;">Maximum number of CPUs available for any single task.</td>
+<td style="text-align: left;"><code>integer</code></td>
+<td style="text-align: left;"><code>16</code></td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--max_time</code></td>
+<td style="text-align: left;">Maximum walltime for any single task.</td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;"><code>'240.h'</code></td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--dag.file</code></td>
+<td style="text-align: left;">Path to the output DAG file.</td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;"><code>'workflow_dag.dot'</code></td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--dag.overwrite</code></td>
+<td style="text-align: left;">Overwrite the output DAG file if it already exists.</td>
+<td style="text-align: left;"><code>boolean</code></td>
+<td style="text-align: left;"><code>false</code></td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--dag.renderHTML</code></td>
+<td style="text-align: left;">Render the DAG as HTML.</td>
+<td style="text-align: left;"><code>boolean</code></td>
+<td style="text-align: left;"><code>true</code></td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--dag.renderFormat</code></td>
+<td style="text-align: left;">Format to render the DAG.</td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;"><code>'png'</code></td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--dag.renderOptions</code></td>
+<td style="text-align: left;">Options to pass to the rendering tool.</td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;"><code>'-Tpng -Gdpi=300'</code></td>
+<td style="text-align: center;">No</td>
+</tr>
+</tbody>
+</table>
+<h3 id="78-generic-pipeline-options">7.8 Generic Pipeline Options<a class="headerlink" href="#78-generic-pipeline-options" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Description</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: center;">Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>-profile</code></td>
+<td style="text-align: left;">Configuration profile: <code>docker</code>, <code>singularity</code>, <code>gpu</code>, <code>clinical</code>, <code>clinical_offline</code>, <code>benchmark</code>.</td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;"><em>variable</em></td>
+<td style="text-align: center;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>-resume</code></td>
+<td style="text-align: left;">Re-start the pipeline from where it left off.</td>
+<td style="text-align: left;"><code>boolean</code></td>
+<td style="text-align: left;"><code>false</code></td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>-w</code></td>
+<td style="text-align: left;">Custom working directory for intermediate files.</td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;"><code>'work/'</code></td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--help</code></td>
+<td style="text-align: left;">Display the pipeline help message.</td>
+<td style="text-align: left;"><code>boolean</code></td>
+<td style="text-align: left;"><code>false</code></td>
+<td style="text-align: center;">No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="8-operational-troubleshooting">8. Operational Troubleshooting<a class="headerlink" href="#8-operational-troubleshooting" title="Permanent link">&para;</a></h2>
+<h3 id="81-memory-scaling-in-whole-genome-sequencing-wgbs">8.1 Memory Scaling in Whole-Genome Sequencing (WGBS)<a class="headerlink" href="#81-memory-scaling-in-whole-genome-sequencing-wgbs" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Symptom:</strong> <code>Process terminated with exit status 137 (Out of Memory)</code> during <code>DIFFERENTIAL_METHYLATION:DSS_ANALYSIS</code>.</li>
+<li><strong>Root Cause:</strong> By default, <code>DSS::DMLtest()</code> computes 2D moving-average spline smoothing across adjacent genomic loci. On whole-genome human sequencing spanning all ~28–30 million CpGs, calculating continuous moving-average splines constructs large distance matrices that cause memory spikes exceeding 250 GB RAM.</li>
+<li><strong>Resolution:</strong> Pass <code>--smoothing FALSE</code> to disable the moving-average spline fitting while preserving empirical Bayes dispersion shrinkage and contiguous DMR detection via <code>callDMR()</code>:
+  <div class="highlight"><pre><span></span><code>nextflow<span class="w"> </span>run<span class="w"> </span>main.nf<span class="w"> </span>-profile<span class="w"> </span>test_bisulfite_gpu,gpu,singularity<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--smoothing<span class="w"> </span>FALSE
+</code></pre></div>
+  <em>Bypassing spline smoothing reduces peak resident memory to ~30–47 GB RAM, allowing WGBS cohorts to run smoothly on standard 64–256 GB nodes.</em></li>
+</ul>
+<h3 id="82-singularity-apptainer-user-namespace-collisions">8.2 Singularity / Apptainer User Namespace Collisions<a class="headerlink" href="#82-singularity-apptainer-user-namespace-collisions" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Symptom:</strong> <code>ERROR: Could not write info to setgroups: Permission denied</code> or <code>Error while waiting event for user namespace mappings</code>.</li>
+<li><strong>Root Cause:</strong> Newer Apptainer versions (&gt;=1.3+) colliding with host cluster user namespace permission restrictions.</li>
+<li><strong>Resolution:</strong></li>
+<li>Load the cluster's native Singularity-CE module:
+     <div class="highlight"><pre><span></span><code>module<span class="w"> </span>unload<span class="w"> </span>apptainer
+module<span class="w"> </span>load<span class="w"> </span>singularity-ce
+</code></pre></div></li>
+<li>Set the global bind path explicitly:
+     <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">SINGULARITY_BINDPATH</span><span class="o">=</span><span class="s2">&quot;/data&quot;</span>
+</code></pre></div></li>
+</ul>
+<h3 id="83-resuming-interrupted-workflows">8.3 Resuming Interrupted Workflows<a class="headerlink" href="#83-resuming-interrupted-workflows" title="Permanent link">&para;</a></h3>
+<p>Nextflow tracks all completed tasks via cryptographic input hashes. To resume an interrupted pipeline execution without re-computing upstream steps:
+<div class="highlight"><pre><span></span><code>nextflow<span class="w"> </span>run<span class="w"> </span>JD2112/milou<span class="w"> </span>-profile<span class="w"> </span>singularity,gpu<span class="w"> </span>-resume
+</code></pre></div></p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+  <div style="
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    font-size: 1.5em;
+    padding: 1em 2em;
+    border-top: 1px solid #000000;
+    color: #ffffff;
+    text-align: center;
+    background-color: #000000;
+  ">
+    <div style="flex: 1; text-align: left;">
+        © Jyotirmoy Das 2026 
+    </div>
+    <div style="flex: 1; text-align: center;">
+      <code style="font-size: 0.8em;">
+        3D1F C87F 8D52 BFD4 5A1D <br> 3C86 63F2 2E14 6A0A 6B98
+      </code>
+    </div>
+    <div style="flex: 1; text-align: right;">
+      Made with <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" style="color: #ffffff;">MkDocs</a>
+    </div>
+  </div>
+
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.instant.prefetch", "navigation.instant.progress", "navigation.tracking", "navigation.expand", "navigation.sections", "navigation.top", "content.code.annotate", "content.tabs.link", "navigation.tabs", "search.suggest", "search.highlight", "content.action.edit", "content.code.copy", "versioning", "icons"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../js/mathjax.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js"></script>
+      
+        <script src="../js/github-stats.js"></script>
+      
+    
+  </body>
+</html>

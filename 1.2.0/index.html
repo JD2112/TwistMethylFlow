@@ -1,0 +1,1256 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="milou: Methylation Integrated Layer for Omics Unification">
+      
+      
+        <meta name="author" content="Jyotirmoy Das">
+      
+      
+        <link rel="canonical" href="https://JD2112.github.io/milou/1.2.0/">
+      
+      
+      
+        <link rel="next" href="usage/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>milou</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CFira+Code:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"Fira Code"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="styles/extra.css">
+    
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code&family=Inter:wght@400;600&display=swap">
+    
+    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#introduction" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="." title="milou" class="md-header__button md-logo" aria-label="milou" data-md-component="logo">
+      
+
+<a href="https://github.com/JD2112" target="_blank" style="display:flex; align-items:center; text-decoration:none;">
+  <img src="./images/JD_logo.png" alt="Logo" style="height:24px; margin-right:8px;">
+</a>
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            milou
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Introduction
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/JD2112/milou" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Introduction
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="usage/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  User Manual
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="output/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Results
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="references/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  References
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="." title="milou" class="md-nav__button md-logo" aria-label="milou" data-md-component="logo">
+      
+
+<a href="https://github.com/JD2112" target="_blank" style="display:flex; align-items:center; text-decoration:none;">
+  <img src="./images/JD_logo.png" alt="Logo" style="height:24px; margin-right:8px;">
+</a>
+    </a>
+    milou
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/JD2112/milou" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+  
+  <li class="md-nav__item">
+    
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="." class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-pipeline-capabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Pipeline Capabilities
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-quick-start-execution-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Quick Start &amp; Execution Syntax
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-pipeline-output-directory-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Pipeline Output Directory Structure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-hardware-benchmarking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Hardware Benchmarking
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-development-authorship" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Development &amp; Authorship
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Development &amp; Authorship">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#core-developers-contributors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core Developers &amp; Contributors
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#acknowledgements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Acknowledgements
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#citation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Citation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#run-with" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run with
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stats" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stats
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#included-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Included Tools
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#contributors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Contributors
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get-help" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Get Help
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+    
+    
+    
+  </li>
+
+  
+  <li class="md-nav__item">
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="usage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Manual
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+    
+  </li>
+
+  
+  <li class="md-nav__item">
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="output/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Results
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+    
+  </li>
+
+  
+  <li class="md-nav__item">
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+    
+  </li>
+
+
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-pipeline-capabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Pipeline Capabilities
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-quick-start-execution-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Quick Start &amp; Execution Syntax
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-pipeline-output-directory-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Pipeline Output Directory Structure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-hardware-benchmarking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Hardware Benchmarking
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-development-authorship" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Development &amp; Authorship
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Development &amp; Authorship">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#core-developers-contributors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core Developers &amp; Contributors
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#acknowledgements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Acknowledgements
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#citation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Citation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#run-with" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run with
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stats" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stats
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#included-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Included Tools
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#contributors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Contributors
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get-help" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Get Help
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+<h1 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h1>
+<p><a href="https://doi.org/10.5281/zenodo.14204260"><img alt="DOI" src="https://zenodo.org/badge/DOI/10.5281/zenodo.14204260.svg" /></a>
+<a href="https://jyotirmoys-organization.gitbook.io/milou"><img alt="GitBook Docs" src="https://img.shields.io/badge/docs-GitBook-blue?logo=gitbook" /></a>
+<a href="https://github.com/JD2112/milou/settings/access"><img alt="GitHub Invite Collaborators" src="https://img.shields.io/badge/Invite-Collaborators-blue?style=for-the-badge&amp;logo=github" /></a>
+<a href="https://wakatime.com/badge/user/fe95275f-909a-4147-a45d-624981173898/project/a44415f0-a274-4c3b-a59a-f8e1067c0fc1"><img alt="wakatime" src="https://wakatime.com/badge/user/fe95275f-909a-4147-a45d-624981173898/project/a44415f0-a274-4c3b-a59a-f8e1067c0fc1.svg" /></a></p>
+<div class="grid-container">
+<div class="main-content">
+<p><strong>milou</strong> is a robust, end-to-end Nextflow pipeline for comprehensive analysis of DNA methylation data, streamlining the workflow from raw FASTQ files to harmonized analytical outputs and automated, publication-ready reports.</p>
+<p>The pipeline features a dual-mode operational design supporting both rapid exploratory research and structured, interpretation-oriented clinical reporting. To accommodate diverse institutional and high-performance computing infrastructures, milou provides GPU-accelerated alignment and deduplication via NVIDIA Parabricks alongside CPU-based execution with Bismark for reproducible, cross-platform analysis. A unified results layer aggregates differential methylation calls across three complementary statistical frameworks (DSS, edgeR, methylKit), functional enrichment (Gene Ontology and KEGG Pathview diagrams), and clinical annotations (gnomAD, OMIM) into harmonized, deterministic outputs.</p>
+<details class="danger" open="open">
+<summary>Research Use Only (RUO)</summary>
+<p>This pipeline is intended for <strong>Research Use Only (RUO)</strong>. It has not been clinically validated and is not approved for diagnostic use. The generated reports are designed to support data interpretation and hypothesis generation, and must not be used for medical decision-making.</p>
+</details>
+<p><img alt="milou overview" src="images/milou.png" /></p>
+<h2 id="1-key-features">1. Key Features<a class="headerlink" href="#1-key-features" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>End-to-End Methylation Analysis</strong>: Complete workflow from raw FASTQ files to differential methylation, functional enrichment (GO/KEGG), and integrated downstream interpretation.</li>
+<li><strong>Dual Execution Engine (GPU + CPU)</strong>: Flexible support for high-speed GPU-accelerated processing (NVIDIA Parabricks) and standard CPU-based workflows (Bismark), enabling both rapid turnaround and reproducible analysis.</li>
+<li><strong>Dual-Mode Reporting (Research vs Clinical-Style)</strong>: Supports both research mode for fast, exploratory analysis and clinical-style mode for structured, interpretation-oriented outputs with prioritized results and summaries.</li>
+<li><strong>Unified Analysis Layer</strong>: Harmonizes outputs across modules into standardized result tables, integrating differentially methylated regions (DMRs), gene-level summaries, functional enrichment (GO/KEGG), and disease association layers.</li>
+<li><strong>Integrated Biological Interpretation</strong>: Built-in annotation modules connect methylation changes to biological pathways and disease-relevant genes, facilitating downstream interpretation without manual integration.</li>
+<li><strong>Automated, Publication-Ready Reports</strong>: Generates clean, structured reports (PDF/HTML) via Quarto, combining statistical results with narrative summaries for easy interpretation and sharing.</li>
+<li><strong>Security &amp; Container Auditing (<a href="https://github.com/JD2112/quindecagon">quindecagon</a>)</strong>: All containers within milou undergo strict continuous security verification using quindecagon, incorporating automated static analysis, OCI image vulnerability scanning (Trivy, Grype), Software Bill of Materials (SBOM) generation (Syft), and cryptographic image signing (Cosign).</li>
+<li><strong>FAIR Open Science Archive (Zenodo)</strong>: Complete execution reports, timelines, MultiQC dashboards, and Python evaluation scripts are permanently archived on Zenodo at <strong>DOI: <a href="https://doi.org/10.5281/zenodo.22326688">10.5281/zenodo.22326688</a></strong>.</li>
+<li><strong>Reproducible &amp; Scalable Architecture</strong>: Built with Nextflow DSL2 and containerized environments, ensuring portability across HPC, cloud, and local systems with bitwise determinism (<code>set.seed(42)</code>).</li>
+</ul>
+<h2 id="2-pipeline-capabilities">2. Pipeline Capabilities<a class="headerlink" href="#2-pipeline-capabilities" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Category</th>
+<th style="text-align: left;">Feature</th>
+<th style="text-align: center;">Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Core Processing</strong></td>
+<td style="text-align: left;">Dual-track Processing (GPU-Accelerated / CPU-Standard)</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Multi-method Differential Methylation (DSS, edgeR, methylKit)</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Enrichment</strong></td>
+<td style="text-align: left;">Functional Annotation (GO / KEGG Pathway)</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Disease Association Layer (DisGeNET)</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Analysis</strong></td>
+<td style="text-align: left;">Unified Analysis Layer (Integrated Structured Outputs)</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Gene Prioritization (Significance + Effect Size Scoring)</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Reporting</strong></td>
+<td style="text-align: left;">Automated PDF/HTML Integrated Research Reports</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Technical MultiQC Reporting</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Review Layer</strong></td>
+<td style="text-align: left;">Integrated Region Annotation (Promoter/Enhancer/Distal)</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Clinical-Style Review Mode (<code>--mode clinical</code>)</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Clinical Rigor</strong></td>
+<td style="text-align: left;">Data Integrity (Input SHA256 Checksumming)</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Bitwise Determinism (Enforced Random Seeds)</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Automated Output Sanity Validation (Pass/Fail Checks)</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">HIPAA-Compliant Schema Enforcement</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Infrastructure</strong></td>
+<td style="text-align: left;">Containerized (Singularity, Docker, Conda)</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Reproducible DSL2 Modular Architecture</td>
+<td style="text-align: center;">✅</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3-quick-start-execution-syntax">3. Quick Start &amp; Execution Syntax<a class="headerlink" href="#3-quick-start-execution-syntax" title="Permanent link">&para;</a></h2>
+<p>Sample sheet (CSV format) with sample information <code>Sample_sheet.csv</code>:</p>
+<div class="highlight"><pre><span></span><code>sample_id,group,read1,read2
+SN09,Healthy,SN09_R1_001.fastq.gz,SN09_R2_001.fastq.gz
+SN10,Disease,SN10_R1_001.fastq.gz,SN10_R2_001.fastq.gz
+</code></pre></div>
+<p>Each row represents a pair of fastq files (paired end).</p>
+<details class="tip" open="open">
+<summary>Sample Information</summary>
+<p><strong>PLEASE NOTE:</strong> minimum 3 samples per group are required to run the differential methylation analysis.</p>
+</details>
+<p>Now run the pipeline using:</p>
+<div class="highlight"><pre><span></span><code>nextflow<span class="w"> </span>run<span class="w"> </span>JD2112/milou<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-profile<span class="w"> </span>singularity,gpu<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--sample_sheet<span class="w"> </span>Sample_sheet_twist.csv<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--genome_fasta<span class="w"> </span>path/to/genome.fa<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--diff_meth_method<span class="w"> </span>dss,edger<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--gtf_file<span class="w"> </span>/data/Homo_sapiens.GRCh38.104.gtf<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--refseq_file<span class="w"> </span>/data/hg38_RefSeq.bed.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--outdir<span class="w"> </span>Results/milou_GPU
+</code></pre></div>
+<details class="warning" open="open">
+<summary>pipeline run</summary>
+<ol>
+<li>Running on NVIDIA GPUs with CUDA will reduce the time significantly, but if not available, runs on cpu using bismark -</li>
+</ol>
+<p><div class="highlight"><pre><span></span><code>nextflow<span class="w"> </span>run<span class="w"> </span>JD2112/milou<span class="w"> </span><span class="se">\</span>
+-profile<span class="w"> </span>singularity<span class="w"> </span><span class="se">\</span>
+--sample_sheet<span class="w"> </span>Sample_sheet_twist.csv<span class="w"> </span><span class="se">\</span>
+--genome_fasta<span class="w"> </span>path/to/genome.fa<span class="w"> </span><span class="se">\</span>
+--diff_meth_method<span class="w"> </span>dss,edger<span class="w"> </span><span class="se">\</span>
+--gtf_file<span class="w"> </span>/data/Homo_sapiens.GRCh38.104.gtf<span class="w"> </span><span class="se">\</span>
+--refseq_file<span class="w"> </span>/data/hg38_RefSeq.bed.gz<span class="w"> </span><span class="se">\</span>
+--outdir<span class="w"> </span>Results/milou_CPU
+</code></pre></div>
+2. Consider to check the pipeline parameters before running. You can change it via <code>conf/params.config</code></p>
+</details>
+<p>For more details and further functionality, please refer to the <a href="usage/">usage documentation</a> and the <a href="parameters/">parameter documentation</a>.</p>
+<h2 id="4-pipeline-output-directory-structure">4. Pipeline Output Directory Structure<a class="headerlink" href="#4-pipeline-output-directory-structure" title="Permanent link">&para;</a></h2>
+<p>milou generates a comprehensive <code>results/</code> folder including:</p>
+<ul>
+<li><strong>MultiQC Report</strong>: Combined stats for all QC and alignment steps.</li>
+<li><strong>Clinical Research Report</strong>: Automated PDF/HTML report (Quarto) containing physician-ready summaries of DMRs and pathways.</li>
+<li><strong>Unified Analysis Layer</strong>: Integrated tables combining DMR statistics with GO, KEGG, and disease associations.</li>
+<li><strong>Visualizations</strong>: Volcano plots, MA plots, dot plots, and GO/KEGG chord diagrams.</li>
+</ul>
+<div class="grid cards">
+<div>
+        <h4>GPU output</h4>
+        <div class="highlight"><pre><span></span><code>results_test_bisulfite_gpu/
+├── clinical_reporting
+├── conversion_qc
+├── differential_methylation
+├── multiqc
+├── parabricks_analysis
+├── pipeline_info
+├── prepare_genome
+├── read_processing
+├── report
+├── result_analysis
+└── unified_layer
+</code></pre></div>
+</div>
+<div>
+        <h4>CPU output</h4>
+        <div class="highlight"><pre><span></span><code>results_test_bisulfite_cpu/
+├── bismark_analysis
+├── clinical_reporting
+├── conversion_qc
+├── differential_methylation
+├── multiqc
+├── pipeline_info
+├── prepare_genome
+├── read_processing
+├── report
+├── result_analysis
+└── unified_layer
+</code></pre></div>
+    </div>
+</div>
+<p>For more details about the output files and reports, please refer to the <a href="output/">output documentation</a>.</p>
+<h2 id="5-hardware-benchmarking">5. Hardware Benchmarking<a class="headerlink" href="#5-hardware-benchmarking" title="Permanent link">&para;</a></h2>
+<p>Benchmarked on <strong>hg38</strong> (Human Genome) using 24 paired-end samples on the Dardel HPC and Fraka HPC.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Feature</th>
+<th style="text-align: left;">CPU Track (Standard)</th>
+<th style="text-align: left;">GPU Track (Parabricks)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Indexing</strong></td>
+<td style="text-align: left;">Bismark Index</td>
+<td style="text-align: left;">BWA-meth Index</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Alignment Speed</strong></td>
+<td style="text-align: left;">1.0x (Baseline)</td>
+<td style="text-align: left;"><strong>~28x Faster</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Data Extraction</strong></td>
+<td style="text-align: left;">Bismark Extractor</td>
+<td style="text-align: left;">MethylDackel</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Hardware</strong></td>
+<td style="text-align: left;">12+ CPU Cores</td>
+<td style="text-align: left;">NVIDIA GPU (16GB+ VRAM)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="6-development-authorship">6. Development &amp; Authorship<a class="headerlink" href="#6-development-authorship" title="Permanent link">&para;</a></h2>
+<h3 id="core-developers-contributors">Core Developers &amp; Contributors<a class="headerlink" href="#core-developers-contributors" title="Permanent link">&para;</a></h3>
+<p><strong>milou</strong> was originally conceptualized and written by <strong>Jyotirmoy Das</strong> (<a href="https://github.com/JD2112">@JD2112</a>) at the Bioinformatics Core Facility and Clinical Genomics Linköping, Linköping University to reduce the gap between the identification of methylation sites per sample and then perform the differential analysis separately.</p>
+<p>Main developer &amp; maintainer:</p>
+<ul>
+<li><a href="https://github.com/JD2112">Jyotirmoy Das</a></li>
+</ul>
+<p>Contributors:</p>
+<ul>
+<li><a href="https://github.com/biodebojyoti">Debojyoti Das</a></li>
+</ul>
+<h3 id="acknowledgements">Acknowledgements<a class="headerlink" href="#acknowledgements" title="Permanent link">&para;</a></h3>
+<p>The authors would like to acknowledge Dr. Vesa Loitto, the Core Facility, Dept. of Biomedical and Clinical Sciences, Faculty of Medicine and Health Sciences at Linköping University, Sweden for his support on this application development. We would like to acknowledge the Core Facility, Faculty of Medicine and Health Sciences, Linköping University, Linköping, Sweden and Clinical Genomics Linköping, Science for Life Laboratory, Sweden for their support. We thank the PDC (Parallelldatorcentrum) Center for High-Performance Computing, KTH Royal Institute of Technology, Sweden, for providing access to the computing resources and storage used in this research. We thank ALF funding support from Region Östergötland (RÖ) and Genomic Medicine Sweden for the computational facility. Clinical Genomics Linköping receives funding from the Science for Life Laboratory.</p>
+<h3 id="citation">Citation<a class="headerlink" href="#citation" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p>Das, J., et al. (2026). <em>milou: An End-to-End Nextflow Pipeline for Translational DNA Methylation Profiling with Multi-Method Consensus Scoring</em>.<br />
+<strong>Software Pipeline Archive:</strong> <a href="https://doi.org/10.5281/zenodo.14204260">https://doi.org/10.5281/zenodo.14204260</a><br />
+<strong>Benchmark Data Archive:</strong> <a href="https://doi.org/10.5281/zenodo.22326688">https://doi.org/10.5281/zenodo.22326688</a></p>
+</blockquote>
+</div>
+<div class="side-panel">
+<p><img alt="" src="images/milou_logo.png" /></p>
+<h2 id="run-with">Run with<a class="headerlink" href="#run-with" title="Permanent link">&para;</a></h2>
+<p><a href="https://www.nextflow.io/"><img alt="" src="https://img.shields.io/badge/Nextflow-%E2%89%A521.10.3-brightgreen" /></a>
+<a href="https://www.docker.com/"><img alt="" src="https://img.shields.io/badge/Docker-supported-blue?logo=docker" /></a>
+<a href="https://apptainer.org/"><img alt="" src="https://img.shields.io/badge/Singularity-supported-white?logo=singularity" /></a>
+<a href="https://docs.conda.io/"><img alt="" src="https://img.shields.io/badge/Conda-supported-lightgrey?logo=anaconda" /></a></p>
+<h2 id="stats">Stats<a class="headerlink" href="#stats" title="Permanent link">&para;</a></h2>
+<div class="stats-grid">
+<div class="stats-item"><span id="gh-stars" class="stats-value">--</span><span class="stats-label">stars</span></div>
+<div class="stats-item"><span id="gh-issues" class="stats-value">--</span><span class="stats-label">open issues</span></div>
+<div class="stats-item"><span id="gh-last-release" class="stats-value">--</span><span class="stats-label">last release</span></div>
+<div class="stats-item"><span id="gh-last-update" class="stats-value">--</span><span class="stats-label">last update</span></div>
+</div>
+<h2 id="included-tools">Included Tools<a class="headerlink" href="#included-tools" title="Permanent link">&para;</a></h2>
+<div class="tag-section">
+  <a href="https://www.bioinformatics.babraham.ac.uk/projects/fastqc/" target="_blank"><span>FastQC</span></a>
+  <a href="https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/" target="_blank"><span>Trim Galore!</span></a>
+  <a href="https://www.bioinformatics.babraham.ac.uk/projects/bismark/" target="_blank"><span>Bismark</span></a>
+  <a href="https://www.nvidia.com/en-us/clara/genomics/" target="_blank"><span>Parabricks</span></a>
+  <a href="http://www.htslib.org/" target="_blank"><span>Samtools</span></a>
+  <a href="http://qualimap.conesalab.org/" target="_blank"><span>Qualimap</span></a>
+  <a href="https://github.com/dpryan79/MethylDackel" target="_blank"><span>MethylDackel</span></a>
+  <a href="https://bioconductor.org/packages/release/bioc/html/edgeR.html" target="_blank"><span>EdgeR</span></a>
+  <a href="https://bioconductor.org/packages/release/bioc/html/methylKit.html" target="_blank"><span>MethylKit</span></a>
+  <a href="https://bioconductor.org/packages/release/bioc/html/clusterProfiler.html" target="_blank"><span>clusterProfiler</span></a>
+  <a href="https://multiqc.info/" target="_blank"><span>MultiQC</span></a>
+  <a href="https://ggplot2.tidyverse.org/" target="_blank"><span>ggplot2</span></a>
+  <a href="https://quarto.org/" target="_blank"><span>Quarto</span></a>
+</div>
+<h2 id="contributors">Contributors<a class="headerlink" href="#contributors" title="Permanent link">&para;</a></h2>
+<div class="contrib-grid" id="gh-contributors">
+  
+<!-- Dynamically populated from GitHub API -->
+
+
+</div>
+<h2 id="get-help">Get Help<a class="headerlink" href="#get-help" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="https://nfcore.slack.com/channels/twistmethylflow">Slack Community</a></li>
+<li><a href="https://github.com/JD2112/milou/issues">GitHub Issues</a></li>
+</ul>
+</div>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+  <div style="
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    font-size: 1.5em;
+    padding: 1em 2em;
+    border-top: 1px solid #000000;
+    color: #ffffff;
+    text-align: center;
+    background-color: #000000;
+  ">
+    <div style="flex: 1; text-align: left;">
+        © Jyotirmoy Das 2026 
+    </div>
+    <div style="flex: 1; text-align: center;">
+      <code style="font-size: 0.8em;">
+        3D1F C87F 8D52 BFD4 5A1D <br> 3C86 63F2 2E14 6A0A 6B98
+      </code>
+    </div>
+    <div style="flex: 1; text-align: right;">
+      Made with <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" style="color: #ffffff;">MkDocs</a>
+    </div>
+  </div>
+
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.instant", "navigation.instant.prefetch", "navigation.instant.progress", "navigation.tracking", "navigation.expand", "navigation.sections", "navigation.top", "content.code.annotate", "content.tabs.link", "navigation.tabs", "search.suggest", "search.highlight", "content.action.edit", "content.code.copy", "versioning", "icons"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="js/mathjax.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js"></script>
+      
+        <script src="js/github-stats.js"></script>
+      
+    
+  </body>
+</html>

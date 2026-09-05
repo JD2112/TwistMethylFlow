@@ -1,0 +1,222 @@
+:root {
+  --font-family-main: "Inter", "Helvetica Neue", Arial, sans-serif;
+  --font-size: 15px;
+}
+
+.md-typeset {
+  font-family: var(--font-family-main);
+  font-size: var(--font-size);
+  line-height: 1.6;
+}
+
+/* --- SECTION HEADINGS (H2) --- */
+.md-typeset h2:not(.side-panel h2) {
+  color: #1e40af; /* Deep royal indigo */
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  border-bottom: 1.5px solid rgba(30, 64, 175, 0.15);
+  padding-bottom: 0.35rem;
+  margin-top: 2.2rem;
+  margin-bottom: 0.8rem;
+}
+
+[data-md-color-scheme="slate"] .md-typeset h2:not(.side-panel h2) {
+  color: #93c5fd; /* Soft luminous sky blue in dark mode */
+  border-bottom: 1.5px solid rgba(147, 197, 253, 0.2);
+}
+
+/* --- COLLAPSIBLE RIGHT-SIDE TOC (ACCORDION) --- */
+/* Hide nested sub-headings (H3+) in the right TOC by default */
+.md-sidebar--secondary .md-nav--secondary .md-nav__item nav.md-nav {
+  display: none;
+}
+
+/* Auto-expand sub-headings when the parent section is active (scrolled into view via toc.follow) or hovered */
+.md-sidebar--secondary .md-nav--secondary .md-nav__item--active > nav.md-nav,
+.md-sidebar--secondary .md-nav--secondary .md-nav__item:focus-within > nav.md-nav,
+.md-sidebar--secondary .md-nav--secondary .md-nav__item:hover > nav.md-nav {
+  display: block;
+  animation: fadeIn 0.2s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- HERO SECTION --- */
+.hero-container {
+  text-align: center;
+  padding: 3rem 1rem;
+  background: linear-gradient(135deg, rgba(33, 150, 243, 0.05) 0%, rgba(156, 39, 176, 0.05) 100%);
+  border-radius: 1rem;
+  margin-bottom: 3rem;
+  border: 1px solid var(--md-default-fg-color--lightest);
+}
+
+.hero-container h1 {
+  margin-bottom: 0.5rem !important;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.hero-subtitle {
+  font-size: 1.2rem;
+  color: var(--md-default-fg-color--light);
+  margin-bottom: 1.5rem;
+}
+
+.hero-badges {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* --- GRID LAYOUT (80/20) --- */
+.grid-container {
+  display: flex;
+  gap: 3.5rem;
+  margin-top: 2rem;
+}
+
+.main-content {
+  flex: 0 0 75%;
+  min-width: 0;
+}
+
+.side-panel {
+  flex: 0 0 22%;
+  font-size: 0.85rem;
+  border-left: 1px solid var(--md-default-fg-color--lightest);
+  padding-left: 2rem;
+}
+
+@media (max-width: 1100px) {
+  .grid-container {
+    flex-direction: column;
+  }
+
+  .main-content,
+  .side-panel {
+    flex: 0 0 100%;
+    border-left: none;
+    padding-left: 0;
+  }
+}
+
+/* --- CARDS & PANELS --- */
+.side-panel h2 {
+  font-size: 0.8rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--md-default-fg-color--light);
+  border-bottom: none !important;
+  margin-top: 2rem !important;
+  margin-bottom: 0.8rem !important;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.8rem 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.stats-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.stats-value {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--md-default-fg-color);
+}
+
+.stats-label {
+  font-size: 0.72rem;
+  color: var(--md-default-fg-color--light);
+  text-transform: lowercase;
+}
+
+.tag-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+}
+
+.tag-section a {
+  text-decoration: none !important;
+}
+
+.tag-section span {
+  background: #f1f3f4;
+  color: #5f6368;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  border: 1px solid #dadce0;
+  transition: all 0.2s;
+  display: inline-block;
+}
+
+.tag-section span:hover {
+  background: #e1f5fe;
+  color: #01579b;
+  border-color: #039be5;
+  transform: translateY(-1px);
+}
+
+.contrib-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+}
+
+.contrib-img {
+  width: 42px;
+  height: 42px;
+  border-radius: 4px;
+  /* Square with slight rounding */
+  border: 1px solid #ddd;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.contrib-img:hover {
+  transform: scale(1.08);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* --- HEADING STYLES --- */
+.md-typeset h2 {
+  font-size: 1.5em;
+}
+
+.md-typeset h3 {
+  font-size: 1.25em;
+  font-weight: 600;
+}
+
+/* Custom image styling for the homepage */
+.main-content img {
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  margin: 1.5rem 0;
+}
+
+/* Code block customization */
+.md-typeset pre code {
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+}
+
+/* Hide navigation and TOC only on the homepage */
+body.homepage .md-sidebar--secondary,
+body.homepage .md-sidebar--primary {
+  display: none;
+}

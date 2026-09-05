@@ -1,0 +1,1782 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="milou: Methylation Integrated Layer for Omics Unification">
+      
+      
+        <meta name="author" content="Jyotirmoy Das">
+      
+      
+        <link rel="canonical" href="https://JD2112.github.io/milou/1.2.0/output/">
+      
+      
+        <link rel="prev" href="../usage/">
+      
+      
+        <link rel="next" href="../references/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Results - milou</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CFira+Code:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"Fira Code"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../styles/extra.css">
+    
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code&family=Inter:wght@400;600&display=swap">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#pipeline-outputs-directory-structure" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="milou" class="md-header__button md-logo" aria-label="milou" data-md-component="logo">
+      
+
+<a href="https://github.com/JD2112" target="_blank" style="display:flex; align-items:center; text-decoration:none;">
+  <img src="../images/JD_logo.png" alt="Logo" style="height:24px; margin-right:8px;">
+</a>
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            milou
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Results
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/JD2112/milou" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Introduction
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../usage/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  User Manual
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Results
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../references/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  References
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="milou" class="md-nav__button md-logo" aria-label="milou" data-md-component="logo">
+      
+
+<a href="https://github.com/JD2112" target="_blank" style="display:flex; align-items:center; text-decoration:none;">
+  <img src="../images/JD_logo.png" alt="Logo" style="height:24px; margin-right:8px;">
+</a>
+    </a>
+    milou
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/JD2112/milou" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+  
+  <li class="md-nav__item">
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+    
+  </li>
+
+  
+  <li class="md-nav__item">
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../usage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Manual
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+    
+  </li>
+
+  
+  <li class="md-nav__item">
+    
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Results
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Results
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-quality-control-trimmed-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Quality Control &amp; Trimmed Data
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Quality Control &amp; Trimmed Data">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-read-processing-fastqc-trim-galore" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 Read Processing (FastQC &amp; Trim Galore!)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-reference-genome-indexing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Reference Genome Indexing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Reference Genome Indexing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-bismark-bwa-meth-indices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Bismark &amp; BWA-meth Indices
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-read-alignment-bam-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Read Alignment &amp; BAM Processing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Read Alignment &amp; BAM Processing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-cpu-track-bismark-suite" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 CPU Track (Bismark Suite)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-gpu-track-nvidia-clara-parabricks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 GPU Track (NVIDIA Clara Parabricks)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-methylation-calling-extraction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Methylation Calling &amp; Extraction
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Methylation Calling &amp; Extraction">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-bismark-extractor-cpu-track" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Bismark Extractor (CPU Track)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-methyldackel-extractor-gpu-track" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 MethylDackel Extractor (GPU Track)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-post-alignment-quality-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Post-Alignment Quality Mapping
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Post-Alignment Quality Mapping">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-qualimap-coverage-insert-size-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Qualimap Coverage &amp; Insert Size Metrics
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-differential-methylation-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Differential Methylation Analysis
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Differential Methylation Analysis">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-statistical-differential-engines-dss-edger-methylkit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Statistical Differential Engines (DSS, edgeR, methylKit)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-functional-annotation-visualizations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Functional Annotation &amp; Visualizations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Functional Annotation &amp; Visualizations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-gene-annotation-locus-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 Gene Annotation &amp; Locus Mapping
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-volcano-ma-plots" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 Volcano &amp; MA Plots
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-gene-ontology-go-pathway-enrichment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3 Gene Ontology (GO) &amp; Pathway Enrichment
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-unified-results-layer-consensus-scoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Unified Results Layer &amp; Consensus Scoring
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Unified Results Layer &amp; Consensus Scoring">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-multi-method-consensus-rankings-value" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 Multi-Method Consensus Rankings (π-Value)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-clinical-reporting-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Clinical Reporting Layer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. Clinical Reporting Layer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91-interactive-quarto-reports-audit-artifacts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 Interactive Quarto Reports &amp; Audit Artifacts
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-multiqc-metadata" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. MultiQC &amp; Metadata
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. MultiQC &amp; Metadata">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#101-aggregated-multiqc-dashboard-software-provenance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.1 Aggregated MultiQC Dashboard &amp; Software Provenance
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-pipeline-runtime-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Pipeline Runtime Information
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="11. Pipeline Runtime Information">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#111-execution-reports-traces-dags" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.1 Execution Reports, Traces &amp; DAGs
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+    
+    
+    
+  </li>
+
+  
+  <li class="md-nav__item">
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+    
+  </li>
+
+
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-quality-control-trimmed-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Quality Control &amp; Trimmed Data
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Quality Control &amp; Trimmed Data">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-read-processing-fastqc-trim-galore" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 Read Processing (FastQC &amp; Trim Galore!)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-reference-genome-indexing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Reference Genome Indexing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Reference Genome Indexing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-bismark-bwa-meth-indices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Bismark &amp; BWA-meth Indices
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-read-alignment-bam-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Read Alignment &amp; BAM Processing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Read Alignment &amp; BAM Processing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-cpu-track-bismark-suite" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 CPU Track (Bismark Suite)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-gpu-track-nvidia-clara-parabricks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 GPU Track (NVIDIA Clara Parabricks)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-methylation-calling-extraction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Methylation Calling &amp; Extraction
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Methylation Calling &amp; Extraction">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-bismark-extractor-cpu-track" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Bismark Extractor (CPU Track)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-methyldackel-extractor-gpu-track" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 MethylDackel Extractor (GPU Track)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-post-alignment-quality-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Post-Alignment Quality Mapping
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Post-Alignment Quality Mapping">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-qualimap-coverage-insert-size-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Qualimap Coverage &amp; Insert Size Metrics
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-differential-methylation-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Differential Methylation Analysis
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Differential Methylation Analysis">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-statistical-differential-engines-dss-edger-methylkit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Statistical Differential Engines (DSS, edgeR, methylKit)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-functional-annotation-visualizations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Functional Annotation &amp; Visualizations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Functional Annotation &amp; Visualizations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-gene-annotation-locus-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 Gene Annotation &amp; Locus Mapping
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-volcano-ma-plots" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 Volcano &amp; MA Plots
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-gene-ontology-go-pathway-enrichment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3 Gene Ontology (GO) &amp; Pathway Enrichment
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-unified-results-layer-consensus-scoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Unified Results Layer &amp; Consensus Scoring
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Unified Results Layer &amp; Consensus Scoring">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-multi-method-consensus-rankings-value" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 Multi-Method Consensus Rankings (π-Value)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-clinical-reporting-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Clinical Reporting Layer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. Clinical Reporting Layer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91-interactive-quarto-reports-audit-artifacts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 Interactive Quarto Reports &amp; Audit Artifacts
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-multiqc-metadata" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. MultiQC &amp; Metadata
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. MultiQC &amp; Metadata">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#101-aggregated-multiqc-dashboard-software-provenance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.1 Aggregated MultiQC Dashboard &amp; Software Provenance
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-pipeline-runtime-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Pipeline Runtime Information
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="11. Pipeline Runtime Information">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#111-execution-reports-traces-dags" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.1 Execution Reports, Traces &amp; DAGs
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+<h1 id="pipeline-outputs-directory-structure">Pipeline Outputs &amp; Directory Structure<a class="headerlink" href="#pipeline-outputs-directory-structure" title="Permanent link">&para;</a></h1>
+<p>This document describes the pipeline output files and the tools used to generate them. The results are organized into logical subdirectories within the specified output directory (default: <code>results/</code>). </p>
+<p>Example execution: <code>nextflow run JD2112/milou --outdir results</code></p>
+<h2 id="1-quality-control-trimmed-data">1. Quality Control &amp; Trimmed Data<a class="headerlink" href="#1-quality-control-trimmed-data" title="Permanent link">&para;</a></h2>
+<h3 id="11-read-processing-fastqc-trim-galore">1.1 Read Processing (FastQC &amp; Trim Galore!)<a class="headerlink" href="#11-read-processing-fastqc-trim-galore" title="Permanent link">&para;</a></h3>
+<p>This directory contains the initial quality checks and the adapter-trimmed sequencing reads.</p>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>read_processing/fastqc/&lt;SAMPLE_ID&gt;_R1_fastqc.html</code></td>
+<td><a href="https://www.bioinformatics.babraham.ac.uk/projects/fastqc/">FastQC</a> report containing an overview of sequencing quality.</td>
+</tr>
+<tr>
+<td><code>read_processing/fastqc/&lt;SAMPLE_ID&gt;_R1_fastqc.zip</code></td>
+<td>Raw data used for FastQC report generation.</td>
+</tr>
+<tr>
+<td><code>read_processing/trim_galore/&lt;SAMPLE_ID&gt;_R1_val_1.fq.gz</code></td>
+<td>High-quality, adapter-trimmed reads used for alignment by <a href="https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/">Trim Galore!</a>.</td>
+</tr>
+<tr>
+<td><code>read_processing/trim_galore/&lt;SAMPLE_ID&gt;_R1.fastq.gz_trimming_report.txt</code></td>
+<td>Trimming report containing summary of operations performed by Trim Galore.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="2-reference-genome-indexing">2. Reference Genome Indexing<a class="headerlink" href="#2-reference-genome-indexing" title="Permanent link">&para;</a></h2>
+<h3 id="21-bismark-bwa-meth-indices">2.1 Bismark &amp; BWA-meth Indices<a class="headerlink" href="#21-bismark-bwa-meth-indices" title="Permanent link">&para;</a></h3>
+<p>Contains the indices required for bisulfite alignment. The content adapts based on whether the CPU (Bismark) or GPU (BWA-meth) track is used.</p>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>prepare_genome/bismark_genome_preparation/bismark_index/Bisulfite_Genome/</code></td>
+<td>Directory containing the C-&gt;T and G-&gt;A converted indices created during CPU Indexing with <a href="https://www.bioinformatics.babraham.ac.uk/projects/bismark/">Bismark</a>.</td>
+</tr>
+<tr>
+<td><code>prepare_genome/bismark_genome_preparation/bismark_index/hg38.fa</code></td>
+<td>The reference genome FASTA sequence used for the index.</td>
+</tr>
+<tr>
+<td><code>parabricks_analysis/bwameth_index/</code></td>
+<td>Directory containing the BWA-meth specific index files built for GPU execution.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3-read-alignment-bam-processing">3. Read Alignment &amp; BAM Processing<a class="headerlink" href="#3-read-alignment-bam-processing" title="Permanent link">&para;</a></h2>
+<p>milou supports two alignment tracks. Outputs are stored in either <code>bismark_analysis</code> or <code>parabricks_analysis</code>.</p>
+<h3 id="31-cpu-track-bismark-suite">3.1 CPU Track (Bismark Suite)<a class="headerlink" href="#31-cpu-track-bismark-suite" title="Permanent link">&para;</a></h3>
+<p>The standard path for bisulfite and EM-seq mapping and deduplication.</p>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bismark_analysis/bismark_align/&lt;SAMPLE_ID&gt;_PE_report.txt</code></td>
+<td>Mapping efficiency statistics generated by Bismark.</td>
+</tr>
+<tr>
+<td><code>bismark_analysis/bismark_align/&lt;SAMPLE_ID&gt;_pe.bam</code></td>
+<td>Aligned reads produced by Bismark mapping.</td>
+</tr>
+<tr>
+<td><code>bismark_analysis/bismark_deduplicate/&lt;SAMPLE_ID&gt;_pe.deduplicated.bam</code></td>
+<td>Deduplicated aligned reads with PCR duplicates removed.</td>
+</tr>
+<tr>
+<td><code>bismark_analysis/bismark_deduplicate/&lt;SAMPLE_ID&gt;_pe.deduplication_report.txt</code></td>
+<td>Details on the duplicate removal process.</td>
+</tr>
+<tr>
+<td><code>bismark_analysis/samtools_sort/&lt;SAMPLE_ID&gt;.sorted.bam</code></td>
+<td>Sorted BAM file of the deduplicated aligned reads.</td>
+</tr>
+<tr>
+<td><code>bismark_analysis/samtools_index/&lt;SAMPLE_ID&gt;.sorted.bam.bai</code></td>
+<td>BAM index file for fast access to the sorted deduplicated reads.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="32-gpu-track-nvidia-clara-parabricks">3.2 GPU Track (NVIDIA Clara Parabricks)<a class="headerlink" href="#32-gpu-track-nvidia-clara-parabricks" title="Permanent link">&para;</a></h3>
+<p>Ultra-fast mapping and deduplication using NVIDIA GPUs.</p>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>parabricks_analysis/parabricks_fq2bammeth/&lt;SAMPLE_ID&gt;.bam</code></td>
+<td>GPU-accelerated sorted and deduplicated BAM file produced by <a href="https://www.nvidia.com/en-us/clara/genomics/">NVIDIA Parabricks</a>.</td>
+</tr>
+<tr>
+<td><code>parabricks_analysis/samtools_index/&lt;SAMPLE_ID&gt;.bam.bai</code></td>
+<td>BAM index file for the Parabricks aligned BAM.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="4-methylation-calling-extraction">4. Methylation Calling &amp; Extraction<a class="headerlink" href="#4-methylation-calling-extraction" title="Permanent link">&para;</a></h2>
+<h3 id="41-bismark-extractor-cpu-track">4.1 Bismark Extractor (CPU Track)<a class="headerlink" href="#41-bismark-extractor-cpu-track" title="Permanent link">&para;</a></h3>
+<p>Standard extraction of C-&gt;T conversion counts.</p>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bismark_analysis/bismark_methylation_extractor/&lt;SAMPLE_ID&gt;_pe.deduplicated.bismark.cov.gz</code></td>
+<td>Compressed coverage file detailing CpG methylation counts (Methylated/Unmethylated).</td>
+</tr>
+<tr>
+<td><code>bismark_analysis/bismark_methylation_extractor/&lt;SAMPLE_ID&gt;_pe.deduplicated.bedGraph.gz</code></td>
+<td>Genome browser compatible coverage levels and methylation percentages.</td>
+</tr>
+<tr>
+<td><code>bismark_analysis/bismark_methylation_extractor/&lt;SAMPLE_ID&gt;_pe.deduplicated_splitting_report.txt</code></td>
+<td>Extractor splitting report with basic statistics.</td>
+</tr>
+<tr>
+<td><code>bismark_analysis/bismark_report/&lt;SAMPLE_ID&gt;_bismark_report.html</code></td>
+<td>Bismark summary HTML report visualizing mapping and extraction metrics.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="42-methyldackel-extractor-gpu-track">4.2 MethylDackel Extractor (GPU Track)<a class="headerlink" href="#42-methyldackel-extractor-gpu-track" title="Permanent link">&para;</a></h3>
+<p>High-throughput extraction directly from GPU-aligned BAMs.</p>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>parabricks_analysis/methyldackel_extract/&lt;SAMPLE_ID&gt;_CpG.bedGraph</code></td>
+<td>BedGraph file containing high-throughput CpG methylation metrics extracted by <a href="https://github.com/dpryan79/MethylDackel">MethylDackel</a>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="5-post-alignment-quality-mapping">5. Post-Alignment Quality Mapping<a class="headerlink" href="#5-post-alignment-quality-mapping" title="Permanent link">&para;</a></h2>
+<h3 id="51-qualimap-coverage-insert-size-metrics">5.1 Qualimap Coverage &amp; Insert Size Metrics<a class="headerlink" href="#51-qualimap-coverage-insert-size-metrics" title="Permanent link">&para;</a></h3>
+<p>Comprehensive metrics on mapping coverage and insert sizes using Qualimap.</p>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>qualimap/&lt;SAMPLE_ID&gt;/qualimapReport.html</code></td>
+<td>Comprehensive HTML report assessing mapping quality and genome coverage by <a href="http://qualimap.conesalab.org/">Qualimap</a>.</td>
+</tr>
+<tr>
+<td><code>qualimap/&lt;SAMPLE_ID&gt;/genome_results.txt</code></td>
+<td>Text file containing genome-wide quality metrics.</td>
+</tr>
+<tr>
+<td><code>qualimap/&lt;SAMPLE_ID&gt;/images_qualimapReport/genome_coverage_histogram.png</code></td>
+<td>Histogram plot showing depth of coverage distribution.</td>
+</tr>
+<tr>
+<td><code>qualimap/&lt;SAMPLE_ID&gt;/images_qualimapReport/genome_insert_size_histogram.png</code></td>
+<td>Histogram plot showing the distribution of read insert sizes.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="6-differential-methylation-analysis">6. Differential Methylation Analysis<a class="headerlink" href="#6-differential-methylation-analysis" title="Permanent link">&para;</a></h2>
+<h3 id="61-statistical-differential-engines-dss-edger-methylkit">6.1 Statistical Differential Engines (DSS, edgeR, methylKit)<a class="headerlink" href="#61-statistical-differential-engines-dss-edger-methylkit" title="Permanent link">&para;</a></h3>
+<p>Statistical results identifying significantly different CpG sites between groups using <a href="https://bioconductor.org/packages/release/bioc/html/DSS.html">DSS</a>, <a href="https://bioconductor.org/packages/release/bioc/html/edgeR.html">EdgeR</a>, and <a href="https://bioconductor.org/packages/release/bioc/html/methylKit.html">MethylKit</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>differential_methylation/edger_analysis/EdgeR_group_&lt;COMPARISON&gt;_coverage3.csv</code></td>
+<td>Table containing EdgeR Log2 Fold Change, P-values, and FDR for differentially methylated regions.</td>
+</tr>
+<tr>
+<td><code>differential_methylation/edger_analysis/edger_log.txt</code></td>
+<td>Execution log for the EdgeR analysis step.</td>
+</tr>
+<tr>
+<td><code>differential_methylation/methylkit_analysis/MethylKit_&lt;COMPARISON&gt;.csv</code></td>
+<td>Differential methylation analysis results generated by MethylKit.</td>
+</tr>
+<tr>
+<td><code>differential_methylation/methylkit_analysis/methylkit_log.txt</code></td>
+<td>Execution log for the MethylKit analysis step.</td>
+</tr>
+<tr>
+<td><code>differential_methylation/dss_analysis/DSS_group_&lt;COMPARISON&gt;_coverage3.csv</code></td>
+<td>Table containing DSS Difference, P-values, and FDR for differentially methylated regions.</td>
+</tr>
+<tr>
+<td><code>differential_methylation/dss_analysis/dss_log.txt</code></td>
+<td>Execution log for the DSS analysis step.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="7-functional-annotation-visualizations">7. Functional Annotation &amp; Visualizations<a class="headerlink" href="#7-functional-annotation-visualizations" title="Permanent link">&para;</a></h2>
+<h3 id="71-gene-annotation-locus-mapping">7.1 Gene Annotation &amp; Locus Mapping<a class="headerlink" href="#71-gene-annotation-locus-mapping" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>result_analysis/annotate_results/EdgeR_group_&lt;COMPARISON&gt;_annotated.csv</code></td>
+<td>DMRs fully annotated with gene names, overlaps, and distances to TSS.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="72-volcano-ma-plots">7.2 Volcano &amp; MA Plots<a class="headerlink" href="#72-volcano-ma-plots" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>result_analysis/post_processing_edger/&lt;COMPARISON&gt;/edger_volcano_plot.png</code></td>
+<td>Volcano plot showing EdgeR biological (Fold Change) vs. statistical (P-value) significance.</td>
+</tr>
+<tr>
+<td><code>result_analysis/post_processing_edger/&lt;COMPARISON&gt;/edger_summary_stats.csv</code></td>
+<td>Summary statistics of EdgeR hyper- and hypo-methylated regions.</td>
+</tr>
+<tr>
+<td><code>result_analysis/post_processing_edger/&lt;COMPARISON&gt;/edger_ma_or_scatter_plot.png</code></td>
+<td>Visualizes global consistency of methylation levels between groups for EdgeR.</td>
+</tr>
+<tr>
+<td><code>result_analysis/post_processing_methylkit/&lt;COMPARISON&gt;/methylkit_volcano_plot.png</code></td>
+<td>Volcano plot for MethylKit differential methylation results.</td>
+</tr>
+<tr>
+<td><code>result_analysis/post_processing_methylkit/&lt;COMPARISON&gt;/methylkit_summary_stats.csv</code></td>
+<td>Summary statistics of MethylKit hyper- and hypo-methylated regions.</td>
+</tr>
+<tr>
+<td><code>result_analysis/post_processing_dss/&lt;COMPARISON&gt;/dss_volcano_plot.png</code></td>
+<td>Volcano plot showing DSS biological (Methylation Difference) vs. statistical (FDR) significance.</td>
+</tr>
+<tr>
+<td><code>result_analysis/post_processing_dss/&lt;COMPARISON&gt;/dss_summary_stats.csv</code></td>
+<td>Summary statistics of DSS hyper- and hypo-methylated regions.</td>
+</tr>
+<tr>
+<td><code>result_analysis/post_processing_dss/&lt;COMPARISON&gt;/dss_ma_or_scatter_plot.png</code></td>
+<td>Visualizes global consistency of methylation levels between groups for DSS.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="73-gene-ontology-go-pathway-enrichment">7.3 Gene Ontology (GO) &amp; Pathway Enrichment<a class="headerlink" href="#73-gene-ontology-go-pathway-enrichment" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>result_analysis/go_analysis_edger/&lt;COMPARISON&gt;_go_enrichment_results.csv</code></td>
+<td>Table containing Gene Ontology enrichment analysis results from EdgeR DMRs using <a href="https://bioconductor.org/packages/release/bioc/html/clusterProfiler.html">clusterProfiler</a>.</td>
+</tr>
+<tr>
+<td><code>result_analysis/go_analysis_edger/&lt;COMPARISON&gt;_gochord_plot.png</code></td>
+<td>Chord diagram depicting relationships between genes and EdgeR GO terms.</td>
+</tr>
+<tr>
+<td><code>result_analysis/go_analysis_methylkit/&lt;COMPARISON&gt;_go_enrichment_results.csv</code></td>
+<td>Table containing Gene Ontology enrichment analysis results from MethylKit DMRs.</td>
+</tr>
+<tr>
+<td><code>result_analysis/go_analysis_dss/&lt;COMPARISON&gt;_go_enrichment_results.csv</code></td>
+<td>Table containing Gene Ontology enrichment analysis results from DSS DMRs.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="8-unified-results-layer-consensus-scoring">8. Unified Results Layer &amp; Consensus Scoring<a class="headerlink" href="#8-unified-results-layer-consensus-scoring" title="Permanent link">&para;</a></h2>
+<p>The consolidated analytical layer synthesizing orthogonal differential callers via the <span class="arithmatex">\(\pi\)</span>-value framework.</p>
+<h3 id="81-multi-method-consensus-rankings-value">8.1 Multi-Method Consensus Rankings (π-Value)<a class="headerlink" href="#81-multi-method-consensus-rankings-value" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>unified_layer/unified_consensus_ranking.csv</code></td>
+<td>Master candidate gene table prioritized by the cross-method <span class="arithmatex">\(\pi\)</span>-value score ($\pi = \overline{</td>
+</tr>
+<tr>
+<td><code>unified_layer/consensus_pi_value_ranking.tsv</code></td>
+<td>Tab-delimited candidate ranking with individual engine metrics (DSS, edgeR, methylKit).</td>
+</tr>
+<tr>
+<td><code>unified_layer/consensus_genes.csv</code></td>
+<td>List of high-confidence genes supported by cross-caller agreement (filtered by majority voting in clinical mode).</td>
+</tr>
+<tr>
+<td><code>unified_layer/dml_consensus_summary.csv</code></td>
+<td>Summary table of CpG-level and DMR-level concordance metrics.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="9-clinical-reporting-layer">9. Clinical Reporting Layer<a class="headerlink" href="#9-clinical-reporting-layer" title="Permanent link">&para;</a></h2>
+<p>Diagnostic-ready reports and compliance provenance generated by the Quarto reporting engine.</p>
+<h3 id="91-interactive-quarto-reports-audit-artifacts">9.1 Interactive Quarto Reports &amp; Audit Artifacts<a class="headerlink" href="#91-interactive-quarto-reports-audit-artifacts" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>clinical_reporting/milou_clinical_report.html</code></td>
+<td>Interactive, standalone clinical summary report with integrated MultiQC metrics, consensus rankings, and interactive volcano plots.</td>
+</tr>
+<tr>
+<td><code>clinical_reporting/milou_clinical_report.pdf</code></td>
+<td>Print-ready, archival publication/clinical PDF summary report.</td>
+</tr>
+<tr>
+<td><code>clinical_reporting/sha256_checksums.txt</code></td>
+<td>Cryptographic SHA256 audit log verifying input FASTQ integrity.</td>
+</tr>
+<tr>
+<td><code>clinical_reporting/qc_gate_audit.json</code></td>
+<td>Automated target coverage and conversion quality pass/fail evaluation log.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="10-multiqc-metadata">10. MultiQC &amp; Metadata<a class="headerlink" href="#10-multiqc-metadata" title="Permanent link">&para;</a></h2>
+<p>Aggregates all logs into a single interactive HTML report.</p>
+<h3 id="101-aggregated-multiqc-dashboard-software-provenance">10.1 Aggregated MultiQC Dashboard &amp; Software Provenance<a class="headerlink" href="#101-aggregated-multiqc-dashboard-software-provenance" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>multiqc/multiqc_report.html</code></td>
+<td>Aggregated report of all QC and processing steps into a single, interactive dashboard using <a href="https://multiqc.info/">MultiQC</a>.</td>
+</tr>
+<tr>
+<td><code>multiqc/multiqc_data/multiqc_bismark_alignment.txt</code></td>
+<td>Raw data used for the MultiQC Bismark alignment module.</td>
+</tr>
+<tr>
+<td><code>multiqc/multiqc_data/multiqc_general_stats.txt</code></td>
+<td>General MultiQC stats overview in a tabular text format.</td>
+</tr>
+<tr>
+<td><code>multiqc/multiqc_data/multiqc_data.json</code></td>
+<td>JSON format containing all metrics aggregated by MultiQC.</td>
+</tr>
+<tr>
+<td><code>multiqc/versions.yml</code></td>
+<td>Software versions of tools used during the pipeline run.</td>
+</tr>
+<tr>
+<td><code>multiqc/software_versions.csv</code></td>
+<td>A CSV summary table of all tools and their respective versions retrieved during the run.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="11-pipeline-runtime-information">11. Pipeline Runtime Information<a class="headerlink" href="#11-pipeline-runtime-information" title="Permanent link">&para;</a></h2>
+<p>Technical reports on resource usage and execution flow.</p>
+<h3 id="111-execution-reports-traces-dags">11.1 Execution Reports, Traces &amp; DAGs<a class="headerlink" href="#111-execution-reports-traces-dags" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pipeline_info/execution_report.html</code></td>
+<td>HTML report containing Nextflow performance metrics and task executions.</td>
+</tr>
+<tr>
+<td><code>pipeline_info/execution_timeline.html</code></td>
+<td>Task timeline report detailing execution overlaps and delays.</td>
+</tr>
+<tr>
+<td><code>pipeline_info/execution_trace.txt</code></td>
+<td>Trace file specifying resource usage (memory, CPU, time) per process.</td>
+</tr>
+<tr>
+<td><code>pipeline_info/pipeline_dag.html</code></td>
+<td>Interactive DAG visualization of the workflow.</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+  <div style="
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    font-size: 1.5em;
+    padding: 1em 2em;
+    border-top: 1px solid #000000;
+    color: #ffffff;
+    text-align: center;
+    background-color: #000000;
+  ">
+    <div style="flex: 1; text-align: left;">
+        © Jyotirmoy Das 2026 
+    </div>
+    <div style="flex: 1; text-align: center;">
+      <code style="font-size: 0.8em;">
+        3D1F C87F 8D52 BFD4 5A1D <br> 3C86 63F2 2E14 6A0A 6B98
+      </code>
+    </div>
+    <div style="flex: 1; text-align: right;">
+      Made with <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" style="color: #ffffff;">MkDocs</a>
+    </div>
+  </div>
+
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.instant.prefetch", "navigation.instant.progress", "navigation.tracking", "navigation.expand", "navigation.sections", "navigation.top", "content.code.annotate", "content.tabs.link", "navigation.tabs", "search.suggest", "search.highlight", "content.action.edit", "content.code.copy", "versioning", "icons"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../js/mathjax.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js"></script>
+      
+        <script src="../js/github-stats.js"></script>
+      
+    
+  </body>
+</html>
