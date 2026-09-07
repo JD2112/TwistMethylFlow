@@ -58,4 +58,5 @@ __pycache__/
 *.pyc
 .Rhistory
 .RData
+.secure_phi_index.tsv
 .Rproj.user

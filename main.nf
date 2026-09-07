@@ -189,8 +189,9 @@ workflow {
     }
 
     // Secure Translation Index setup (PHI Boundaries)
-    def phi_index_file = file("${projectDir}/.secure_phi_index.tsv")
+    def phi_index_file = file("${params.outdir}/.secure_phi_index.tsv")
     if (!phi_index_file.exists()) {
+        phi_index_file.parent.mkdirs()
         phi_index_file.text = "Original_ID\tPseudo_ID\n"
     }
     
