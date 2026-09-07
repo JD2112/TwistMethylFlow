@@ -1,6 +1,7 @@
 process PRE_STAGE_FILES {
     label 'process_long'
     cache false
+    container null
     
     output:
     val true, emit: done
