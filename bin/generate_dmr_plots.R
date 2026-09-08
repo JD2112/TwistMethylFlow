@@ -66,7 +66,7 @@ gene_symbol <- as.character(gene_meta$symbol)
 view_start <- max(1, dmr_start - opt$padding)
 view_end <- dmr_end + opt$padding
 
-# 3. Load Methylation Coverage Files (BedGraphs) and Map to Groups
+# 3. Load Methylation Coverage Files (BedGraphs / Bismark Cov) and Map to Groups
 cov_files <- unlist(strsplit(opt$coverage_files, ","))
 
 # Get group info from samplesheet
@@ -75,18 +75,49 @@ get_sample_info <- function(path) {
     fname <- basename(path)
     sid <- samplesheet$sample_id[sapply(samplesheet$sample_id, function(x) grepl(x, fname))][1]
     group <- samplesheet$group[samplesheet$sample_id == sid][1]
-    return(list(id = sid, group = group))
+    if (is.null(sid) || is.na(sid) || sid == "") {
+        sid <- sub("([._].*)$", "", fname)
+    }
+    if (is.null(group) || is.na(group) || group == "") {
+        group <- "Sample"
+    }
+    return(list(id = as.character(sid), group = as.character(group)))
 }
 
 cat("Loading sample methylation data...\n")
+chr_clean <- gsub("^chr", "", target_chr)
+chr_prefixed <- paste0("chr", chr_clean)
+
 # 1. Read all files and extract scores
 all_gr_list <- lapply(cov_files, function(f) {
     info <- get_sample_info(f)
-    # Use strict awk column matching to avoid grep accidentally matching coordinates/scores from other chromosomes
-    cmd <- sprintf("awk -F'\\t' '$1 == \"%s\" && $2 >= %d && $3 <= %d' %s", target_chr, view_start - 500, view_end + 500, f)
-    data <- tryCatch({ read.table(pipe(cmd), sep="\t", stringsAsFactors=FALSE) }, error = function(e) return(NULL))
-    if (is.null(data) || nrow(data) == 0) return(NULL)
+    # Handle gzipped files (.gz) and uncompressed files
+    # Extract columns: chr, start, end, score (col 4 in both bismark.cov and bedGraph)
+    if (grepl("\\.gz$", f, ignore.case = TRUE)) {
+        cmd <- sprintf("gzip -dc %s | awk -F'\\t' '($1 == \"%s\" || $1 == \"%s\") && $2 >= %d && $3 <= %d {print $1, $2, $3, $4}' OFS='\\t'",
+                       shQuote(f), chr_clean, chr_prefixed, view_start - 500, view_end + 500)
+    } else {
+        cmd <- sprintf("awk -F'\\t' '($1 == \"%s\" || $1 == \"%s\") && $2 >= %d && $3 <= %d {print $1, $2, $3, $4}' OFS='\\t' %s",
+                       chr_clean, chr_prefixed, view_start - 500, view_end + 500, shQuote(f))
+    }
+    data <- tryCatch({
+        read.table(pipe(cmd), sep="\t", header=FALSE, stringsAsFactors=FALSE)
+    }, error = function(e) return(NULL))
+    if (is.null(data) || nrow(data) == 0 || ncol(data) < 4) return(NULL)
+    data <- data[, 1:4]
     colnames(data) <- c("chr", "start", "end", "score")
+    data$start <- as.integer(data$start)
+    data$end <- as.integer(data$end)
+    data$score <- as.numeric(data$score)
+    data <- data[!is.na(data$start) & !is.na(data$end) & !is.na(data$score), ]
+    if (nrow(data) == 0) return(NULL)
+    
+    # If scores are expressed on 0-1 scale, scale to 0-100 percentage for Gviz plotting
+    if (max(data$score, na.rm=TRUE) <= 1.0 && max(data$score, na.rm=TRUE) > 0) {
+        data$score <- data$score * 100
+    }
+    data$chr <- target_chr
+
     gr <- GRanges(data$chr, IRanges(data$start, data$end), score = data$score)
     mcols(gr)[[info$id]] <- data$score # Assign score to sample-named column
     gr$score <- NULL # Remove generic score column
@@ -123,6 +154,15 @@ names(sample_groups) <- sample_ids
 # Filter out samples that are completely NA in this genomic window to avoid Gviz groups length mismatch
 data_matrix <- as.matrix(mcols(all_sites))
 non_na_samples <- colnames(data_matrix)[colSums(!is.na(data_matrix)) > 0]
+if (length(non_na_samples) == 0) {
+    cat("Warning: No samples with valid coverage in this window. Creating placeholder plot.\n")
+    png(opt$output, width=800, height=600)
+    plot(1, type="n", axes=FALSE, xlab="", ylab="")
+    text(1, 1, "No coverage data available for this DMR", cex=1.5)
+    dev.off()
+    quit(save="no", status=0)
+}
+
 if (length(non_na_samples) < length(sample_ids)) {
     dropped <- setdiff(sample_ids, non_na_samples)
     cat(paste("Warning: Dropping samples with no coverage in this window:", paste(dropped, collapse=", "), "\n"))
@@ -141,8 +181,15 @@ ideo_track <- tryCatch({
 gene_track <- NULL
 if (!is.null(opt$gtf) && file.exists(opt$gtf)) {
     cat("Loading gene models from GTF...\n")
-    gtf_gr <- import(opt$gtf, format="gtf", genome=opt$genome, 
-                     which=GRanges(target_chr, IRanges(view_start, view_end)))
+    chr_variants <- unique(c(target_chr, chr_clean, chr_prefixed))
+    which_gr <- GRanges(seqnames = chr_variants,
+                        ranges = IRanges(rep(view_start, length(chr_variants)),
+                                         rep(view_end, length(chr_variants))))
+    gtf_gr <- tryCatch({
+        import(opt$gtf, format="gtf", genome=opt$genome, which=which_gr)
+    }, error = function(e) {
+        tryCatch({ import(opt$gtf, format="gtf", genome=opt$genome) }, error = function(e2) NULL)
+    })
     
     if (length(gtf_gr) > 0) {
         # Filter for exons only to avoid plotting overlapping CDS/UTR/transcript features separately
@@ -168,12 +215,16 @@ if (!is.null(opt$gtf) && file.exists(opt$gtf)) {
         if ("transcript_id" %in% colnames(mcols(gtf_gr))) {
             gtf_gr$id <- gtf_gr$transcript_id
         }
-        gene_track <- GeneRegionTrack(gtf_gr, genome = opt$genome, chromosome = target_chr, 
-                                     name = "RefSeq Models",
-                                     showId = TRUE, geneSymbol = TRUE,
-                                     collapseTranscripts = "meta",
-                                     shape = "arrow", fill = "#EAEAEA", col = "#444444",
-                                     fontsize.group = 8)
+        seqlevels(gtf_gr) <- unique(c(seqlevels(gtf_gr), target_chr))
+        seqnames(gtf_gr) <- target_chr
+        gene_track <- tryCatch({
+            GeneRegionTrack(gtf_gr, genome = opt$genome, chromosome = target_chr, 
+                            name = "RefSeq Models",
+                            showId = TRUE, geneSymbol = TRUE,
+                            collapseTranscripts = "meta",
+                            shape = "arrow", fill = "#EAEAEA", col = "#444444",
+                            fontsize.group = 8)
+        }, error = function(e) NULL)
     }
 }
 
@@ -185,10 +236,9 @@ cpg_track <- AnnotationTrack(cpg_sites, name = "CpG Sites",
                              shape = "box", stacking = "dense")
 
 # 7. Aggregate Trend Track (Grouped Lines)
-# Red/Blue Color Scheme
 groups_present <- unique(sample_groups)
-group_colors <- c("#E41A1C", "#377EB8", "#4DAF4A", "#984EA3", "#FF7F00")
-names(group_colors) <- groups_present[1:min(length(groups_present), 5)]
+default_palette <- c("#E41A1C", "#377EB8", "#4DAF4A", "#984EA3", "#FF7F00", "#FFFF33", "#A65628", "#F781BF")
+group_colors <- setNames(rep(default_palette, length.out = length(groups_present)), groups_present)
 
 # Plot individual points + smoothed trend line per group
 trend_track <- DataTrack(all_sites, 
@@ -214,7 +264,7 @@ heatmap_tracks <- lapply(groups_present, function(g) {
               type = "heatmap",
               ylim = c(0, 100),
               showSampleNames = FALSE,
-              col = c("white", group_colors[g]))
+              col = c("white", group_colors[[g]]))
     displayPars(dt)$size <- 1.0 # Thicker beads
     return(dt)
 })
