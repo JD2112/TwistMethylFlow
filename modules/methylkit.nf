@@ -1,7 +1,7 @@
 process METHYLKIT_ANALYSIS {
     tag "MethylKit on ${design_file}"
     label 'process_high'
-    cache false
+    //cache false
 
     input:
     path coverage_files
