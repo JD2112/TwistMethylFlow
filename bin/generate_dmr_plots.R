@@ -215,8 +215,12 @@ if (!is.null(opt$gtf) && file.exists(opt$gtf)) {
         if ("transcript_id" %in% colnames(mcols(gtf_gr))) {
             gtf_gr$id <- gtf_gr$transcript_id
         }
-        seqlevels(gtf_gr) <- unique(c(seqlevels(gtf_gr), target_chr))
-        seqnames(gtf_gr) <- target_chr
+
+        # Cleanly reconstruct GRanges on target_chr to prevent seqlevels mismatch
+        clean_gr <- GRanges(seqnames = target_chr, ranges = ranges(gtf_gr), strand = strand(gtf_gr))
+        mcols(clean_gr) <- mcols(gtf_gr)
+        gtf_gr <- clean_gr
+
         gene_track <- tryCatch({
             GeneRegionTrack(gtf_gr, genome = opt$genome, chromosome = target_chr, 
                             name = "RefSeq Models",
