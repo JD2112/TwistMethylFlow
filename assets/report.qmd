@@ -253,15 +253,24 @@ is_valid_png <- function(f) {
 }
 
 find_plot <- function(dir_path, suffix) {
-    search_dirs <- unique(c(".", dir_path))
-    search_dirs <- search_dirs[dir.exists(search_dirs)]
-    for (d in search_dirs) {
-      files <- list.files(d, pattern = suffix, full.names = TRUE)
+    # 1. First check if the image is already present in current directory and is valid
+    local_candidates <- list.files(".", pattern = suffix, full.names = FALSE)
+    if (length(local_candidates) > 0) {
+      valid_local <- local_candidates[sapply(local_candidates, is_valid_png)]
+      if (length(valid_local) > 0) {
+        return(valid_local[1])
+      }
+    }
+    
+    # 2. Search in dir_path if provided
+    if (!is.null(dir_path) && dir.exists(dir_path)) {
+      files <- list.files(dir_path, pattern = suffix, full.names = TRUE)
       if (length(files) > 0) {
         valid_files <- files[sapply(files, is_valid_png)]
         if (length(valid_files) > 0) {
           local_name <- basename(valid_files[1])
-          if (valid_files[1] != local_name) {
+          # Prevent self-copy which truncates file to 0 bytes on Linux/POSIX
+          if (normalizePath(valid_files[1], mustWork = FALSE) != normalizePath(local_name, mustWork = FALSE)) {
             file.copy(valid_files[1], local_name, overwrite = TRUE)
           }
           return(local_name)
@@ -297,30 +306,11 @@ kable_report <- function(df, caption = "", note = NULL, font_size = 9) {
   if (knitr::is_html_output()) {
     colnames(df) <- gsub("\\.", " ", colnames(df))
     colnames(df) <- gsub("_", " ", colnames(df))
-    if (exists("has_dt") && has_dt) {
-      dt_tbl <- DT::datatable(df, 
-                           caption = caption, 
-                           extensions = 'Buttons',
-                           options = list(
-                             dom = 'Bfrtip',
-                             buttons = c('csv', 'excel', 'copy'),
-                             pageLength = 10,
-                             scrollX = TRUE
-                           ),
-                           rownames = FALSE)
-      if (!is.null(note)) {
-        if (requireNamespace("htmltools", quietly = TRUE)) {
-          return(htmltools::tagList(dt_tbl, htmltools::tags$p(class = "table-note", htmltools::tags$em(note))))
-        }
-      }
-      return(dt_tbl)
-    } else {
-      kb <- kable(df, caption = caption)
-      kb <- kable_styling(kb, full_width = TRUE, 
-                          bootstrap_options = c("striped", "hover", "condensed"))
-      if (!is.null(note)) kb <- footnote(kb, general = note, general_title = "Note: ")
-      return(kb)
-    }
+    kb <- kable(df, format = "html", caption = caption)
+    kb <- kable_styling(kb, full_width = TRUE, 
+                        bootstrap_options = c("striped", "hover", "condensed"))
+    if (!is.null(note)) kb <- footnote(kb, general = note, general_title = "Note: ")
+    return(kb)
   } else {
     colnames(df) <- gsub("\\.", " ", colnames(df))
     colnames(df) <- gsub("_", " ", colnames(df))
