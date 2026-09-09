@@ -217,10 +217,13 @@ library(knitr)
 library(kableExtra)
 library(jsonlite)
 
-# Gracefully try to load DT if missing
+# Gracefully try to load DT and htmltools if available
 has_dt <- requireNamespace("DT", quietly = TRUE) && requireNamespace("crosstalk", quietly = TRUE)
 if (has_dt) {
   library(DT)
+}
+if (requireNamespace("htmltools", quietly = TRUE)) {
+  library(htmltools)
 }
 
 # Robust error handling for file reading
@@ -306,7 +309,9 @@ kable_report <- function(df, caption = "", note = NULL, font_size = 9) {
                            ),
                            rownames = FALSE)
       if (!is.null(note)) {
-        return(tagList(dt_tbl, tags$p(class = "table-note", tags$em(note))))
+        if (requireNamespace("htmltools", quietly = TRUE)) {
+          return(htmltools::tagList(dt_tbl, htmltools::tags$p(class = "table-note", htmltools::tags$em(note))))
+        }
       }
       return(dt_tbl)
     } else {
