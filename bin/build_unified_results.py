@@ -194,11 +194,15 @@ def process_dmr_and_genes(output_dir, args):
             # Standardize columns (Case-insensitive mapping)
             col_map = {c.lower(): c for c in df.columns}
             
-            # 1. log2FC
+            # 1. log2FC / effect size (standardize percentage to [0, 1] proportion for methylKit)
             if 'log2fc' in col_map: df['log2FC'] = df[col_map['log2fc']]
             elif 'logfc' in col_map: df['log2FC'] = df[col_map['logfc']]
-            elif 'meth.diff' in col_map: df['log2FC'] = df[col_map['meth.diff']]
-            elif 'diff' in col_map: df['log2FC'] = df[col_map['diff']]
+            elif 'meth.diff' in col_map:
+                vals = pd.to_numeric(df[col_map['meth.diff']], errors='coerce')
+                df['log2FC'] = vals / 100.0 if vals.abs().max() > 1.0 else vals
+            elif 'diff' in col_map:
+                vals = pd.to_numeric(df[col_map['diff']], errors='coerce')
+                df['log2FC'] = vals / 100.0 if (method == 'methylKit' and vals.abs().max() > 1.0) else vals
             elif 'diff.methy' in col_map: df['log2FC'] = df[col_map['diff.methy']]
             
             # 2. P-value / FDR
@@ -256,9 +260,11 @@ def process_dmr_and_genes(output_dir, args):
             'Min_pvalue': ('pvalue', 'min')
         }
         if 'Distance' in combined_dmr.columns:
-            agg_map['Distance'] = ('Distance', lambda x: np.mean(pd.to_numeric(x, errors='coerce')))
+            agg_map['Distance'] = ('Distance', lambda x: np.round(np.nanmean(pd.to_numeric(x, errors='coerce'))) if len(pd.to_numeric(x, errors='coerce').dropna()) > 0 else np.nan)
             
         grouped = combined_dmr.groupby('gene').agg(**agg_map).reset_index()
+        if 'Distance' in grouped.columns:
+            grouped['Distance'] = pd.to_numeric(grouped['Distance'], errors='coerce').round().astype('Int64')
         
         # 3.1 Algorithmic Consensus Voting Guardrail
         if args.mode == 'clinical':
@@ -424,6 +430,14 @@ def process_gene_prioritization(output_dir):
                 elif 'logfc' in col_map:
                     df = df.rename(columns={col_map['logfc']: 'diff'})
                 
+                # Standardize diff and Rank_Score to canonical proportion scale [0, 1] for methylKit
+                if 'diff' in df.columns and method == 'methylKit':
+                    diff_vals = pd.to_numeric(df['diff'], errors='coerce')
+                    if diff_vals.abs().max() > 1.0:
+                        df['diff'] = diff_vals / 100.0
+                        if 'Rank_Score' in df.columns:
+                            df['Rank_Score'] = pd.to_numeric(df['Rank_Score'], errors='coerce') / 100.0
+                
                 if 'fdr' in col_map and col_map['fdr'] != 'fdr':
                     df = df.rename(columns={col_map['fdr']: 'fdr'})
                 elif 'qvalue' in col_map:
@@ -561,7 +575,7 @@ def main():
         if len(grouped) > 0 and len(pathways) > 0:
             top_gene = grouped.iloc[0]['Symbol']
             top_pathway = pathways.iloc[0]['Description']
-            narrative = f"Significant biological deviation was observed in {top_gene}, heavily associated with {top_pathway}. The epigenetic profile in these regions warrants further experimental investigation."
+            narrative = f"Significant biological deviation was observed in {top_gene}, heavily associated with {top_pathway}."
         else:
             narrative = "Analysis completed, but no statistically significant DMRs or pathways were identified."
     except:
@@ -640,7 +654,7 @@ def main():
             try:
                 cov30_val = float(cov30_str.replace("%", "").strip())
                 if cov30_val < args.min_30x_pc:
-                    sanity_checks.append(f"WARNING: Sample {row.get('Sample', 'Unknown')} clinical benchmark failed: only {cov30_val}% of targets at >30x (Required: {args.min_30x_pc}%)")
+                    sanity_checks.append(f"WARNING: Sample {row.get('Sample', 'Unknown')} quality benchmark failed: only {cov30_val}% of targets at >30x (Required: {args.min_30x_pc}%)")
             except: pass
     if not sanity_checks:
         sanity_checks.append("PASS: All samples met coverage and alignment quality thresholds.")

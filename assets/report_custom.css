@@ -1,0 +1,100 @@
+/* Custom clinical report styling for milou HTML reports */
+:root {
+  --milou-slate: #1F2D3D;
+  --milou-teal: #00838F;
+  --milou-cyan: #0097A7;
+  --milou-light: #F8FAFC;
+  --milou-border: #CBD5E1;
+  --milou-note: #EBF3F8;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: #2D3748;
+  background-color: #FFFFFF;
+}
+
+h1, h2, h3, h4 {
+  font-weight: 700;
+  color: var(--milou-slate);
+}
+
+h1 {
+  border-bottom: 2px solid var(--milou-teal);
+  padding-bottom: 8px;
+  margin-top: 1.8rem;
+  margin-bottom: 1.2rem;
+  font-size: 1.8rem;
+}
+
+h2 {
+  color: var(--milou-teal);
+  font-size: 1.35rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.8rem;
+}
+
+h3 {
+  font-size: 1.15rem;
+  margin-top: 1.2rem;
+}
+
+/* Card Boxes */
+.report-card {
+  background-color: var(--milou-light);
+  border: 1px solid var(--milou-border);
+  border-left: 5px solid var(--milou-teal);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin-top: 14px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.metadata-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  background-color: var(--milou-light);
+  border: 1px solid var(--milou-border);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.metadata-item {
+  font-size: 0.95rem;
+  margin-bottom: 6px;
+  color: #334155;
+}
+
+.metadata-item strong {
+  color: var(--milou-slate);
+}
+
+/* Table styling */
+.table-note {
+  font-size: 0.85rem;
+  color: #64748B;
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
+.dataTables_wrapper table.dataTable thead th {
+  background-color: var(--milou-teal) !important;
+  color: #FFFFFF !important;
+  font-weight: 600 !important;
+  border-bottom: 1px solid #006064 !important;
+}
+
+.table thead th {
+  background-color: var(--milou-teal);
+  color: #FFFFFF;
+  font-weight: 600;
+  border-bottom: 1px solid #006064;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: rgba(0, 131, 143, 0.03);
+}

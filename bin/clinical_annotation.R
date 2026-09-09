@@ -101,6 +101,13 @@ if (opt$method == "edger") {
     dist_col   <- all_cols[grep("Distance|dist.to.feature", all_cols, ignore.case=TRUE)][1]
 }
 
+# Harmonize effect size scale: methylKit outputs percent (-100% to +100%).
+# Standardize to canonical biological DeltaBeta scale [-1, 1] per Du et al. (2010) and Wreczycka et al. (2017)
+if (!is.na(logfc_col) && (opt$method == "methylkit" || (opt$method != "edger" && max(abs(as.numeric(df[[logfc_col]])), na.rm=TRUE) > 1.0))) {
+    cat("Harmonizing effect sizes from percentage [0-100%] to canonical proportion DeltaBeta [0-1] scale...\n")
+    df[[logfc_col]] <- as.numeric(df[[logfc_col]]) / 100
+}
+
 # 2. Region Annotation
 cat("Performing region annotation...\n")
 if (!is.na(dist_col)) {
