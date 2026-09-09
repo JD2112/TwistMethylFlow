@@ -34,7 +34,7 @@ process REPORT {
       pdf:
         pdf-engine: pdflatex
         latex-auto-install: false
-        documentclass: scrartcl
+        documentclass: article
         highlight-style: github
     EOF
     

@@ -24,4 +24,4 @@ export APPTAINER_TMPDIR=/data/${USER}/tmp
 
 nextflow run main.nf \
     -profile twist_full_cpu,singularity \
-    --outdir results_twist_full_cpu
+    --outdir results_twist_full_cpu -resume

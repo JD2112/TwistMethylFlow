@@ -36,4 +36,4 @@ mkdir -p /data/${USER}/tmp
 
 nextflow run main.nf \
     -profile test_emseq_gpu,gpu,singularity \
-    --outdir results_test_emseq_gpu
+    --outdir results_test_emseq_gpu -resume

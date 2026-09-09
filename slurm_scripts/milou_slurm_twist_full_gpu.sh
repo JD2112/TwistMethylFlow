@@ -25,4 +25,4 @@ export APPTAINER_TMPDIR=/data/${USER}/tmp
 
 nextflow run main.nf \
     -profile twist_full_gpu,gpu,singularity \
-    --outdir results_twist_full_gpu
+    --outdir results_twist_full_gpu -resume

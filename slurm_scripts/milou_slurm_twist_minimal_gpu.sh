@@ -37,4 +37,4 @@ mkdir -p $NXF_SINGULARITY_CACHEDIR $APPTAINER_TMPDIR
 
 nextflow run main.nf \
     -profile twist_minimal_gpu,gpu,singularity \
-    --outdir results_twist_minimal_gpu
+    --outdir results_twist_minimal_gpu -resume

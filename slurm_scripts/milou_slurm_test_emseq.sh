@@ -24,4 +24,4 @@ export APPTAINER_TMPDIR=/data/${USER}/tmp
 
 nextflow run main.nf \
     -profile test_emseq,singularity \
-    --outdir results_test_emseq
+    --outdir results_test_emseq -resume

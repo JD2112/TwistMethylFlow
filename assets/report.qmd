@@ -120,7 +120,7 @@ format:
         </style>
   pdf:
     pdf-engine: pdflatex
-    documentclass: scrartcl
+    documentclass: article
     toc: false
     number-sections: true
     number-depth: 3
@@ -147,6 +147,7 @@ format:
         \usepackage{xcolor}
         \usepackage{fvextra}
         \usepackage{threeparttable}
+        \usepackage{sectsty}
         \setlength{\tabcolsep}{8pt}
         \renewcommand{\arraystretch}{1.2}
         \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
@@ -168,13 +169,10 @@ format:
         \definecolor{milouborder}{HTML}{CBD5E1}
         \definecolor{milounote}{HTML}{EBF3F8}
         
-        % Balanced, elegant heading hierarchy with tightened spacing
-        \setkomafont{section}{\color{milouslate}\Large\bfseries}
-        \setkomafont{subsection}{\color{milouteal}\large\bfseries}
-        \setkomafont{subsubsection}{\color{milouslate}\normalsize\bfseries}
-        \RedeclareSectionCommand[beforeskip=-1.5ex plus -0.2ex minus -0.2ex, afterskip=0.6ex plus 0.1ex]{section}
-        \RedeclareSectionCommand[beforeskip=-1.2ex plus -0.2ex minus -0.2ex, afterskip=0.4ex plus 0.1ex]{subsection}
-        \RedeclareSectionCommand[beforeskip=-0.8ex plus -0.1ex minus -0.1ex, afterskip=0.3ex plus 0.1ex]{subsubsection}
+        % Heading styling via sectsty (supported in container)
+        \sectionfont{\color{milouslate}\Large\bfseries}
+        \subsectionfont{\color{milouteal}\large\bfseries}
+        \subsubsectionfont{\color{milouslate}\normalsize\bfseries}
         
         \pagestyle{fancy}
         \fancyhf{}

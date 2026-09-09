@@ -24,4 +24,4 @@ export APPTAINER_TMPDIR=/data/${USER}/tmp
 
 nextflow run main.nf \
     -profile test_bisulfite_cpu,singularity \
-    --outdir results_test_bisulfite_cpu
+    --outdir results_test_bisulfite_cpu -resume
